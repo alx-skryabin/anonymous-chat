@@ -1,0 +1,10 @@
+@import "./header.chat.css";
+@import "./content.chat.css";
+@import "./footer.chat.css";
+
+.chat {
+  height: 100vh;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}

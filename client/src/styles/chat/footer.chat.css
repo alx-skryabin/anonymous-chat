@@ -1,0 +1,41 @@
+.footer {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  background: rgba(255, 255, 255, .05);
+  box-shadow: 0 .25rem .75rem rgba(0, 0, 0, .1);
+}
+
+.footer_avatar {
+  margin-right: 15px;
+}
+
+.footer_avatar img {
+  width: 60px;
+  height: 60px;
+}
+
+.footer_form {
+  position: relative;
+  display: flex;
+  width: 100%;
+}
+
+.footer_form input {
+  width: 100%;
+  background: rgba(255, 255, 255, .1);
+  border: none;
+  padding: 10px;
+  border-radius: 5px 0 0 5px;
+  outline: none;
+  color: #ccc;
+}
+
+.footer_form button {
+  padding: 10px;
+  border: none;
+  border-radius: 0 5px 5px 0;
+  background: #ccc;
+  outline: none;
+  cursor: pointer;
+}

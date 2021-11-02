@@ -4,10 +4,11 @@ import {defineURI} from './utils'
 const socket = io(defineURI(), {})
 
 const emitSocket = () => {
-  const $msg = document.querySelector('#output-msg')
+  // const $msg = document.querySelector('#output-msg')
 
   socket.on('chat message', data => {
-    $msg.textContent = data.message
+    console.log(data.message)
+    // $msg.textContent = data.message
   })
 }
 
