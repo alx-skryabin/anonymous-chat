@@ -1,3 +1,8 @@
+* {
+  scrollbar-color: #ccc #223;
+  scrollbar-width: thin;
+}
+
 body {
   font-family: 'Roboto', sans-serif;
   background: #223;

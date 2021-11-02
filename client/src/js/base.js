@@ -23,6 +23,36 @@ const avatar = () => {
   `
 }
 
+const msgOwner = (text = '') => {
+  const $el = document.createElement('div')
+  $el.className = 'msg-chat msg-owner'
+
+  $el.innerHTML = `
+      <div class="msg-chat-avatar">
+          <img src="${getAvatarURI()}" alt="avatar">
+      </div>
+      <div class="msg-chat-text">
+          ${text}
+      </div>
+  `
+  return $el
+}
+
+const msgFriend = (text = '') => {
+  const $el = document.createElement('div')
+  $el.className = 'msg-chat msg-friend'
+
+  $el.innerHTML = `
+      <div class="msg-chat-avatar">
+          <img src="${getAvatarURI()}" alt="avatar">
+      </div>
+      <div class="msg-chat-text">
+          ${text}
+      </div>
+  `
+  return $el
+}
+
 const header = () => {
   return `
     <div class="header">
@@ -33,9 +63,7 @@ const header = () => {
 
 const content = () => {
   return `
-    <div class="content">
-      <p>content</p>
-    </div>
+    <div id="chatContent" class="content"></div>
   `
 }
 
@@ -58,4 +86,4 @@ const template = () => {
   `
 }
 
-export {template}
+export {template, msgOwner, msgFriend}

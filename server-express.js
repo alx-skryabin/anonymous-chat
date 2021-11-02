@@ -29,7 +29,8 @@ const {httpServer, io} = require('./server-socket')(app)
 io.on('connection', socket => {
   socket.on('chat message', data => {
     io.emit('chat message', {
-      message: data.message
+      message: data.message,
+      userId: data.userId
     })
   })
 })
