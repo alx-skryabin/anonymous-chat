@@ -358,79 +358,131 @@ template {
 /*!****************************************************************************!*\
   !*** css ./node_modules/css-loader/dist/cjs.js!./src/styles/main/main.css ***!
   \****************************************************************************/
+* {
+  scrollbar-color: #ccc #223;
+  scrollbar-width: thin;
+}
+
 body {
-    font-family: 'Roboto', sans-serif;
-    background: #223;
+  font-family: 'Roboto', sans-serif;
+  background: #223;
+}
+
+/*!***********************************************************************************!*\
+  !*** css ./node_modules/css-loader/dist/cjs.js!./src/styles/chat/header.chat.css ***!
+  \***********************************************************************************/
+.header {
+  background: rgba(255, 255, 255, .1);
 }
 
 h1 {
-    color: #fff;
-    text-align: center;
-    margin: 30px;
-    font-size: 22px;
+  color: #fff;
+  text-align: center;
+  font-size: 22px;
+  margin: 0;
+  padding: 10px;
+  letter-spacing: 1px;
 }
 
-.app {
-    text-align: center;
+/*!************************************************************************************!*\
+  !*** css ./node_modules/css-loader/dist/cjs.js!./src/styles/chat/content.chat.css ***!
+  \************************************************************************************/
+.content {
+  height: 100%;
+  padding: 10px;
+  overflow: auto;
 }
 
-.button {
-    margin: 60px 0 20px;
+.msg-chat {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
 }
 
-.menu a {
-    color: #959bff;
-    text-decoration: none;
-    display: inline-block;
-    padding: 5px 10px;
-    margin: 10px;
-    border-radius: 5px;
-    background: rgba(255, 255, 255, .1);
-    transition: .3s;
+.msg-owner {
+  flex-direction: row-reverse;
 }
 
-.menu span {
-    color: #cecece;
-    opacity: .2;
+.msg-friend {
+
 }
 
-.menu a:hover {
-    background: rgba(255, 255, 255, .15);
-    transition: .3s;
+.msg-chat-text {
+  background: #eee;
+  padding: 5px 10px;
+  border-radius: 5px;
+  max-width: 60%;
 }
 
-.button button {
-    cursor: pointer;
-    padding: 5px 10px;
+.msg-owner .msg-chat-text {
+  margin-right: 10px;
+  color: #fff;
+  background: #4570e5;
 }
 
-.form {
-    text-align: center;
+.msg-friend .msg-chat-text {
+  margin-left: 10px;
+  background: #c1bfbf;
 }
 
-.form input {
-    background: rgba(255, 255, 255, .1);
-    border: none;
-    padding: 10px;
-    border-radius: 5px;
-    outline: none;
-    color: #ccc;
+.msg-chat-avatar img {
+  width: 50px;
+  height: 50px;
 }
 
-.form button {
-    padding: 10px;
-    border: none;
-    border-radius: 5px;
-    outline: none;
-    cursor: pointer;
+/*!***********************************************************************************!*\
+  !*** css ./node_modules/css-loader/dist/cjs.js!./src/styles/chat/footer.chat.css ***!
+  \***********************************************************************************/
+.footer {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  background: rgba(255, 255, 255, .05);
+  box-shadow: 0 .25rem .75rem rgba(0, 0, 0, .1);
 }
 
-.msg {
-    margin-top: 20px;
-    border: 1px solid rgba(255, 255, 255, .1);
-    color: #ccc;
-    padding: 10px;
-    text-align: center;
+.footer_avatar {
+  margin-right: 15px;
+}
+
+.footer_avatar img {
+  width: 60px;
+  height: 60px;
+}
+
+.footer_form {
+  position: relative;
+  display: flex;
+  width: 100%;
+}
+
+.footer_form input {
+  width: 100%;
+  background: rgba(255, 255, 255, .1);
+  border: none;
+  padding: 10px;
+  border-radius: 5px 0 0 5px;
+  outline: none;
+  color: #ccc;
+}
+
+.footer_form button {
+  padding: 10px;
+  border: none;
+  border-radius: 0 5px 5px 0;
+  background: #ccc;
+  outline: none;
+  cursor: pointer;
+}
+
+/*!****************************************************************************!*\
+  !*** css ./node_modules/css-loader/dist/cjs.js!./src/styles/chat/chat.css ***!
+  \****************************************************************************/
+.chat {
+  height: 100vh;
+  position: relative;
+  display: flex;
+  flex-direction: column;
 }
 
 /*!****************************************************************************!*\
