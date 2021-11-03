@@ -23,6 +23,7 @@
   padding: 10px 15px;
   border-radius: 20px;
   max-width: 60%;
+  font-size: 1.1em;
 }
 
 .msg-owner .msg-chat-text {
@@ -46,7 +47,7 @@
   position: absolute;
   bottom: -15px;
   color: #828282;
-  font-size: .6em;
+  font-size: .7em;
   letter-spacing: 1px;
 }
 

@@ -27,7 +27,11 @@ const form = () => {
 const avatar = () => {
   return `
     <div class="footer_avatar">
-      <img src="" alt="avatar">
+      <img src="" 
+      alt="avatar" 
+      class="tooltipped" 
+      data-position="top" 
+      data-tooltip="Click to change avatar">
     </div>
   `
 }

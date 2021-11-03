@@ -40,4 +40,11 @@ function replaceSymbol(str) {
   )
 }
 
-export {defineHostURI, setAvatar, scrollToMsg, getDateTime, replaceSymbol}
+function initTooltip() {
+  document.addEventListener('DOMContentLoaded', () => {
+    const elems = document.querySelectorAll('.tooltipped')
+    M.Tooltip.init(elems)
+  })
+}
+
+export {defineHostURI, setAvatar, scrollToMsg, getDateTime, replaceSymbol, initTooltip}

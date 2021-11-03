@@ -5,7 +5,8 @@ import {
   defineHostURI,
   setAvatar,
   scrollToMsg,
-  replaceSymbol
+  replaceSymbol,
+  initTooltip
 } from './utils'
 
 const socket = io(defineHostURI(), {})
@@ -25,6 +26,7 @@ class Chat {
     this.$input = document.querySelector('#field')
     this.emitNewUser()
     this.emitMsg()
+    initTooltip()
   }
 
   render() {
