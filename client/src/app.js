@@ -1,4 +1,4 @@
-import {Chat} from './js/socket'
+import {Chat} from './js/chat/socket'
 import './styles/index.css'
 
 

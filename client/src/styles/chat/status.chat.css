@@ -2,6 +2,14 @@
   display: flex;
   justify-content: space-around;
   align-items: center;
-  background: rgba(255, 255, 255, .3);
+  background: rgba(255, 255, 255, .2);
   padding: 5px 10px;
+}
+
+.status-count {
+  color: #828282;
+}
+
+.status-count strong {
+  color: #b8b8b8;
 }

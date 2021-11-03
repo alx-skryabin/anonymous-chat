@@ -67,7 +67,9 @@ const header = () => {
 const status = () => {
   return `
     <div class="status">
-      <div>123</div>
+      <div class="status-count">
+        <i class="fas fa-users"></i> Users: <strong id="countUsers">3</strong>
+      </div>
     </div>
   `
 }
@@ -91,7 +93,7 @@ const template = () => {
   return `
     <div class="chat">
       ${header()}
-<!--   ${status()}   -->
+      ${status()}
       ${content()}
       ${footer()}
     </div>
