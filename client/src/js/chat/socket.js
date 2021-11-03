@@ -7,7 +7,7 @@ import {
   setAvatar,
   scrollToMsg,
   replaceSymbol,
-  initTooltip
+  initMeterialized
 } from './utils'
 
 const socket = io(defineHostURI(), {})
@@ -30,7 +30,7 @@ class Chat {
     this.emitNewUser()
     this.emitLeaveUser()
     this.emitMsg()
-    initTooltip()
+    initMeterialized()
   }
 
   render() {

@@ -41,10 +41,12 @@ function replaceSymbol(str) {
 }
 
 function initTooltip() {
-  document.addEventListener('DOMContentLoaded', () => {
-    const elems = document.querySelectorAll('.tooltipped')
-    M.Tooltip.init(elems)
-  })
+  const elems = document.querySelectorAll('.tooltipped')
+  M.Tooltip.init(elems)
 }
 
-export {defineHostURI, setAvatar, scrollToMsg, getDateTime, replaceSymbol, initTooltip}
+function initMeterialized() {
+  initTooltip()
+}
+
+export {defineHostURI, setAvatar, scrollToMsg, getDateTime, replaceSymbol, initMeterialized}
