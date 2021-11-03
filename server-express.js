@@ -30,7 +30,7 @@ io.on('connection', socket => {
   socket.on("disconnect", () => {
     io.emit('CHAT_LEAVE_USER', {
       message: 'User left the chat',
-      count: io.engine.clientsCount,
+      countUser: io.engine.clientsCount,
     })
   })
 
@@ -47,6 +47,7 @@ io.on('connection', socket => {
       message: 'New user is joined',
       userId: data.userId,
       avatar: data.avatar,
+      countUser: io.engine.clientsCount,
     })
   })
 })

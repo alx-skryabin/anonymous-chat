@@ -1,7 +1,5 @@
 .status {
   display: flex;
-  justify-content: space-around;
-  align-items: center;
   background: rgba(255, 255, 255, .2);
   padding: 5px 10px;
 }

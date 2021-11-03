@@ -1,5 +1,6 @@
 import {io} from 'socket.io-client'
 import {message, template} from './template.chat'
+import {StatusBar} from './status-bar'
 import {EVENT} from './config'
 import {
   defineHostURI,
@@ -16,6 +17,7 @@ class Chat {
     this.userId = parseInt(String(new Date().getTime()))
     this.avatar = null
     this.$input = null
+    this.statusBar = null
 
     this.prepare()
   }
@@ -24,6 +26,7 @@ class Chat {
     this.render()
     this.avatar = setAvatar()
     this.$input = document.querySelector('#field')
+    this.statusBar = new StatusBar()
     this.emitNewUser()
     this.emitLeaveUser()
     this.emitMsg()
@@ -48,6 +51,10 @@ class Chat {
       $content.appendChild($msg)
       document.querySelector('head title').textContent = text
       scrollToMsg($msg)
+
+      if (data.countUser) {
+        this.statusBar.updateCountUsers(data.countUser)
+      }
     })
   }
 
@@ -60,7 +67,8 @@ class Chat {
 
   emitLeaveUser() {
     socket.on(EVENT.CHAT_LEAVE_USER, data => {
-      M.toast({html: `${data.message}: ${data.count}`, classes: 'rounded'})
+      this.statusBar.updateCountUsers(data.countUser)
+      M.toast({html: data.message, classes: 'rounded'})
     })
   }
 
