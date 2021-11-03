@@ -1,6 +1,17 @@
+import {getDateTime} from './utils'
+
 const title = () => {
   return `
-    <h1>Anonymous Сhat</h1>
+    <h1><i class="fas fa-ghost"></i> Anonymous Сhat</h1>
+  `
+}
+
+const feedback = () => {
+  return `
+    <div class="feedback">
+      <span><i class="fas fa-code-branch"></i> Improvements? — </span>
+      <a href="https://github.com/alx-skryabin/node-socket" target="_blank">github</a>
+    </div>
   `
 }
 
@@ -8,7 +19,7 @@ const form = () => {
   return `
     <div class="footer_form">
       <input type="text" id="field" placeholder="Type here...">
-      <button id="send">Send</button>
+      <button id="send"><i class="far fa-paper-plane"></i></button>
     </div>
   `
 }
@@ -33,6 +44,9 @@ const message = (owner = 'owner', text = '', avatar) => {
       <div class="msg-chat-text">
           ${text}
       </div>
+      <div class="msg-chat-date">
+        ${getDateTime()}
+      </div>
   `
   return $el
 }
@@ -41,6 +55,7 @@ const header = () => {
   return `
     <div class="header">
       ${title()}
+      ${feedback()}
     </div>
   `
 }

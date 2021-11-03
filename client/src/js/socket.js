@@ -54,12 +54,17 @@ class Chat {
 
   initChat() {
     const $submit = document.querySelector('#send')
+    const $avatar = document.querySelector('.footer_avatar')
 
+    // active form
     $submit.addEventListener('click', () => this.sendMsg())
 
     this.$input.addEventListener('keypress', e => {
       if (e.key === 'Enter') this.sendMsg()
     })
+
+    // change avatar
+    $avatar.addEventListener('click', () => this.avatar = setAvatar())
   }
 }
 

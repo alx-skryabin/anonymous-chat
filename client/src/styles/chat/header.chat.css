@@ -1,4 +1,7 @@
 .header {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
   background: rgba(255, 255, 255, .1);
 }
 
@@ -9,4 +12,20 @@ h1 {
   margin: 0;
   padding: 10px;
   letter-spacing: 1px;
+}
+
+.feedback {
+  color: rgba(255, 255, 255, .2);
+  font-size: .8em;
+}
+
+.feedback a {
+  text-decoration: none;
+  color: rgba(255, 255, 255, .5);
+  transition: .2s;
+}
+
+.feedback a:hover {
+  color: #6185e8;
+  transition: .2s;
 }

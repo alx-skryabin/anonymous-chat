@@ -25,4 +25,8 @@ function scrollToMsg($el) {
   })
 }
 
-export {defineHostURI, setAvatar, scrollToMsg}
+function getDateTime() {
+  return new Date().toLocaleString().split(',').join('')
+}
+
+export {defineHostURI, setAvatar, scrollToMsg, getDateTime}
