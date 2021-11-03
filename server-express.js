@@ -27,6 +27,13 @@ app.use('/api/data', require('./routes/data.routes'))
 const {httpServer, io} = require('./server-socket')(app)
 
 io.on('connection', socket => {
+  socket.on("disconnect", () => {
+    io.emit('CHAT_LEAVE_USER', {
+      message: 'User left the chat',
+      count: io.engine.clientsCount,
+    })
+  })
+
   socket.on('CHAT_MSG', data => {
     io.emit('CHAT_MSG', {
       message: data.message,

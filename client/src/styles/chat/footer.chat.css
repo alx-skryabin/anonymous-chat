@@ -25,7 +25,7 @@
 .footer_form input {
   width: 100%;
   height: auto !important;
-  background: rgba(255, 255, 255, .1) !important;
+  background: rgba(255, 255, 255, .05) !important;
   border: none !important;
   padding: 10px !important;
   margin: 0 !important;
@@ -34,12 +34,16 @@
   color: #ccc;
 }
 
+.footer_form input:focus {
+  box-shadow: none !important;
+}
+
 .footer_form button {
   padding: 10px 20px;
   border: none;
   border-radius: 0 5px 5px 0;
-  background: rgba(255, 255, 255, .8);
-  color: #4570e5;
+  color: #eee;
   outline: none;
+  font-size: 1.2em;
   cursor: pointer;
 }

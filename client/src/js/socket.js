@@ -25,6 +25,7 @@ class Chat {
     this.avatar = setAvatar()
     this.$input = document.querySelector('#field')
     this.emitNewUser()
+    this.emitLeaveUser()
     this.emitMsg()
     initTooltip()
   }
@@ -54,6 +55,12 @@ class Chat {
     socket.emit(EVENT.CHAT_NEW_USER, {
       userId: this.userId,
       avatar: this.avatar
+    })
+  }
+
+  emitLeaveUser() {
+    socket.on(EVENT.CHAT_LEAVE_USER, data => {
+      M.toast({html: `${data.message}: ${data.count}`, classes: 'rounded'})
     })
   }
 

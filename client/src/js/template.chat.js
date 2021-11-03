@@ -17,9 +17,9 @@ const feedback = () => {
 
 const form = () => {
   return `
-    <div class="footer_form">
+    <div class="footer_form z-depth-5">
       <input type="text" id="field" placeholder="Type here...">
-      <button id="send"><i class="far fa-paper-plane"></i></button>
+      <button id="send" class="waves-effect waves-light blue darken-1"><i class="far fa-paper-plane"></i></button>
     </div>
   `
 }
@@ -45,7 +45,7 @@ const message = (owner = 'owner', text = '', avatar) => {
       <div class="msg-chat-avatar">
           <img src="${avatar}" alt="ava">
       </div>
-      <div class="msg-chat-text">
+      <div class="msg-chat-text z-depth-5">
           ${text}
       </div>
       <div class="msg-chat-date">
@@ -60,6 +60,14 @@ const header = () => {
     <div class="header">
       ${title()}
       ${feedback()}
+    </div>
+  `
+}
+
+const status = () => {
+  return `
+    <div class="status">
+      <div>123</div>
     </div>
   `
 }
@@ -83,6 +91,7 @@ const template = () => {
   return `
     <div class="chat">
       ${header()}
+<!--   ${status()}   -->
       ${content()}
       ${footer()}
     </div>
