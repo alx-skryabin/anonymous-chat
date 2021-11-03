@@ -1678,10 +1678,10 @@ module.exports = yeast;
 
 /***/ }),
 
-/***/ "./src/js/config.js":
-/*!**************************!*\
-  !*** ./src/js/config.js ***!
-  \**************************/
+/***/ "./src/js/chat/config.js":
+/*!*******************************!*\
+  !*** ./src/js/chat/config.js ***!
+  \*******************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
@@ -1695,7 +1695,8 @@ const URIlocal = 'http://localhost:3000'
 const URIprod = 'https://node-socket-express.herokuapp.com'
 const EVENT = {
   CHAT_MSG: 'CHAT_MSG',
-  CHAT_NEW_USER: 'CHAT_NEW_USER'
+  CHAT_NEW_USER: 'CHAT_NEW_USER',
+  CHAT_LEAVE_USER: 'CHAT_LEAVE_USER'
 }
 
 
@@ -1703,10 +1704,10 @@ const EVENT = {
 
 /***/ }),
 
-/***/ "./src/js/socket.js":
-/*!**************************!*\
-  !*** ./src/js/socket.js ***!
-  \**************************/
+/***/ "./src/js/chat/socket.js":
+/*!*******************************!*\
+  !*** ./src/js/chat/socket.js ***!
+  \*******************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
@@ -1715,31 +1716,37 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "Chat": () => (/* binding */ Chat)
 /* harmony export */ });
 /* harmony import */ var socket_io_client__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! socket.io-client */ "./node_modules/socket.io-client/build/esm/index.js");
-/* harmony import */ var _template_chat__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./template.chat */ "./src/js/template.chat.js");
-/* harmony import */ var _config__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./config */ "./src/js/config.js");
-/* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./utils */ "./src/js/utils.js");
+/* harmony import */ var _template_chat__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./template.chat */ "./src/js/chat/template.chat.js");
+/* harmony import */ var _status_bar__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./status-bar */ "./src/js/chat/status-bar.js");
+/* harmony import */ var _config__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./config */ "./src/js/chat/config.js");
+/* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./utils */ "./src/js/chat/utils.js");
 
 
 
 
 
-const socket = (0,socket_io_client__WEBPACK_IMPORTED_MODULE_0__.io)((0,_utils__WEBPACK_IMPORTED_MODULE_3__.defineHostURI)(), {})
+
+const socket = (0,socket_io_client__WEBPACK_IMPORTED_MODULE_0__.io)((0,_utils__WEBPACK_IMPORTED_MODULE_4__.defineHostURI)(), {})
 
 class Chat {
   constructor() {
     this.userId = parseInt(String(new Date().getTime()))
     this.avatar = null
     this.$input = null
+    this.statusBar = null
 
     this.prepare()
   }
 
   prepare() {
     this.render()
-    this.avatar = (0,_utils__WEBPACK_IMPORTED_MODULE_3__.setAvatar)()
+    this.avatar = (0,_utils__WEBPACK_IMPORTED_MODULE_4__.setAvatar)()
     this.$input = document.querySelector('#field')
+    this.statusBar = new _status_bar__WEBPACK_IMPORTED_MODULE_2__.StatusBar()
     this.emitNewUser()
+    this.emitLeaveUser()
     this.emitMsg()
+    ;(0,_utils__WEBPACK_IMPORTED_MODULE_4__.initMeterialized)()
   }
 
   render() {
@@ -1750,8 +1757,14 @@ class Chat {
   emitMsg() {
     const $content = document.querySelector('#chatContent')
 
-    socket.on(_config__WEBPACK_IMPORTED_MODULE_2__.EVENT.CHAT_MSG, data => {
-      const text = (0,_utils__WEBPACK_IMPORTED_MODULE_3__.replaceSymbol)(data.message)
+    // $content.addEventListener('click', e => {
+    //   if (e.target.dataset.action === 'edit-msg') {
+    //     console.log(e.target)
+    //   }
+    // })
+
+    socket.on(_config__WEBPACK_IMPORTED_MODULE_3__.EVENT.CHAT_MSG, data => {
+      const text = (0,_utils__WEBPACK_IMPORTED_MODULE_4__.replaceSymbol)(data.message)
 
       const $msg = (data.userId === this.userId)
         ? (0,_template_chat__WEBPACK_IMPORTED_MODULE_1__.message)('owner', text, this.avatar)
@@ -1759,21 +1772,32 @@ class Chat {
 
       $content.appendChild($msg)
       document.querySelector('head title').textContent = text
-      ;(0,_utils__WEBPACK_IMPORTED_MODULE_3__.scrollToMsg)($msg)
+      ;(0,_utils__WEBPACK_IMPORTED_MODULE_4__.scrollToMsg)($msg)
+
+      if (data.countUser) {
+        this.statusBar.updateCountUsers(data.countUser)
+      }
     })
   }
 
   emitNewUser() {
-    socket.emit(_config__WEBPACK_IMPORTED_MODULE_2__.EVENT.CHAT_NEW_USER, {
+    socket.emit(_config__WEBPACK_IMPORTED_MODULE_3__.EVENT.CHAT_NEW_USER, {
       userId: this.userId,
       avatar: this.avatar
+    })
+  }
+
+  emitLeaveUser() {
+    socket.on(_config__WEBPACK_IMPORTED_MODULE_3__.EVENT.CHAT_LEAVE_USER, data => {
+      this.statusBar.updateCountUsers(data.countUser)
+      M.toast({html: data.message, classes: 'rounded'})
     })
   }
 
   sendMsg() {
     if (!this.$input.value.trim()) return
 
-    socket.emit(_config__WEBPACK_IMPORTED_MODULE_2__.EVENT.CHAT_MSG, {
+    socket.emit(_config__WEBPACK_IMPORTED_MODULE_3__.EVENT.CHAT_MSG, {
       message: this.$input.value,
       userId: this.userId,
       avatar: this.avatar
@@ -1794,7 +1818,7 @@ class Chat {
     })
 
     // change avatar
-    $avatar.addEventListener('click', () => this.avatar = (0,_utils__WEBPACK_IMPORTED_MODULE_3__.setAvatar)())
+    $avatar.addEventListener('click', () => this.avatar = (0,_utils__WEBPACK_IMPORTED_MODULE_4__.setAvatar)())
   }
 }
 
@@ -1803,10 +1827,44 @@ class Chat {
 
 /***/ }),
 
-/***/ "./src/js/template.chat.js":
-/*!*********************************!*\
-  !*** ./src/js/template.chat.js ***!
-  \*********************************/
+/***/ "./src/js/chat/status-bar.js":
+/*!***********************************!*\
+  !*** ./src/js/chat/status-bar.js ***!
+  \***********************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "StatusBar": () => (/* binding */ StatusBar)
+/* harmony export */ });
+class StatusBar {
+  constructor() {
+    this.currentCount = 0
+    this.$countUsers = document.querySelector('#countUsers')
+  }
+
+  updateCountUsers(value) {
+    const classStatus = value > this.currentCount
+    ? 'green-text text-accent-2' : 'red-text text-lighten-1'
+
+    this.currentCount = value
+    this.$countUsers.className = classStatus
+    this.$countUsers.textContent = value
+
+    setTimeout(() => {
+      this.$countUsers.className = ''
+    }, 2000)
+  }
+}
+
+
+/***/ }),
+
+/***/ "./src/js/chat/template.chat.js":
+/*!**************************************!*\
+  !*** ./src/js/chat/template.chat.js ***!
+  \**************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
@@ -1815,7 +1873,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "template": () => (/* binding */ template),
 /* harmony export */   "message": () => (/* binding */ message)
 /* harmony export */ });
-/* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./utils */ "./src/js/utils.js");
+/* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./utils */ "./src/js/chat/utils.js");
 
 
 const title = () => {
@@ -1835,9 +1893,9 @@ const feedback = () => {
 
 const form = () => {
   return `
-    <div class="footer_form">
+    <div class="footer_form z-depth-5">
       <input type="text" id="field" placeholder="Type here...">
-      <button id="send"><i class="far fa-paper-plane"></i></button>
+      <button id="send" class="waves-effect waves-light blue darken-1"><i class="far fa-paper-plane"></i></button>
     </div>
   `
 }
@@ -1845,7 +1903,11 @@ const form = () => {
 const avatar = () => {
   return `
     <div class="footer_avatar">
-      <img src="" alt="avatar">
+      <img src="" 
+      alt="avatar" 
+      class="tooltipped" 
+      data-position="top" 
+      data-tooltip="Click to change avatar">
     </div>
   `
 }
@@ -1859,11 +1921,14 @@ const message = (owner = 'owner', text = '', avatar) => {
       <div class="msg-chat-avatar">
           <img src="${avatar}" alt="ava">
       </div>
-      <div class="msg-chat-text">
+      <div class="msg-chat-text z-depth-5">
           ${text}
       </div>
       <div class="msg-chat-date">
         ${(0,_utils__WEBPACK_IMPORTED_MODULE_0__.getDateTime)()}
+      </div>
+      <div class="msg-chat-edit">
+        <i class="far fa-edit" data-action="edit-msg"></i>
       </div>
   `
   return $el
@@ -1874,6 +1939,16 @@ const header = () => {
     <div class="header">
       ${title()}
       ${feedback()}
+    </div>
+  `
+}
+
+const status = () => {
+  return `
+    <div class="status">
+      <div class="status-count">
+        <i class="fas fa-users"></i> Online: <strong id="countUsers">0</strong>
+      </div>
     </div>
   `
 }
@@ -1897,6 +1972,7 @@ const template = () => {
   return `
     <div class="chat">
       ${header()}
+      ${status()}
       ${content()}
       ${footer()}
     </div>
@@ -1908,10 +1984,10 @@ const template = () => {
 
 /***/ }),
 
-/***/ "./src/js/utils.js":
-/*!*************************!*\
-  !*** ./src/js/utils.js ***!
-  \*************************/
+/***/ "./src/js/chat/utils.js":
+/*!******************************!*\
+  !*** ./src/js/chat/utils.js ***!
+  \******************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
@@ -1921,9 +1997,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "setAvatar": () => (/* binding */ setAvatar),
 /* harmony export */   "scrollToMsg": () => (/* binding */ scrollToMsg),
 /* harmony export */   "getDateTime": () => (/* binding */ getDateTime),
-/* harmony export */   "replaceSymbol": () => (/* binding */ replaceSymbol)
+/* harmony export */   "replaceSymbol": () => (/* binding */ replaceSymbol),
+/* harmony export */   "initMeterialized": () => (/* binding */ initMeterialized)
 /* harmony export */ });
-/* harmony import */ var _config__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./config */ "./src/js/config.js");
+/* harmony import */ var _config__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./config */ "./src/js/chat/config.js");
 /* harmony import */ var random_avatar_generator__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! random-avatar-generator */ "./node_modules/random-avatar-generator/dist/index.js");
 /* harmony import */ var random_avatar_generator__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(random_avatar_generator__WEBPACK_IMPORTED_MODULE_1__);
 
@@ -1966,6 +2043,15 @@ function replaceSymbol(str) {
       return str.replace(reg, out);
     }, str)
   )
+}
+
+function initTooltip() {
+  const elems = document.querySelectorAll('.tooltipped')
+  M.Tooltip.init(elems)
+}
+
+function initMeterialized() {
+  initTooltip()
 }
 
 
@@ -5319,14 +5405,14 @@ var __webpack_exports__ = {};
   !*** ./src/app.js ***!
   \********************/
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _js_socket__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./js/socket */ "./src/js/socket.js");
+/* harmony import */ var _js_chat_socket__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./js/chat/socket */ "./src/js/chat/socket.js");
 /* harmony import */ var _styles_index_css__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./styles/index.css */ "./src/styles/index.css");
 
 
 
 
 // init chat
-new _js_socket__WEBPACK_IMPORTED_MODULE_0__.Chat().initChat()
+new _js_chat_socket__WEBPACK_IMPORTED_MODULE_0__.Chat().initChat()
 
 })();
 
