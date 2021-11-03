@@ -1,54 +1,66 @@
 import {io} from 'socket.io-client'
-import {defineURI} from './utils'
-import {msgFriend, msgOwner} from './base'
+import {defineHostURI, setAvatar, scrollToMsg} from './utils'
+import {message} from './template.chat'
+import {EVENT} from './config'
 
-const socket = io(defineURI(), {})
+const socket = io(defineHostURI(), {})
 
-const emitSocket = () => {
-  const $content = document.querySelector('#chatContent')
-  const $input = document.querySelector('#field')
+class Chat {
+  constructor() {
+    this.userId = parseInt(String(new Date().getTime()))
+    this.avatar = null
+    this.$input = document.querySelector('#field')
 
-  const userId = parseInt(new Date().getTime())
-  $input.setAttribute('data-user', userId)
+    this.prepare()
+  }
 
-  socket.on('chat message', data => {
+  prepare() {
+    this.avatar = setAvatar()
+    this.emitNewUser()
+    this.emitMsg()
+  }
 
-    const $msg = (+data.userId === userId)
-      ? msgOwner(data.message)
-      : msgFriend(data.message)
+  emitMsg() {
+    const $content = document.querySelector('#chatContent')
 
-    $content.appendChild($msg)
+    socket.on(EVENT.CHAT_MSG, data => {
+      const $msg = (data.userId === this.userId)
+        ? message('owner', data.message, this.avatar)
+        : message('friend', data.message, data.avatar)
 
-    $msg.scrollIntoView({
-      behavior: 'smooth',
-      block: 'start'
+      $content.appendChild($msg)
+      scrollToMsg($msg)
     })
-  })
+  }
+
+  emitNewUser() {
+    socket.emit(EVENT.CHAT_NEW_USER, {
+      userId: this.userId,
+      avatar: this.avatar
+    })
+  }
+
+  sendMsg() {
+    if (!this.$input.value.trim()) return
+
+    socket.emit(EVENT.CHAT_MSG, {
+      message: this.$input.value,
+      userId: this.userId,
+      avatar: this.avatar
+    })
+
+    this.$input.value = ''
+  }
+
+  initChat() {
+    const $submit = document.querySelector('#send')
+
+    $submit.addEventListener('click', () => this.sendMsg())
+
+    this.$input.addEventListener('keypress', e => {
+      if (e.key === 'Enter') this.sendMsg()
+    })
+  }
 }
 
-const sendMsg = $input => {
-  if (!$input.value.trim()) return
-
-  const userId = $input.getAttribute('data-user')
-
-  socket.emit('chat message', {
-    message: $input.value,
-    userId: userId
-  })
-
-  $input.value = ''
-}
-
-const initEventSocket = () => {
-  emitSocket()
-  const $submit = document.querySelector('#send')
-  const $input = document.querySelector('#field')
-
-  $submit.addEventListener('click', () => sendMsg($input))
-
-  $input.addEventListener('keypress', e => {
-    if (e.key === 'Enter') sendMsg($input)
-  })
-}
-
-export {initEventSocket}
+export {Chat}

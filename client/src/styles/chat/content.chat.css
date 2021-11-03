@@ -19,9 +19,8 @@
 }
 
 .msg-chat-text {
-  background: #eee;
-  padding: 5px 10px;
-  border-radius: 5px;
+  padding: 10px 15px;
+  border-radius: 20px;
   max-width: 60%;
 }
 
@@ -33,10 +32,10 @@
 
 .msg-friend .msg-chat-text {
   margin-left: 10px;
-  background: #c1bfbf;
+  background: #fefefe;
 }
 
 .msg-chat-avatar img {
-  width: 50px;
-  height: 50px;
+  width: 60px;
+  height: 60px;
 }

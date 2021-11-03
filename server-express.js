@@ -27,10 +27,19 @@ app.use('/api/data', require('./routes/data.routes'))
 const {httpServer, io} = require('./server-socket')(app)
 
 io.on('connection', socket => {
-  socket.on('chat message', data => {
-    io.emit('chat message', {
+  socket.on('CHAT_MSG', data => {
+    io.emit('CHAT_MSG', {
       message: data.message,
-      userId: data.userId
+      userId: data.userId,
+      avatar: data.avatar,
+    })
+  })
+
+  socket.on('CHAT_NEW_USER', data => {
+    io.emit('CHAT_MSG', {
+      message: 'New user is joined',
+      userId: data.userId,
+      avatar: data.avatar,
     })
   })
 })

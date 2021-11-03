@@ -1,5 +1,3 @@
-import {getAvatarURI} from './utils'
-
 const title = () => {
   return `
     <h1>Anonymous Сhat</h1>
@@ -18,33 +16,19 @@ const form = () => {
 const avatar = () => {
   return `
     <div class="footer_avatar">
-      <img src="${getAvatarURI()}" alt="avatar">
+      <img src="" alt="avatar">
     </div>
   `
 }
 
-const msgOwner = (text = '') => {
+const message = (owner = 'owner', text = '', avatar) => {
+  const classMsg = owner === 'owner' ? 'msg-owner' : 'msg-friend'
   const $el = document.createElement('div')
-  $el.className = 'msg-chat msg-owner'
+  $el.className = `msg-chat ${classMsg}`
 
   $el.innerHTML = `
       <div class="msg-chat-avatar">
-          <img src="${getAvatarURI()}" alt="avatar">
-      </div>
-      <div class="msg-chat-text">
-          ${text}
-      </div>
-  `
-  return $el
-}
-
-const msgFriend = (text = '') => {
-  const $el = document.createElement('div')
-  $el.className = 'msg-chat msg-friend'
-
-  $el.innerHTML = `
-      <div class="msg-chat-avatar">
-          <img src="${getAvatarURI()}" alt="avatar">
+          <img src="${avatar}" alt="ava">
       </div>
       <div class="msg-chat-text">
           ${text}
@@ -86,4 +70,4 @@ const template = () => {
   `
 }
 
-export {template, msgOwner, msgFriend}
+export {template, message}

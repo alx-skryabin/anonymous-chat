@@ -1,7 +1,7 @@
 import {URIlocal, URIprod} from './config'
 import {AvatarGenerator} from 'random-avatar-generator'
 
-function defineURI() {
+function defineHostURI() {
   return document.location.host.indexOf('localhost')
     ? URIprod : URIlocal
 }
@@ -11,4 +11,18 @@ function getAvatarURI() {
   return url.generateRandomAvatar()
 }
 
-export {defineURI, getAvatarURI}
+function setAvatar() {
+  const $img = document.querySelector('.footer_avatar img')
+  const url = getAvatarURI()
+  $img.setAttribute('src', url)
+  return url
+}
+
+function scrollToMsg($el) {
+  $el.scrollIntoView({
+    behavior: 'smooth',
+    block: 'start'
+  })
+}
+
+export {defineHostURI, setAvatar, scrollToMsg}
