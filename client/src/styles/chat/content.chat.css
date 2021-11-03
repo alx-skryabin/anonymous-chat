@@ -58,3 +58,17 @@
 .msg-friend .msg-chat-date {
   left: 70px;
 }
+
+.msg-chat-edit {
+  color: #fff;
+  opacity: .1;
+  font-size: .9em;
+  margin: 0 10px;
+  cursor: pointer;
+  transition: .3s;
+}
+
+.msg-chat-edit:hover {
+  opacity: .5;
+  transition: .3s;
+}

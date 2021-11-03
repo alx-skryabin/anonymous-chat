@@ -51,6 +51,9 @@ const message = (owner = 'owner', text = '', avatar) => {
       <div class="msg-chat-date">
         ${getDateTime()}
       </div>
+      <div class="msg-chat-edit">
+        <i class="far fa-edit" data-action="edit-msg"></i>
+      </div>
   `
   return $el
 }

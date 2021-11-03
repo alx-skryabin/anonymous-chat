@@ -41,6 +41,12 @@ class Chat {
   emitMsg() {
     const $content = document.querySelector('#chatContent')
 
+    // $content.addEventListener('click', e => {
+    //   if (e.target.dataset.action === 'edit-msg') {
+    //     console.log(e.target)
+    //   }
+    // })
+
     socket.on(EVENT.CHAT_MSG, data => {
       const text = replaceSymbol(data.message)
 
