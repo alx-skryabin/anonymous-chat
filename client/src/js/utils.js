@@ -29,4 +29,15 @@ function getDateTime() {
   return new Date().toLocaleString().split(',').join('')
 }
 
-export {defineHostURI, setAvatar, scrollToMsg, getDateTime}
+function replaceSymbol(str) {
+  const regArr = [["'", "\""], ["<", "«"], [">", "»"]]
+  return (
+    regArr.reduce((str, item) => {
+      let [inp, out] = item
+      let reg = new RegExp(`\\${inp}`, 'gi')
+      return str.replace(reg, out);
+    }, str)
+  )
+}
+
+export {defineHostURI, setAvatar, scrollToMsg, getDateTime, replaceSymbol}

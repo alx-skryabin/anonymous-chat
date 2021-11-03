@@ -1,7 +1,12 @@
 import {io} from 'socket.io-client'
-import {defineHostURI, setAvatar, scrollToMsg} from './utils'
-import {message} from './template.chat'
+import {message, template} from './template.chat'
 import {EVENT} from './config'
+import {
+  defineHostURI,
+  setAvatar,
+  scrollToMsg,
+  replaceSymbol
+} from './utils'
 
 const socket = io(defineHostURI(), {})
 
@@ -9,26 +14,36 @@ class Chat {
   constructor() {
     this.userId = parseInt(String(new Date().getTime()))
     this.avatar = null
-    this.$input = document.querySelector('#field')
+    this.$input = null
 
     this.prepare()
   }
 
   prepare() {
+    this.render()
     this.avatar = setAvatar()
+    this.$input = document.querySelector('#field')
     this.emitNewUser()
     this.emitMsg()
+  }
+
+  render() {
+    document.querySelector('.app')
+      .innerHTML = template()
   }
 
   emitMsg() {
     const $content = document.querySelector('#chatContent')
 
     socket.on(EVENT.CHAT_MSG, data => {
+      const text = replaceSymbol(data.message)
+
       const $msg = (data.userId === this.userId)
-        ? message('owner', data.message, this.avatar)
-        : message('friend', data.message, data.avatar)
+        ? message('owner', text, this.avatar)
+        : message('friend', text, data.avatar)
 
       $content.appendChild($msg)
+      document.querySelector('head title').textContent = text
       scrollToMsg($msg)
     })
   }
