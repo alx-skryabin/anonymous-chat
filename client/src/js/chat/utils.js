@@ -45,8 +45,24 @@ function initTooltip() {
   M.Tooltip.init(elems)
 }
 
+function addPulseAnim($elem, duration = 3) {
+  $elem.classList.add('pulse')
+
+  setTimeout(() => {
+    $elem.classList.remove('pulse')
+  }, duration * 1000)
+}
+
 function initMeterialized() {
   initTooltip()
 }
 
-export {defineHostURI, setAvatar, scrollToMsg, getDateTime, replaceSymbol, initMeterialized}
+export {
+  defineHostURI,
+  setAvatar,
+  scrollToMsg,
+  getDateTime,
+  replaceSymbol,
+  addPulseAnim,
+  initMeterialized
+}

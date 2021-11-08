@@ -36,10 +36,16 @@ const avatar = () => {
   `
 }
 
-const message = (owner = 'owner', text = '', avatar) => {
+const message = (owner = 'owner', text = '', msgId, avatar) => {
   const classMsg = owner === 'owner' ? 'msg-owner' : 'msg-friend'
   const $el = document.createElement('div')
   $el.className = `msg-chat ${classMsg}`
+  $el.setAttribute('id', msgId)
+
+  const msgEdit = `
+  <div class="msg-chat-edit">
+    <i class="far fa-edit" data-action="edit-msg"></i>
+  </div>`
 
   $el.innerHTML = `
       <div class="msg-chat-avatar">
@@ -51,9 +57,7 @@ const message = (owner = 'owner', text = '', avatar) => {
       <div class="msg-chat-date">
         ${getDateTime()}
       </div>
-      <div class="msg-chat-edit">
-        <i class="far fa-edit" data-action="edit-msg"></i>
-      </div>
+      ${owner === 'owner' ? msgEdit : ''}
   `
   return $el
 }

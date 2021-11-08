@@ -9,6 +9,7 @@
   display: flex;
   align-items: center;
   margin-bottom: 30px;
+  transition: .2s;
 }
 
 .msg-owner {
@@ -71,4 +72,17 @@
 .msg-chat-edit:hover {
   opacity: .5;
   transition: .3s;
+}
+
+.msg-edited {
+  background: rgba(255, 255, 255, .1);
+  padding-right: 10px;
+  border-radius: 10px;
+  transition: .2s;
+}
+
+.msg-edited .msg-chat-edit {
+  opacity: .7;
+  color: tomato;
+  transition: .2s;
 }

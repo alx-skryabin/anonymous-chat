@@ -1,5 +1,6 @@
 const express = require('express')
 const cors = require('cors')
+const {v4} = require('uuid')
 const path = require('path')
 
 const app = express()
@@ -39,6 +40,14 @@ io.on('connection', socket => {
       message: data.message,
       userId: data.userId,
       avatar: data.avatar,
+      msgId: v4()
+    })
+  })
+
+  socket.on('EDIT_MSG', data => {
+    io.emit('EDIT_MSG', {
+      message: data.message,
+      msgId: data.msgId,
     })
   })
 
@@ -47,6 +56,7 @@ io.on('connection', socket => {
       message: 'New user is joined',
       userId: data.userId,
       avatar: data.avatar,
+      msgId: v4(),
       countUser: io.engine.clientsCount,
     })
   })
