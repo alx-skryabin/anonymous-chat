@@ -1695,11 +1695,80 @@ const URIlocal = 'http://localhost:3000'
 const URIprod = 'https://node-socket-express.herokuapp.com'
 const EVENT = {
   CHAT_MSG: 'CHAT_MSG',
+  EDIT_MSG: 'EDIT_MSG',
+  DELETE_MSG: 'DELETE_MSG',
   CHAT_NEW_USER: 'CHAT_NEW_USER',
   CHAT_LEAVE_USER: 'CHAT_LEAVE_USER'
 }
 
 
+
+
+/***/ }),
+
+/***/ "./src/js/chat/edit-msg.js":
+/*!*********************************!*\
+  !*** ./src/js/chat/edit-msg.js ***!
+  \*********************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "EditMsg": () => (/* binding */ EditMsg)
+/* harmony export */ });
+class EditMsg {
+  constructor($input) {
+    this.$input = $input
+    this.$msg = null
+    this.isEdit = false
+    this.msgId = null
+  }
+
+  check($target) {
+    if (this.isEdit) {
+      if (this.defineId($target) === this.msgId) {
+        this.reset()
+      } else {
+        this.reset()
+        this.edit($target)
+      }
+    } else {
+      this.edit($target)
+    }
+  }
+
+  edit($target) {
+    this.$input.value = this.getMsgText($target)
+    this.$input.focus()
+    this.isEdit = true
+  }
+
+  getMsgText($target) {
+    this.$msg = $target.closest('.msg-chat')
+    this.$msg.classList.add('msg-edited')
+    this.msgId = this.$msg.getAttribute('id')
+    return this.$msg.querySelector('.msg-chat-text').innerText
+  }
+
+  reset() {
+    if (!this.isEdit) return
+    this.$msg.classList.remove('msg-edited')
+    this.$input.value = ''
+    this.isEdit = false
+    this.msgId = null
+    this.$msg = null
+  }
+
+  delete($target) {
+    this.reset()
+    return this.defineId($target)
+  }
+
+  defineId($target) {
+    return $target.closest('.msg-chat').getAttribute('id')
+  }
+}
 
 
 /***/ }),
@@ -1718,21 +1787,24 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var socket_io_client__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! socket.io-client */ "./node_modules/socket.io-client/build/esm/index.js");
 /* harmony import */ var _template_chat__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./template.chat */ "./src/js/chat/template.chat.js");
 /* harmony import */ var _status_bar__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./status-bar */ "./src/js/chat/status-bar.js");
-/* harmony import */ var _config__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./config */ "./src/js/chat/config.js");
-/* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./utils */ "./src/js/chat/utils.js");
+/* harmony import */ var _edit_msg__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./edit-msg */ "./src/js/chat/edit-msg.js");
+/* harmony import */ var _config__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./config */ "./src/js/chat/config.js");
+/* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./utils */ "./src/js/chat/utils.js");
 
 
 
 
 
 
-const socket = (0,socket_io_client__WEBPACK_IMPORTED_MODULE_0__.io)((0,_utils__WEBPACK_IMPORTED_MODULE_4__.defineHostURI)(), {})
+
+const socket = (0,socket_io_client__WEBPACK_IMPORTED_MODULE_0__.io)((0,_utils__WEBPACK_IMPORTED_MODULE_5__.defineHostURI)(), {})
 
 class Chat {
   constructor() {
     this.userId = parseInt(String(new Date().getTime()))
     this.avatar = null
     this.$input = null
+    this.$content = null
     this.statusBar = null
 
     this.prepare()
@@ -1740,55 +1812,86 @@ class Chat {
 
   prepare() {
     this.render()
-    this.avatar = (0,_utils__WEBPACK_IMPORTED_MODULE_4__.setAvatar)()
-    this.$input = document.querySelector('#field')
     this.statusBar = new _status_bar__WEBPACK_IMPORTED_MODULE_2__.StatusBar()
+    this.editMsg = new _edit_msg__WEBPACK_IMPORTED_MODULE_3__.EditMsg(this.$input)
     this.emitNewUser()
     this.emitLeaveUser()
     this.emitMsg()
-    ;(0,_utils__WEBPACK_IMPORTED_MODULE_4__.initMeterialized)()
+    this.initEvent()
+    ;(0,_utils__WEBPACK_IMPORTED_MODULE_5__.initMeterialized)()
   }
 
   render() {
     document.querySelector('.app')
       .innerHTML = (0,_template_chat__WEBPACK_IMPORTED_MODULE_1__.template)()
+
+    this.avatar = (0,_utils__WEBPACK_IMPORTED_MODULE_5__.setAvatar)()
+    this.$input = document.querySelector('#field')
+    this.$content = document.querySelector('#chatContent')
   }
 
   emitMsg() {
-    const $content = document.querySelector('#chatContent')
-
-    // $content.addEventListener('click', e => {
-    //   if (e.target.dataset.action === 'edit-msg') {
-    //     console.log(e.target)
-    //   }
-    // })
-
-    socket.on(_config__WEBPACK_IMPORTED_MODULE_3__.EVENT.CHAT_MSG, data => {
-      const text = (0,_utils__WEBPACK_IMPORTED_MODULE_4__.replaceSymbol)(data.message)
+    // new message
+    socket.on(_config__WEBPACK_IMPORTED_MODULE_4__.EVENT.CHAT_MSG, data => {
+      const text = (0,_utils__WEBPACK_IMPORTED_MODULE_5__.replaceSymbol)(data.message)
 
       const $msg = (data.userId === this.userId)
-        ? (0,_template_chat__WEBPACK_IMPORTED_MODULE_1__.message)('owner', text, this.avatar)
-        : (0,_template_chat__WEBPACK_IMPORTED_MODULE_1__.message)('friend', text, data.avatar)
+        ? (0,_template_chat__WEBPACK_IMPORTED_MODULE_1__.message)('owner', text, data.msgId, this.avatar)
+        : (0,_template_chat__WEBPACK_IMPORTED_MODULE_1__.message)('friend', text, data.msgId, data.avatar)
 
-      $content.appendChild($msg)
-      document.querySelector('head title').textContent = text
-      ;(0,_utils__WEBPACK_IMPORTED_MODULE_4__.scrollToMsg)($msg)
+      this.$content.appendChild($msg)
+      document.querySelector('head title').textContent = text.toString()
+      ;(0,_utils__WEBPACK_IMPORTED_MODULE_5__.scrollToMsg)($msg)
 
       if (data.countUser) {
         this.statusBar.updateCountUsers(data.countUser)
       }
     })
+
+    // edit message
+    socket.on(_config__WEBPACK_IMPORTED_MODULE_4__.EVENT.EDIT_MSG, data => {
+      const $editedMsg = document.getElementById(data.msgId)
+      if ($editedMsg) {
+        const $msg = $editedMsg.querySelector('.msg-chat-text')
+        $msg.textContent = (0,_utils__WEBPACK_IMPORTED_MODULE_5__.replaceSymbol)(data.message).toString()
+        ;(0,_utils__WEBPACK_IMPORTED_MODULE_5__.addPulseAnim)($msg, 6)
+        M.toast({html: 'The message was edited', classes: 'rounded'})
+      }
+    })
+
+    // delete message
+    socket.on(_config__WEBPACK_IMPORTED_MODULE_4__.EVENT.DELETE_MSG, data => {
+      const $editedMsg = document.getElementById(data.msgId)
+      if ($editedMsg) {
+        (0,_utils__WEBPACK_IMPORTED_MODULE_5__.addDeleteAnim)($editedMsg)
+        M.toast({html: 'The message was deleted', classes: 'rounded'})
+      }
+    })
+  }
+
+  initEvent() {
+    this.$content.addEventListener('click', e => {
+      if (e.target.dataset.action === 'edit-msg') {
+        this.editMsg.check(e.target)
+      }
+
+      if (e.target.dataset.action === 'delete-msg') {
+        socket.emit(_config__WEBPACK_IMPORTED_MODULE_4__.EVENT.DELETE_MSG, {
+          msgId: this.editMsg.delete(e.target)
+        })
+      }
+    })
   }
 
   emitNewUser() {
-    socket.emit(_config__WEBPACK_IMPORTED_MODULE_3__.EVENT.CHAT_NEW_USER, {
+    socket.emit(_config__WEBPACK_IMPORTED_MODULE_4__.EVENT.CHAT_NEW_USER, {
       userId: this.userId,
       avatar: this.avatar
     })
   }
 
   emitLeaveUser() {
-    socket.on(_config__WEBPACK_IMPORTED_MODULE_3__.EVENT.CHAT_LEAVE_USER, data => {
+    socket.on(_config__WEBPACK_IMPORTED_MODULE_4__.EVENT.CHAT_LEAVE_USER, data => {
       this.statusBar.updateCountUsers(data.countUser)
       M.toast({html: data.message, classes: 'rounded'})
     })
@@ -1797,11 +1900,19 @@ class Chat {
   sendMsg() {
     if (!this.$input.value.trim()) return
 
-    socket.emit(_config__WEBPACK_IMPORTED_MODULE_3__.EVENT.CHAT_MSG, {
-      message: this.$input.value,
-      userId: this.userId,
-      avatar: this.avatar
-    })
+    if (!this.editMsg.isEdit) {
+      socket.emit(_config__WEBPACK_IMPORTED_MODULE_4__.EVENT.CHAT_MSG, {
+        message: this.$input.value,
+        userId: this.userId,
+        avatar: this.avatar
+      })
+    } else {
+      socket.emit(_config__WEBPACK_IMPORTED_MODULE_4__.EVENT.EDIT_MSG, {
+        message: this.$input.value,
+        msgId: this.editMsg.msgId
+      })
+      this.editMsg.reset()
+    }
 
     this.$input.value = ''
   }
@@ -1818,7 +1929,7 @@ class Chat {
     })
 
     // change avatar
-    $avatar.addEventListener('click', () => this.avatar = (0,_utils__WEBPACK_IMPORTED_MODULE_4__.setAvatar)())
+    $avatar.addEventListener('click', () => this.avatar = (0,_utils__WEBPACK_IMPORTED_MODULE_5__.setAvatar)())
   }
 }
 
@@ -1912,10 +2023,21 @@ const avatar = () => {
   `
 }
 
-const message = (owner = 'owner', text = '', avatar) => {
+const message = (owner = 'owner', text = '', msgId, avatar) => {
   const classMsg = owner === 'owner' ? 'msg-owner' : 'msg-friend'
   const $el = document.createElement('div')
   $el.className = `msg-chat ${classMsg}`
+  $el.setAttribute('id', msgId)
+
+  const msgEdit = `
+  <div class="msg-chat-edit">
+    <i class="far fa-edit" data-action="edit-msg"></i>
+  </div>`
+
+  const msgDelete = `
+  <div class="msg-chat-delete">
+    <i class="far fa-trash-alt" data-action="delete-msg"></i>
+  </div>`
 
   $el.innerHTML = `
       <div class="msg-chat-avatar">
@@ -1927,9 +2049,8 @@ const message = (owner = 'owner', text = '', avatar) => {
       <div class="msg-chat-date">
         ${(0,_utils__WEBPACK_IMPORTED_MODULE_0__.getDateTime)()}
       </div>
-      <div class="msg-chat-edit">
-        <i class="far fa-edit" data-action="edit-msg"></i>
-      </div>
+      ${owner === 'owner' ? msgEdit : ''}
+      ${owner === 'owner' ? msgDelete : ''}
   `
   return $el
 }
@@ -1998,6 +2119,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "scrollToMsg": () => (/* binding */ scrollToMsg),
 /* harmony export */   "getDateTime": () => (/* binding */ getDateTime),
 /* harmony export */   "replaceSymbol": () => (/* binding */ replaceSymbol),
+/* harmony export */   "addPulseAnim": () => (/* binding */ addPulseAnim),
+/* harmony export */   "addDeleteAnim": () => (/* binding */ addDeleteAnim),
 /* harmony export */   "initMeterialized": () => (/* binding */ initMeterialized)
 /* harmony export */ });
 /* harmony import */ var _config__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./config */ "./src/js/chat/config.js");
@@ -2048,6 +2171,19 @@ function replaceSymbol(str) {
 function initTooltip() {
   const elems = document.querySelectorAll('.tooltipped')
   M.Tooltip.init(elems)
+}
+
+function addPulseAnim($elem, duration = 3) {
+  $elem.classList.add('pulse')
+
+  setTimeout(() => {
+    $elem.classList.remove('pulse')
+  }, duration * 1000)
+}
+
+function addDeleteAnim($elem) {
+  $elem.classList.add('delete-anim', 'red', 'lighten-2')
+  setTimeout(() => $elem.remove(), 1000)
 }
 
 function initMeterialized() {

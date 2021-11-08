@@ -9506,6 +9506,7 @@ h1 {
   display: flex;
   align-items: center;
   margin-bottom: 30px;
+  transition: .2s;
 }
 
 .msg-owner {
@@ -9556,7 +9557,8 @@ h1 {
   left: 70px;
 }
 
-.msg-chat-edit {
+.msg-chat-edit,
+.msg-chat-delete {
   color: #fff;
   opacity: .1;
   font-size: .9em;
@@ -9565,9 +9567,34 @@ h1 {
   transition: .3s;
 }
 
-.msg-chat-edit:hover {
+.msg-chat-edit:hover,
+.msg-chat-delete:hover {
   opacity: .5;
   transition: .3s;
+}
+
+.msg-chat-delete:hover {
+  opacity: .7;
+  color: tomato;
+}
+
+.msg-edited {
+  background: rgba(255, 255, 255, .1);
+  padding-right: 10px;
+  border-radius: 10px;
+  transition: .2s;
+}
+
+.msg-edited .msg-chat-edit {
+  opacity: .7;
+  color: tomato;
+  transition: .2s;
+}
+
+.delete-anim {
+  border-radius: 10px;
+  opacity: 0;
+  transition: 1s;
 }
 
 /*!***********************************************************************************!*\
