@@ -53,6 +53,11 @@ function addPulseAnim($elem, duration = 3) {
   }, duration * 1000)
 }
 
+function addDeleteAnim($elem) {
+  $elem.classList.add('delete-anim', 'red', 'lighten-2')
+  setTimeout(() => $elem.remove(), 1000)
+}
+
 function initMeterialized() {
   initTooltip()
 }
@@ -64,5 +69,6 @@ export {
   getDateTime,
   replaceSymbol,
   addPulseAnim,
+  addDeleteAnim,
   initMeterialized
 }

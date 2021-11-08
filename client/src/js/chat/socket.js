@@ -9,7 +9,8 @@ import {
   scrollToMsg,
   replaceSymbol,
   initMeterialized,
-  addPulseAnim
+  addPulseAnim,
+  addDeleteAnim
 } from './utils'
 
 const socket = io(defineHostURI(), {})
@@ -73,12 +74,27 @@ class Chat {
         M.toast({html: 'The message was edited', classes: 'rounded'})
       }
     })
+
+    // delete message
+    socket.on(EVENT.DELETE_MSG, data => {
+      const $editedMsg = document.getElementById(data.msgId)
+      if ($editedMsg) {
+        addDeleteAnim($editedMsg)
+        M.toast({html: 'The message was deleted', classes: 'rounded'})
+      }
+    })
   }
 
   initEvent() {
     this.$content.addEventListener('click', e => {
       if (e.target.dataset.action === 'edit-msg') {
         this.editMsg.check(e.target)
+      }
+
+      if (e.target.dataset.action === 'delete-msg') {
+        socket.emit(EVENT.DELETE_MSG, {
+          msgId: this.editMsg.delete(e.target)
+        })
       }
     })
   }

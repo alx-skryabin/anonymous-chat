@@ -51,6 +51,12 @@ io.on('connection', socket => {
     })
   })
 
+  socket.on('DELETE_MSG', data => {
+    io.emit('DELETE_MSG', {
+      msgId: data.msgId
+    })
+  })
+
   socket.on('CHAT_NEW_USER', data => {
     io.emit('CHAT_MSG', {
       message: 'New user is joined',

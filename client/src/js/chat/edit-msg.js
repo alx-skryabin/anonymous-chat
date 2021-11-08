@@ -33,11 +33,17 @@ export class EditMsg {
   }
 
   reset() {
+    if (!this.isEdit) return
     this.$msg.classList.remove('msg-edited')
     this.$input.value = ''
     this.isEdit = false
     this.msgId = null
     this.$msg = null
+  }
+
+  delete($target) {
+    this.reset()
+    return this.defineId($target)
   }
 
   defineId($target) {

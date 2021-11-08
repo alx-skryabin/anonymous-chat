@@ -47,6 +47,11 @@ const message = (owner = 'owner', text = '', msgId, avatar) => {
     <i class="far fa-edit" data-action="edit-msg"></i>
   </div>`
 
+  const msgDelete = `
+  <div class="msg-chat-delete">
+    <i class="far fa-trash-alt" data-action="delete-msg"></i>
+  </div>`
+
   $el.innerHTML = `
       <div class="msg-chat-avatar">
           <img src="${avatar}" alt="ava">
@@ -58,6 +63,7 @@ const message = (owner = 'owner', text = '', msgId, avatar) => {
         ${getDateTime()}
       </div>
       ${owner === 'owner' ? msgEdit : ''}
+      ${owner === 'owner' ? msgDelete : ''}
   `
   return $el
 }
