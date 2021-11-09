@@ -13,8 +13,10 @@ function getAvatarURI() {
 
 function setAvatar() {
   const $img = document.querySelector('.footer_avatar img')
+  const $imgMenu = document.querySelector('.user-view .circle')
   const url = getAvatarURI()
   $img.setAttribute('src', url)
+  $imgMenu.setAttribute('src', url)
   return url
 }
 
@@ -45,6 +47,11 @@ function initTooltip() {
   M.Tooltip.init(elems)
 }
 
+function initMenu() {
+  const elems = document.querySelectorAll('.sidenav')
+  M.Sidenav.init(elems)
+}
+
 function addPulseAnim($elem, duration = 3) {
   $elem.classList.add('pulse')
 
@@ -60,6 +67,7 @@ function addDeleteAnim($elem) {
 
 function initMeterialized() {
   initTooltip()
+  initMenu()
 }
 
 export {
