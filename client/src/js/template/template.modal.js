@@ -6,11 +6,11 @@ const modalCreateRoom = () => {
         <form>
           <div class="input-field">
             <input id="roomName" type="text" name="name" autocomplete="off">
-            <label for="roomName">Room name</label>
+            <label for="roomName">Name</label>
           </div>
           <div class="input-field">
             <input id="roomPass" type="password" name="pass" disabled>
-            <label for="roomPass">Room password</label>
+            <label for="roomPass">Password</label>
           </div>
           <label>
             <input type="checkbox" name="isPrivate"/>
@@ -19,7 +19,7 @@ const modalCreateRoom = () => {
         </form>
       </div>
       <div class="modal-footer">
-        <a href="#" class="modal-close waves-effect btn-flat">Create</a>
+        <a href="#" class="waves-effect btn-flat">Create</a>
       </div>
     </div>
   `
@@ -27,7 +27,7 @@ const modalCreateRoom = () => {
 
 const modalRoot = () => {
   return `
-    <div id="modalRoot" class="modal modal-root">
+    <div id="modalRootAccess" class="modal modal-root">
       <div class="modal-content">
         <h5><i class="fas fa-fingerprint"></i> Root access</h5>
       </div>

@@ -27,7 +27,7 @@ const menuSidenav = () => {
       <li><a href="#"><i class="fas fa-crosshairs"></i> Kick out user</a></li>
       <li><a href="#"><i class="far fa-comments"></i> Free rooms</a></li>
       <li><div class="divider"></div></li>
-      <li><a href="#modalRoot" class="modal-trigger"><i class="fas fa-fingerprint"></i> I am root</a></li>
+      <li><a href="#modalRootAccess" class="modal-trigger"><i class="fas fa-fingerprint"></i> I am root</a></li>
     </ul>
   `
 }

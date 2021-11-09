@@ -1,6 +1,7 @@
 const express = require('express')
 const cors = require('cors')
 const {v4} = require('uuid')
+const {addUser, getUsers} = require('./users')
 const path = require('path')
 
 const app = express()
@@ -21,13 +22,25 @@ app.use(express.json({extended: true}))
 // Support CORS
 app.use(cors())
 
-app.use('/api/data', require('./routes/data.routes'))
-
 
 /***For Socket***/
 const {httpServer, io} = require('./server-socket')(app)
 
 io.on('connection', socket => {
+  // // const room = v4()
+  // const room = 'myRoom1'
+  // socket.join(room)
+  // console.log(222, socket.rooms)
+
+
+  // socket.on('login', room => {
+  //   const user = addUser(socket.id, room)
+  //   socket.join(user.room)
+  //   // socket.in(room).emit('create_room', {title: `'Someone\'s here ${user.name}'`})
+  //   io.in(room).emit('create_room', getUsers(room))
+  // })
+
+
   socket.on("disconnect", () => {
     io.emit('CHAT_LEAVE_USER', {
       message: 'User left the chat',
@@ -36,6 +49,7 @@ io.on('connection', socket => {
   })
 
   socket.on('CHAT_MSG', data => {
+    // io.to(room).emit('CHAT_MSG', {
     io.emit('CHAT_MSG', {
       message: data.message,
       userId: data.userId,

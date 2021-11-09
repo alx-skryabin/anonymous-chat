@@ -1,7 +1,9 @@
 import {io} from 'socket.io-client'
-import {message, template} from './template.chat'
+import {message, template} from '../template/template.chat'
 import {StatusBar} from './status-bar'
 import {EditMsg} from './edit-msg'
+import {Modals} from './Modals'
+import {CreateRoom} from './CreateRoom'
 import {EVENT} from './config'
 import {
   defineHostURI,
@@ -36,6 +38,9 @@ class Chat {
     this.emitMsg()
     this.initEvent()
     initMeterialized()
+    this.modals = new Modals()
+
+    // socket.emit('login', 'rooom2')
   }
 
   render() {
@@ -48,6 +53,10 @@ class Chat {
   }
 
   emitMsg() {
+    // socket.on('create_room', data => {
+    //   console.log(data)
+    // })
+
     // new message
     socket.on(EVENT.CHAT_MSG, data => {
       const text = replaceSymbol(data.message)
@@ -150,6 +159,8 @@ class Chat {
 
     // change avatar
     $avatar.addEventListener('click', () => this.avatar = setAvatar())
+
+    new CreateRoom()
   }
 }
 
