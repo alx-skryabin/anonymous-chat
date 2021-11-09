@@ -19,3 +19,7 @@
   font-size: 1.2em;
   margin-right: 10px !important;
 }
+
+.sidenav .divider {
+  margin: 0;
+}
