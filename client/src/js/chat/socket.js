@@ -10,7 +10,8 @@ import {
   replaceSymbol,
   initMeterialized,
   addPulseAnim,
-  addDeleteAnim
+  addDeleteAnim,
+  getDateTime
 } from './utils'
 
 const socket = io(defineHostURI(), {})
@@ -69,7 +70,10 @@ class Chat {
       const $editedMsg = document.getElementById(data.msgId)
       if ($editedMsg) {
         const $msg = $editedMsg.querySelector('.msg-chat-text')
+        $msg.classList.add('modified')
         $msg.textContent = replaceSymbol(data.message).toString()
+        const $date = $editedMsg.querySelector('.msg-chat-date')
+        $date.textContent = 'edited ' + getDateTime()
         addPulseAnim($msg, 6)
         M.toast({html: 'The message was edited', classes: 'rounded'})
       }
