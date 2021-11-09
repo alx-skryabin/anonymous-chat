@@ -52,6 +52,11 @@ function initMenu() {
   M.Sidenav.init(elems)
 }
 
+function initModals() {
+  const elems = document.querySelectorAll('.modal')
+  M.Modal.init(elems)
+}
+
 function addPulseAnim($elem, duration = 3) {
   $elem.classList.add('pulse')
 
@@ -68,6 +73,7 @@ function addDeleteAnim($elem) {
 function initMeterialized() {
   initTooltip()
   initMenu()
+  initModals()
 }
 
 export {

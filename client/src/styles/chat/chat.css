@@ -3,6 +3,7 @@
 @import "./status.chat.css";
 @import "./content.chat.css";
 @import "./footer.chat.css";
+@import "./modal.chat.css";
 
 .chat {
   height: 100vh;
