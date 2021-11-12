@@ -1,13 +1,16 @@
 .status {
   display: flex;
+  align-items: center;
   background: rgba(255, 255, 255, .2);
   padding: 5px 10px;
 }
 
-.status-count {
-  color: #828282;
+.status strong {
+  color: #b8b8b8;
 }
 
-.status-count strong {
-  color: #b8b8b8;
+.status-count,
+.status-room {
+  margin-right: 10px;
+  color: #828282;
 }

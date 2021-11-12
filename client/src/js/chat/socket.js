@@ -27,6 +27,7 @@ const socket = io(defineHostURI(), {})
 class Chat {
   constructor() {
     this.userId = parseInt(String(new Date().getTime()))
+    this.isDebug = false
     this.avatar = null
     this.$app = document.querySelector('.app')
     this.$input = null
@@ -120,6 +121,8 @@ class Chat {
 
     // change avatar
     $avatar.addEventListener('click', () => this.avatar = setAvatar())
+
+    if (this.isDebug) this.debug()
   }
 
   emitNewUser() {
@@ -194,6 +197,28 @@ class Chat {
           this.$app.innerHTML = room404(data.message)
           break
       }
+    })
+  }
+
+  debug() {
+    const $debug = this.$app.querySelector('.debug')
+    $debug.style.display = 'block'
+
+    $debug.addEventListener('click', e => {
+        if (e.target.dataset.debug === '11') {
+          console.log('11')
+        }
+        if (e.target.dataset.debug === '22') {
+          console.log('22')
+        }
+      })
+
+    socket.on('11', data => {
+      console.log('11', data)
+    })
+
+    socket.on('22', data => {
+      console.log('22', data)
     })
   }
 

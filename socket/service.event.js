@@ -1,5 +1,8 @@
-const {deleteUser} = require('../models/users')
-const {getUser} = require('../models/users')
+const {
+  deleteUser,
+  getUsers,
+  getUser
+} = require('../models/users')
 const {v4} = require('uuid')
 
 function messageService(io, socket) {
@@ -10,18 +13,31 @@ function messageService(io, socket) {
     deleteUser(socket.id)
     io.in(user.room).emit('CHAT_LEAVE_USER', {
       message: 'User left the chat',
-      countUser: io.engine.clientsCount,
+      countUser: getUsers(user.room).length
     })
   })
 
 
   socket.on('CHAT_NEW_USER', data => {
-    io.in(getUser(socket.id).room).emit('CHAT_MSG', {
+    const user = getUser(socket.id)
+
+    io.in(user.room).emit('CHAT_MSG', {
       message: 'New user is joined',
       userId: data.userId,
       avatar: data.avatar,
       msgId: v4(),
-      countUser: io.engine.clientsCount,
+      countUser: getUsers(user.room).length
+    })
+  })
+
+  socket.on('11', () => {
+    io.emit('11', {
+      message: '11',
+    })
+  })
+  socket.on('22', () => {
+    io.emit('22', {
+      message: '22',
     })
   })
 }

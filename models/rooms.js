@@ -17,4 +17,6 @@ const deleteRoom = name => {
   if (index !== -1) return rooms.splice(index, 1)[0]
 }
 
-module.exports = {addRoom, getRoom, deleteRoom}
+const getAllRooms = () => rooms
+
+module.exports = {addRoom, getRoom, deleteRoom, getAllRooms}
