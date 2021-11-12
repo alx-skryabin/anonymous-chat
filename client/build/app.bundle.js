@@ -1678,6 +1678,116 @@ module.exports = yeast;
 
 /***/ }),
 
+/***/ "./src/js/chat/CreateRoom.js":
+/*!***********************************!*\
+  !*** ./src/js/chat/CreateRoom.js ***!
+  \***********************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "CreateRoom": () => (/* binding */ CreateRoom)
+/* harmony export */ });
+/* harmony import */ var _config__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./config */ "./src/js/chat/config.js");
+
+
+class CreateRoom {
+  constructor(socket) {
+    this.socket = socket
+    this.$root = document.getElementById('modalCreateRoom')
+    this.$form = this.$root.querySelector('form')
+    this.$submit = this.$root.querySelector('.modal-footer a')
+
+    this.init()
+  }
+
+  init() {
+    const {name, pass, isPrivate} = this.$form.elements
+    const $tips = document.querySelector('.modal-tips')
+
+    this.$submit.addEventListener('click', () => {
+      let error = ''
+      $tips.textContent = error
+
+      if (name.value.trim().length < 3) error = 'Minimum length of the room name is 3 characters.'
+      if (isPrivate.checked && !pass.value.trim()) error = `${error} Enter password.`
+
+      if (error) return $tips.textContent = error
+
+      this.socket.emit(_config__WEBPACK_IMPORTED_MODULE_0__.EVENT.CREATE_ROOM, {
+        name: name.value.trim(),
+        password: pass.value.trim() || false
+      })
+    })
+
+    this.socket.on(_config__WEBPACK_IMPORTED_MODULE_0__.EVENT.CREATE_ROOM, data => {
+      switch (data.code) {
+        case 1:
+          $tips.innerHTML = `<i class="fas fa-cog fa-spin"></i> ${data.message}`
+          this.goToRoom(data.name)
+          break
+        case 2:
+          $tips.textContent = data.message
+          break
+      }
+    })
+
+    isPrivate.addEventListener('change', () => {
+      if (isPrivate.checked) {
+        pass.removeAttribute('disabled')
+      } else {
+        pass.setAttribute('disabled', 'disabled')
+        pass.value = ''
+      }
+    })
+  }
+
+  goToRoom(room) {
+    const newURI = `${window.location.origin}/?room=${room}`
+    this.$form.reset()
+
+    setTimeout(() => {
+      document.location.href = newURI
+    }, 5000)
+  }
+}
+
+
+/***/ }),
+
+/***/ "./src/js/chat/Modals.js":
+/*!*******************************!*\
+  !*** ./src/js/chat/Modals.js ***!
+  \*******************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "Modals": () => (/* binding */ Modals)
+/* harmony export */ });
+class Modals {
+  constructor() {
+    this.createRoom = null
+    this.rootAccess = null
+
+    this.init()
+  }
+
+  init() {
+    this.createRoom = M.Modal.getInstance(document.getElementById('modalCreateRoom'))
+    this.rootAccess = M.Modal.getInstance(document.getElementById('modalRootAccess'))
+  }
+
+  getEl(name) {
+    return this[name].$el[0]
+  }
+}
+
+
+/***/ }),
+
 /***/ "./src/js/chat/config.js":
 /*!*******************************!*\
   !*** ./src/js/chat/config.js ***!
@@ -1698,7 +1808,9 @@ const EVENT = {
   EDIT_MSG: 'EDIT_MSG',
   DELETE_MSG: 'DELETE_MSG',
   CHAT_NEW_USER: 'CHAT_NEW_USER',
-  CHAT_LEAVE_USER: 'CHAT_LEAVE_USER'
+  CHAT_LEAVE_USER: 'CHAT_LEAVE_USER',
+  CREATE_ROOM: 'CREATE_ROOM',
+  SIGN_IN_ROOM: 'SIGN_IN_ROOM'
 }
 
 
@@ -1785,11 +1897,13 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "Chat": () => (/* binding */ Chat)
 /* harmony export */ });
 /* harmony import */ var socket_io_client__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! socket.io-client */ "./node_modules/socket.io-client/build/esm/index.js");
-/* harmony import */ var _template_chat__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./template.chat */ "./src/js/chat/template.chat.js");
-/* harmony import */ var _status_bar__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./status-bar */ "./src/js/chat/status-bar.js");
-/* harmony import */ var _edit_msg__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./edit-msg */ "./src/js/chat/edit-msg.js");
-/* harmony import */ var _config__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./config */ "./src/js/chat/config.js");
-/* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./utils */ "./src/js/chat/utils.js");
+/* harmony import */ var _status_bar__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./status-bar */ "./src/js/chat/status-bar.js");
+/* harmony import */ var _edit_msg__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./edit-msg */ "./src/js/chat/edit-msg.js");
+/* harmony import */ var _Modals__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./Modals */ "./src/js/chat/Modals.js");
+/* harmony import */ var _CreateRoom__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./CreateRoom */ "./src/js/chat/CreateRoom.js");
+/* harmony import */ var _config__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./config */ "./src/js/chat/config.js");
+/* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./utils */ "./src/js/chat/utils.js");
+/* harmony import */ var _template_template_chat__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../template/template.chat */ "./src/js/template/template.chat.js");
 
 
 
@@ -1797,51 +1911,54 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-const socket = (0,socket_io_client__WEBPACK_IMPORTED_MODULE_0__.io)((0,_utils__WEBPACK_IMPORTED_MODULE_5__.defineHostURI)(), {})
+
+
+const socket = (0,socket_io_client__WEBPACK_IMPORTED_MODULE_0__.io)((0,_utils__WEBPACK_IMPORTED_MODULE_6__.defineHostURI)(), {})
 
 class Chat {
   constructor() {
     this.userId = parseInt(String(new Date().getTime()))
+    this.isDebug = false
+    this.isPrivate = false
     this.avatar = null
+    this.$app = document.querySelector('.app')
     this.$input = null
     this.$content = null
     this.statusBar = null
-
-    this.prepare()
   }
 
-  prepare() {
-    this.render()
-    this.statusBar = new _status_bar__WEBPACK_IMPORTED_MODULE_2__.StatusBar()
-    this.editMsg = new _edit_msg__WEBPACK_IMPORTED_MODULE_3__.EditMsg(this.$input)
+  render() {
+    this.toHTML()
+    this.statusBar = new _status_bar__WEBPACK_IMPORTED_MODULE_1__.StatusBar(this)
+    this.editMsg = new _edit_msg__WEBPACK_IMPORTED_MODULE_2__.EditMsg(this.$input)
     this.emitNewUser()
     this.emitLeaveUser()
     this.emitMsg()
     this.initEvent()
-    ;(0,_utils__WEBPACK_IMPORTED_MODULE_5__.initMeterialized)()
+    ;(0,_utils__WEBPACK_IMPORTED_MODULE_6__.initMeterialized)()
+    this.statusBar.setIsPrivate()
+    this.modals = new _Modals__WEBPACK_IMPORTED_MODULE_3__.Modals()
   }
 
-  render() {
-    document.querySelector('.app')
-      .innerHTML = (0,_template_chat__WEBPACK_IMPORTED_MODULE_1__.template)()
-
-    this.avatar = (0,_utils__WEBPACK_IMPORTED_MODULE_5__.setAvatar)()
+  toHTML() {
+    this.$app.innerHTML = (0,_template_template_chat__WEBPACK_IMPORTED_MODULE_7__.template)()
     this.$input = document.querySelector('#field')
     this.$content = document.querySelector('#chatContent')
+    this.avatar = (0,_utils__WEBPACK_IMPORTED_MODULE_6__.setAvatar)()
   }
 
   emitMsg() {
     // new message
-    socket.on(_config__WEBPACK_IMPORTED_MODULE_4__.EVENT.CHAT_MSG, data => {
-      const text = (0,_utils__WEBPACK_IMPORTED_MODULE_5__.replaceSymbol)(data.message)
+    socket.on(_config__WEBPACK_IMPORTED_MODULE_5__.EVENT.CHAT_MSG, data => {
+      const text = (0,_utils__WEBPACK_IMPORTED_MODULE_6__.replaceSymbol)(data.message)
 
       const $msg = (data.userId === this.userId)
-        ? (0,_template_chat__WEBPACK_IMPORTED_MODULE_1__.message)('owner', text, data.msgId, this.avatar)
-        : (0,_template_chat__WEBPACK_IMPORTED_MODULE_1__.message)('friend', text, data.msgId, data.avatar)
+        ? (0,_template_template_chat__WEBPACK_IMPORTED_MODULE_7__.message)('owner', text, data.msgId, this.avatar)
+        : (0,_template_template_chat__WEBPACK_IMPORTED_MODULE_7__.message)('friend', text, data.msgId, data.avatar)
 
       this.$content.appendChild($msg)
       document.querySelector('head title').textContent = text.toString()
-      ;(0,_utils__WEBPACK_IMPORTED_MODULE_5__.scrollToMsg)($msg)
+      ;(0,_utils__WEBPACK_IMPORTED_MODULE_6__.scrollToMsg)($msg)
 
       if (data.countUser) {
         this.statusBar.updateCountUsers(data.countUser)
@@ -1849,21 +1966,24 @@ class Chat {
     })
 
     // edit message
-    socket.on(_config__WEBPACK_IMPORTED_MODULE_4__.EVENT.EDIT_MSG, data => {
+    socket.on(_config__WEBPACK_IMPORTED_MODULE_5__.EVENT.EDIT_MSG, data => {
       const $editedMsg = document.getElementById(data.msgId)
       if ($editedMsg) {
         const $msg = $editedMsg.querySelector('.msg-chat-text')
-        $msg.textContent = (0,_utils__WEBPACK_IMPORTED_MODULE_5__.replaceSymbol)(data.message).toString()
-        ;(0,_utils__WEBPACK_IMPORTED_MODULE_5__.addPulseAnim)($msg, 6)
+        $msg.classList.add('modified')
+        $msg.textContent = (0,_utils__WEBPACK_IMPORTED_MODULE_6__.replaceSymbol)(data.message).toString()
+        const $date = $editedMsg.querySelector('.msg-chat-date')
+        $date.textContent = 'edited ' + (0,_utils__WEBPACK_IMPORTED_MODULE_6__.getDateTime)()
+        ;(0,_utils__WEBPACK_IMPORTED_MODULE_6__.addPulseAnim)($msg, 6)
         M.toast({html: 'The message was edited', classes: 'rounded'})
       }
     })
 
     // delete message
-    socket.on(_config__WEBPACK_IMPORTED_MODULE_4__.EVENT.DELETE_MSG, data => {
+    socket.on(_config__WEBPACK_IMPORTED_MODULE_5__.EVENT.DELETE_MSG, data => {
       const $editedMsg = document.getElementById(data.msgId)
       if ($editedMsg) {
-        (0,_utils__WEBPACK_IMPORTED_MODULE_5__.addDeleteAnim)($editedMsg)
+        (0,_utils__WEBPACK_IMPORTED_MODULE_6__.addDeleteAnim)($editedMsg)
         M.toast({html: 'The message was deleted', classes: 'rounded'})
       }
     })
@@ -1876,48 +1996,12 @@ class Chat {
       }
 
       if (e.target.dataset.action === 'delete-msg') {
-        socket.emit(_config__WEBPACK_IMPORTED_MODULE_4__.EVENT.DELETE_MSG, {
+        socket.emit(_config__WEBPACK_IMPORTED_MODULE_5__.EVENT.DELETE_MSG, {
           msgId: this.editMsg.delete(e.target)
         })
       }
     })
-  }
 
-  emitNewUser() {
-    socket.emit(_config__WEBPACK_IMPORTED_MODULE_4__.EVENT.CHAT_NEW_USER, {
-      userId: this.userId,
-      avatar: this.avatar
-    })
-  }
-
-  emitLeaveUser() {
-    socket.on(_config__WEBPACK_IMPORTED_MODULE_4__.EVENT.CHAT_LEAVE_USER, data => {
-      this.statusBar.updateCountUsers(data.countUser)
-      M.toast({html: data.message, classes: 'rounded'})
-    })
-  }
-
-  sendMsg() {
-    if (!this.$input.value.trim()) return
-
-    if (!this.editMsg.isEdit) {
-      socket.emit(_config__WEBPACK_IMPORTED_MODULE_4__.EVENT.CHAT_MSG, {
-        message: this.$input.value,
-        userId: this.userId,
-        avatar: this.avatar
-      })
-    } else {
-      socket.emit(_config__WEBPACK_IMPORTED_MODULE_4__.EVENT.EDIT_MSG, {
-        message: this.$input.value,
-        msgId: this.editMsg.msgId
-      })
-      this.editMsg.reset()
-    }
-
-    this.$input.value = ''
-  }
-
-  initChat() {
     const $submit = document.querySelector('#send')
     const $avatar = document.querySelector('.footer_avatar')
 
@@ -1929,7 +2013,109 @@ class Chat {
     })
 
     // change avatar
-    $avatar.addEventListener('click', () => this.avatar = (0,_utils__WEBPACK_IMPORTED_MODULE_5__.setAvatar)())
+    $avatar.addEventListener('click', () => this.avatar = (0,_utils__WEBPACK_IMPORTED_MODULE_6__.setAvatar)())
+
+    // create new room
+    new _CreateRoom__WEBPACK_IMPORTED_MODULE_4__.CreateRoom(socket)
+
+    if (this.isDebug) this.debug()
+  }
+
+  emitNewUser() {
+    socket.emit(_config__WEBPACK_IMPORTED_MODULE_5__.EVENT.CHAT_NEW_USER, {
+      userId: this.userId,
+      avatar: this.avatar
+    })
+  }
+
+  emitLeaveUser() {
+    socket.on(_config__WEBPACK_IMPORTED_MODULE_5__.EVENT.CHAT_LEAVE_USER, data => {
+      this.statusBar.updateCountUsers(data.countUser)
+      M.toast({html: data.message, classes: 'rounded'})
+    })
+  }
+
+  sendMsg() {
+    if (!this.$input.value.trim()) return
+
+    if (!this.editMsg.isEdit) {
+      socket.emit(_config__WEBPACK_IMPORTED_MODULE_5__.EVENT.CHAT_MSG, {
+        message: this.$input.value,
+        userId: this.userId,
+        avatar: this.avatar
+      })
+    } else {
+      socket.emit(_config__WEBPACK_IMPORTED_MODULE_5__.EVENT.EDIT_MSG, {
+        message: this.$input.value,
+        msgId: this.editMsg.msgId
+      })
+      this.editMsg.reset()
+    }
+
+    this.$input.value = ''
+  }
+
+  validatePass(data) {
+    const {r, a} = JSON.parse(localStorage.getItem('auth')) || false
+    const {message, password, name} = data
+    this.isPrivate = true
+
+    if (r === name && a) {
+      return this.render()
+    }
+
+    this.$app.innerHTML = (0,_template_template_chat__WEBPACK_IMPORTED_MODULE_7__.roomEnterPass)(message)
+    const $form = this.$app.querySelector('.form-password')
+
+    $form.onsubmit = e => {
+      e.preventDefault()
+
+      const enterPass = $form.elements.roomPass.value.trim()
+      if (enterPass === password.toString()) {
+        localStorage.setItem('auth', JSON.stringify({r: name, a: true}))
+        this.render()
+      } else {
+        $form.elements.roomPass.value = ''
+        M.toast({html: 'Invalid password', classes: 'rounded'})
+      }
+    }
+  }
+
+  socketLogin() {
+    socket.on(_config__WEBPACK_IMPORTED_MODULE_5__.EVENT.SIGN_IN_ROOM, data => {
+      switch (data.code) {
+        case 1:
+          this.render()
+          break
+        case 2:
+          this.validatePass(data)
+          break
+        case 3:
+          this.$app.innerHTML = (0,_template_template_chat__WEBPACK_IMPORTED_MODULE_7__.room404)(data.message)
+          break
+      }
+    })
+  }
+
+  debug() {
+    const $debug = this.$app.querySelector('.debug')
+    $debug.style.display = 'block'
+
+    $debug.addEventListener('click', e => {
+      if (e.target.dataset.debug === '11') socket.emit('11')
+      if (e.target.dataset.debug === '22') socket.emit('22')
+    })
+
+    socket.on('11', data => console.log('11', data))
+    socket.on('22', data => console.log('22', data))
+  }
+
+  initChat() {
+    this.socketLogin()
+
+    socket.emit(_config__WEBPACK_IMPORTED_MODULE_5__.EVENT.SIGN_IN_ROOM, {
+      room: (0,_utils__WEBPACK_IMPORTED_MODULE_6__.getNameRoom)()
+    })
   }
 }
 
@@ -1950,14 +2136,15 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "StatusBar": () => (/* binding */ StatusBar)
 /* harmony export */ });
 class StatusBar {
-  constructor() {
+  constructor(chat) {
+    this.chat = chat
     this.currentCount = 0
     this.$countUsers = document.querySelector('#countUsers')
   }
 
   updateCountUsers(value) {
     const classStatus = value > this.currentCount
-    ? 'green-text text-accent-2' : 'red-text text-lighten-1'
+      ? 'green-text text-accent-2' : 'red-text text-lighten-1'
 
     this.currentCount = value
     this.$countUsers.className = classStatus
@@ -1967,140 +2154,14 @@ class StatusBar {
       this.$countUsers.className = ''
     }, 2000)
   }
+
+  setIsPrivate() {
+    const isPrivate = this.chat.$app.querySelector('.status-private')
+    isPrivate.innerHTML = this.chat.isPrivate
+      ? '<i class="fas fa-lock"></i> <span>Access:</span> <strong>Private</strong>'
+      : '<i class="fas fa-lock-open"></i> <span>Access:</span> <strong>Public</strong>'
+  }
 }
-
-
-/***/ }),
-
-/***/ "./src/js/chat/template.chat.js":
-/*!**************************************!*\
-  !*** ./src/js/chat/template.chat.js ***!
-  \**************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "template": () => (/* binding */ template),
-/* harmony export */   "message": () => (/* binding */ message)
-/* harmony export */ });
-/* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./utils */ "./src/js/chat/utils.js");
-
-
-const title = () => {
-  return `
-    <h1><i class="fas fa-ghost"></i> Anonymous Сhat</h1>
-  `
-}
-
-const feedback = () => {
-  return `
-    <div class="feedback">
-      <span><i class="fas fa-code-branch"></i> Improvements? — </span>
-      <a href="https://github.com/alx-skryabin/node-socket" target="_blank">github</a>
-    </div>
-  `
-}
-
-const form = () => {
-  return `
-    <div class="footer_form z-depth-5">
-      <input type="text" id="field" placeholder="Type here...">
-      <button id="send" class="waves-effect waves-light blue darken-1"><i class="far fa-paper-plane"></i></button>
-    </div>
-  `
-}
-
-const avatar = () => {
-  return `
-    <div class="footer_avatar">
-      <img src="" 
-      alt="avatar" 
-      class="tooltipped" 
-      data-position="top" 
-      data-tooltip="Click to change avatar">
-    </div>
-  `
-}
-
-const message = (owner = 'owner', text = '', msgId, avatar) => {
-  const classMsg = owner === 'owner' ? 'msg-owner' : 'msg-friend'
-  const $el = document.createElement('div')
-  $el.className = `msg-chat ${classMsg}`
-  $el.setAttribute('id', msgId)
-
-  const msgEdit = `
-  <div class="msg-chat-edit">
-    <i class="far fa-edit" data-action="edit-msg"></i>
-  </div>`
-
-  const msgDelete = `
-  <div class="msg-chat-delete">
-    <i class="far fa-trash-alt" data-action="delete-msg"></i>
-  </div>`
-
-  $el.innerHTML = `
-      <div class="msg-chat-avatar">
-          <img src="${avatar}" alt="ava">
-      </div>
-      <div class="msg-chat-text z-depth-5">
-          ${text}
-      </div>
-      <div class="msg-chat-date">
-        ${(0,_utils__WEBPACK_IMPORTED_MODULE_0__.getDateTime)()}
-      </div>
-      ${owner === 'owner' ? msgEdit : ''}
-      ${owner === 'owner' ? msgDelete : ''}
-  `
-  return $el
-}
-
-const header = () => {
-  return `
-    <div class="header">
-      ${title()}
-      ${feedback()}
-    </div>
-  `
-}
-
-const status = () => {
-  return `
-    <div class="status">
-      <div class="status-count">
-        <i class="fas fa-users"></i> Online: <strong id="countUsers">0</strong>
-      </div>
-    </div>
-  `
-}
-
-const content = () => {
-  return `
-    <div id="chatContent" class="content"></div>
-  `
-}
-
-const footer = () => {
-  return `
-    <div class="footer">
-      ${avatar()}
-      ${form()}
-    </div>
-  `
-}
-
-const template = () => {
-  return `
-    <div class="chat">
-      ${header()}
-      ${status()}
-      ${content()}
-      ${footer()}
-    </div>
-  `
-}
-
-
 
 
 /***/ }),
@@ -2121,7 +2182,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "replaceSymbol": () => (/* binding */ replaceSymbol),
 /* harmony export */   "addPulseAnim": () => (/* binding */ addPulseAnim),
 /* harmony export */   "addDeleteAnim": () => (/* binding */ addDeleteAnim),
-/* harmony export */   "initMeterialized": () => (/* binding */ initMeterialized)
+/* harmony export */   "initMeterialized": () => (/* binding */ initMeterialized),
+/* harmony export */   "getNameRoom": () => (/* binding */ getNameRoom)
 /* harmony export */ });
 /* harmony import */ var _config__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./config */ "./src/js/chat/config.js");
 /* harmony import */ var random_avatar_generator__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! random-avatar-generator */ "./node_modules/random-avatar-generator/dist/index.js");
@@ -2141,8 +2203,10 @@ function getAvatarURI() {
 
 function setAvatar() {
   const $img = document.querySelector('.footer_avatar img')
+  const $imgMenu = document.querySelector('.user-view .circle')
   const url = getAvatarURI()
   $img.setAttribute('src', url)
+  $imgMenu.setAttribute('src', url)
   return url
 }
 
@@ -2173,6 +2237,16 @@ function initTooltip() {
   M.Tooltip.init(elems)
 }
 
+function initMenu() {
+  const elems = document.querySelectorAll('.sidenav')
+  M.Sidenav.init(elems)
+}
+
+function initModals() {
+  const elems = document.querySelectorAll('.modal')
+  M.Modal.init(elems)
+}
+
 function addPulseAnim($elem, duration = 3) {
   $elem.classList.add('pulse')
 
@@ -2186,8 +2260,348 @@ function addDeleteAnim($elem) {
   setTimeout(() => $elem.remove(), 1000)
 }
 
+function getNameRoom() {
+  const baseUri = new URL(window.location.href)
+  return baseUri.searchParams.get('room')?.toLowerCase()
+}
+
 function initMeterialized() {
   initTooltip()
+  initMenu()
+  initModals()
+}
+
+
+
+
+/***/ }),
+
+/***/ "./src/js/template/template.chat.js":
+/*!******************************************!*\
+  !*** ./src/js/template/template.chat.js ***!
+  \******************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "template": () => (/* binding */ template),
+/* harmony export */   "message": () => (/* binding */ message),
+/* harmony export */   "room404": () => (/* binding */ room404),
+/* harmony export */   "roomEnterPass": () => (/* binding */ roomEnterPass)
+/* harmony export */ });
+/* harmony import */ var _chat_utils__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../chat/utils */ "./src/js/chat/utils.js");
+/* harmony import */ var _template_header__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./template.header */ "./src/js/template/template.header.js");
+/* harmony import */ var _template_status__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./template.status */ "./src/js/template/template.status.js");
+/* harmony import */ var _template_footer__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./template.footer */ "./src/js/template/template.footer.js");
+/* harmony import */ var _template_modal__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./template.modal */ "./src/js/template/template.modal.js");
+
+
+
+
+
+
+const message = (owner = 'owner', text = '', msgId, avatar) => {
+  const classMsg = owner === 'owner' ? 'msg-owner' : 'msg-friend'
+  const $el = document.createElement('div')
+  $el.className = `msg-chat ${classMsg}`
+  $el.setAttribute('id', msgId)
+
+  const msgEdit = `
+  <div class="msg-chat-edit">
+    <i class="far fa-edit" data-action="edit-msg"></i>
+  </div>`
+
+  const msgDelete = `
+  <div class="msg-chat-delete">
+    <i class="far fa-trash-alt" data-action="delete-msg"></i>
+  </div>`
+
+  $el.innerHTML = `
+      <div class="msg-chat-avatar">
+          <img src="${avatar}" alt="ava">
+      </div>
+      <div class="msg-chat-text z-depth-5">
+          ${text}
+      </div>
+      <div class="msg-chat-date">
+        ${(0,_chat_utils__WEBPACK_IMPORTED_MODULE_0__.getDateTime)()}
+      </div>
+      ${owner === 'owner' ? msgEdit : ''}
+      ${owner === 'owner' ? msgDelete : ''}
+  `
+  return $el
+}
+
+const content = () => {
+  return `
+    <div id="chatContent" class="content"></div>
+  `
+}
+
+const room404 = msg => {
+  return `
+    <div class="container-center">
+      <h3 class="common-h3">${msg}</h3>
+      <a href="/" class="waves-effect waves-light">To main page</a>
+    </div>
+  `
+}
+
+const roomEnterPass = message => {
+  return `
+    <div class="container-center">
+      <h3 class="common-h3">${message}</h3>
+      <form class="form-password">
+        <div class="input-field">
+          <input id="roomPass" type="password">
+          <label for="roomPass">Password</label>
+        </div>
+        <div>
+          <button type="submit" class="waves-effect waves-light">
+            <i class="far fa-paper-plane"></i>
+          </button>
+        </div>
+      </form>
+    </div>
+  `
+}
+
+const template = () => {
+  return `
+    <div class="chat">
+      ${(0,_template_header__WEBPACK_IMPORTED_MODULE_1__.header)()}
+      ${(0,_template_status__WEBPACK_IMPORTED_MODULE_2__.status)()}
+      ${content()}
+      ${(0,_template_footer__WEBPACK_IMPORTED_MODULE_3__.footer)()}
+      ${(0,_template_modal__WEBPACK_IMPORTED_MODULE_4__.modals)()}
+    </div>
+  `
+}
+
+
+
+
+/***/ }),
+
+/***/ "./src/js/template/template.footer.js":
+/*!********************************************!*\
+  !*** ./src/js/template/template.footer.js ***!
+  \********************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "footer": () => (/* binding */ footer)
+/* harmony export */ });
+const form = () => {
+  return `
+    <div class="footer_form z-depth-5">
+      <input type="text" id="field" placeholder="Type here...">
+      <button id="send" class="waves-effect waves-light blue darken-1">
+        <i class="far fa-paper-plane"></i>
+      </button>
+    </div>
+  `
+}
+
+const avatar = () => {
+  return `
+    <div class="footer_avatar">
+      <img src="" 
+      alt="avatar" 
+      class="tooltipped" 
+      data-position="top" 
+      data-tooltip="Click to change avatar">
+    </div>
+  `
+}
+
+const footer = () => {
+  return `
+    <div class="footer">
+      ${avatar()}
+      ${form()}
+    </div>
+  `
+}
+
+
+
+
+/***/ }),
+
+/***/ "./src/js/template/template.header.js":
+/*!********************************************!*\
+  !*** ./src/js/template/template.header.js ***!
+  \********************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "header": () => (/* binding */ header)
+/* harmony export */ });
+const title = () => {
+  return `
+    <h1><i class="fas fa-ghost"></i> Anonymous Сhat</h1>
+  `
+}
+
+const menuBtn = () => {
+  return `
+    <a href="#" class="sidenav-trigger waves-effect waves-light" data-target="slide-out">
+      <i class="fas fa-sliders-h"></i> Menu
+    </a>
+  `
+}
+
+const menuSidenav = () => {
+  return `
+    <ul id="slide-out" class="sidenav">
+      <li>
+        <div class="user-view">
+          <div class="background">
+            <img src="https://static.tildacdn.com/tild6337-6165-4433-a135-366466326266/-/resize/504x/hightechImage.png" alt="bg">
+          </div>
+          <img class="circle" alt="avatar" src="">
+        </div>
+      </li>
+      <li><a href="#modalCreateRoom" class="modal-trigger"><i class="fas fa-plus"></i> Create room</a></li>
+      <li><a href="#"><i class="fas fa-crosshairs"></i> Kick out user</a></li>
+      <li><a href="#"><i class="far fa-comments"></i> Free rooms</a></li>
+      <li><div class="divider"></div></li>
+      <li><a href="#modalRootAccess" class="modal-trigger"><i class="fas fa-fingerprint"></i> I am root</a></li>
+    </ul>
+  `
+}
+
+const feedback = () => {
+  return `
+    <div class="feedback">
+      <span><i class="fas fa-code-branch"></i> Improvements? — </span>
+      <a href="https://github.com/alx-skryabin/node-socket" target="_blank">github</a>
+    </div>
+  `
+}
+
+const header = () => {
+  return `
+    <div class="header">
+      ${menuBtn()}
+      ${title()}
+      ${feedback()}
+      ${menuSidenav()}
+    </div>
+  `
+}
+
+
+
+
+/***/ }),
+
+/***/ "./src/js/template/template.modal.js":
+/*!*******************************************!*\
+  !*** ./src/js/template/template.modal.js ***!
+  \*******************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "modals": () => (/* binding */ modals)
+/* harmony export */ });
+const modalCreateRoom = () => {
+  return `
+    <div id="modalCreateRoom" class="modal modal-create-room">
+      <div class="modal-content">
+        <h5><i class="fas fa-plus"></i> Create your own room</h5>
+        <form>
+          <div class="input-field">
+            <input id="roomName" type="text" name="name" autocomplete="off">
+            <label for="roomName">Name</label>
+          </div>
+          <div class="input-field">
+            <input id="roomPass" type="password" name="pass" disabled>
+            <label for="roomPass">Password</label>
+          </div>
+          <label>
+            <input type="checkbox" name="isPrivate"/>
+            <span>Private room</span>
+          </label>
+          <div class="modal-tips"></div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <a href="#" class="waves-effect btn-flat">Create</a>
+      </div>
+    </div>
+  `
+}
+
+const modalRoot = () => {
+  return `
+    <div id="modalRootAccess" class="modal modal-root">
+      <div class="modal-content">
+        <h5><i class="fas fa-fingerprint"></i> Root access</h5>
+      </div>
+      <div class="modal-footer">
+        <a href="#" class="modal-close waves-effect btn-flat">Enter</a>
+      </div>
+    </div>
+  `
+}
+
+const modals = () => {
+  return `
+     ${modalCreateRoom()}
+     ${modalRoot()}
+  `
+}
+
+
+
+
+/***/ }),
+
+/***/ "./src/js/template/template.status.js":
+/*!********************************************!*\
+  !*** ./src/js/template/template.status.js ***!
+  \********************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "status": () => (/* binding */ status)
+/* harmony export */ });
+/* harmony import */ var _chat_utils__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../chat/utils */ "./src/js/chat/utils.js");
+
+
+const status = () => {
+  return `
+    <div class="status">
+      <div class="status-count">
+        <i class="fas fa-users"></i> <span>Online:</span> <strong id="countUsers">0</strong>
+      </div>
+      <div class="status-room">
+        <i class="fas fa-couch"></i> <span>Room:</span> <strong>${(0,_chat_utils__WEBPACK_IMPORTED_MODULE_0__.getNameRoom)() || 'free'}</strong>
+      </div>
+      <div class="status-private"></div>
+      ${debug()}
+    </div>
+  `
+}
+
+const debug = () => {
+  return `
+    <div class="debug">
+      <button data-debug="11">11</button>
+      <button data-debug="22">22</button>
+    </div>
+  `
 }
 
 
