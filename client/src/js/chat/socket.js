@@ -215,8 +215,8 @@ class Chat {
       if (e.target.dataset.debug === '22') socket.emit('22')
     })
 
-    socket.on('11', data => console.log('11', data))
-    socket.on('22', data => console.log('22', data))
+    socket.on('11', data => console.log('room', data))
+    socket.on('22', data => console.log('user', data))
   }
 
   initChat() {

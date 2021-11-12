@@ -1,11 +1,25 @@
-const {getAllUsers} = require('../models/users')
-const {getAllRooms} = require('../models/rooms')
+const {
+  getAllRooms,
+  deleteRoom
+} = require('../models/rooms')
 const {
   deleteUser,
+  getAllUsers,
   getUsers,
   getUser
 } = require('../models/users')
 const {v4} = require('uuid')
+
+function checkUserInRoom(room) {
+  setTimeout(() => {
+    const users = getUsers(room)
+
+    if (!users.length) {
+      // delete a room if it is empty for 60 seconds
+      deleteRoom(room)
+    }
+  }, 60000)
+}
 
 function messageService(io, socket) {
   socket.on("disconnect", () => {
@@ -13,6 +27,8 @@ function messageService(io, socket) {
     if (!user) return
 
     deleteUser(socket.id)
+    checkUserInRoom(user.room)
+
     io.in(user.room).emit('CHAT_LEAVE_USER', {
       message: 'User left the chat',
       countUser: getUsers(user.room).length

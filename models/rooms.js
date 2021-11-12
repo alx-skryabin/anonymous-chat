@@ -1,6 +1,8 @@
+const staticRooms = ['free', 'sk']
+
 const rooms = [
   {name: 'free', password: false}, // default room
-  {name: 'zelek', password: '12345'} // test private room
+  {name: 'sk', password: '20'} // test private room
 ]
 
 const addRoom = (name, password) => {
@@ -13,6 +15,7 @@ const getRoom = name => {
 }
 
 const deleteRoom = name => {
+  if (staticRooms.includes(name)) return console.log(`can't delete ${name} room`)
   const index = rooms.findIndex(room => room.name === name)
   if (index !== -1) return rooms.splice(index, 1)[0]
 }
