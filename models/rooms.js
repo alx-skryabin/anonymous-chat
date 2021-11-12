@@ -1,5 +1,5 @@
 const rooms = [
-  {name: 'common', password: false}, // default room
+  {name: 'free', password: false}, // default room
   {name: 'zelek', password: '12345'} // test private room
 ]
 

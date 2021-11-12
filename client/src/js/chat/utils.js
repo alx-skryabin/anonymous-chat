@@ -72,7 +72,7 @@ function addDeleteAnim($elem) {
 
 function getNameRoom() {
   const baseUri = new URL(window.location.href)
-  return baseUri.searchParams.get('room').toLowerCase()
+  return baseUri.searchParams.get('room')?.toLowerCase()
 }
 
 function initMeterialized() {
