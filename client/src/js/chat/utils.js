@@ -70,6 +70,11 @@ function addDeleteAnim($elem) {
   setTimeout(() => $elem.remove(), 1000)
 }
 
+function getNameRoom() {
+  const baseUri = new URL(window.location.href)
+  return baseUri.searchParams.get('room').toLowerCase()
+}
+
 function initMeterialized() {
   initTooltip()
   initMenu()
@@ -84,5 +89,6 @@ export {
   replaceSymbol,
   addPulseAnim,
   addDeleteAnim,
-  initMeterialized
+  initMeterialized,
+  getNameRoom
 }

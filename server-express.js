@@ -1,8 +1,17 @@
 const express = require('express')
 const cors = require('cors')
 const {v4} = require('uuid')
-const {addUser, getUsers} = require('./users')
 const path = require('path')
+const {
+  addUser,
+  getUser,
+  getUsers,
+  getAllUsers,
+  deleteUser
+} = require('./users')
+const {
+  getRoom
+} = require('./rooms')
 
 const app = express()
 const PORT = process.env.PORT || 3000
@@ -27,30 +36,55 @@ app.use(cors())
 const {httpServer, io} = require('./server-socket')(app)
 
 io.on('connection', socket => {
-  // // const room = v4()
-  // const room = 'myRoom1'
-  // socket.join(room)
-  // console.log(222, socket.rooms)
 
+  socket.on('SIGN_IN_ROOM', ({room}) => {
+    room = room || 'common'
 
-  // socket.on('login', room => {
-  //   const user = addUser(socket.id, room)
-  //   socket.join(user.room)
-  //   // socket.in(room).emit('create_room', {title: `'Someone\'s here ${user.name}'`})
-  //   io.in(room).emit('create_room', getUsers(room))
-  // })
+    const dataRoom = getRoom(room)
+    if (!dataRoom) {
+      socket.emit('SIGN_IN_ROOM', {
+        message: `Room «${room}» not found`,
+        code: 3
+      })
+      return
+    }
 
+    let {name, password} = dataRoom
+    if (password) {
+      const user = addUser(socket.id, name)
+      socket.join(user.room)
+
+      socket.emit('SIGN_IN_ROOM', {
+        message: `Room «${name}» required password`,
+        name,
+        password,
+        code: 2
+      })
+    } else {
+      const user = addUser(socket.id, name)
+      socket.join(user.room)
+
+      socket.emit('SIGN_IN_ROOM', {
+        room: user.room,
+        message: 'Sign in room success',
+        code: 1
+      })
+    }
+  })
 
   socket.on("disconnect", () => {
-    io.emit('CHAT_LEAVE_USER', {
+    const user = getUser(socket.id)
+    if (!user) return
+
+    deleteUser(socket.id)
+    io.in(user.room).emit('CHAT_LEAVE_USER', {
       message: 'User left the chat',
       countUser: io.engine.clientsCount,
     })
   })
 
   socket.on('CHAT_MSG', data => {
-    // io.to(room).emit('CHAT_MSG', {
-    io.emit('CHAT_MSG', {
+    io.in(getUser(socket.id).room).emit('CHAT_MSG', {
       message: data.message,
       userId: data.userId,
       avatar: data.avatar,
@@ -72,7 +106,7 @@ io.on('connection', socket => {
   })
 
   socket.on('CHAT_NEW_USER', data => {
-    io.emit('CHAT_MSG', {
+    io.in(getUser(socket.id).room).emit('CHAT_MSG', {
       message: 'New user is joined',
       userId: data.userId,
       avatar: data.avatar,

@@ -42,6 +42,34 @@ const content = () => {
   `
 }
 
+const room404 = msg => {
+  return `
+    <div class="container-center">
+      <h3 class="common-h3">${msg}</h3>
+      <a href="/" class="waves-effect waves-light">To main page</a>
+    </div>
+  `
+}
+
+const roomEnterPass = message => {
+  return `
+    <div class="container-center">
+      <h3 class="common-h3">${message}</h3>
+      <form class="form-password">
+        <div class="input-field">
+          <input id="roomPass" type="password">
+          <label for="roomPass">Password</label>
+        </div>
+        <div>
+          <button type="submit" class="waves-effect waves-light">
+            <i class="far fa-paper-plane"></i>
+          </button>
+        </div>
+      </form>
+    </div>
+  `
+}
+
 const template = () => {
   return `
     <div class="chat">
@@ -54,4 +82,4 @@ const template = () => {
   `
 }
 
-export {template, message}
+export {template, message, room404, roomEnterPass}

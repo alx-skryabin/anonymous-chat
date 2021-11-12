@@ -1,5 +1,4 @@
 import {io} from 'socket.io-client'
-import {message, template} from '../template/template.chat'
 import {StatusBar} from './status-bar'
 import {EditMsg} from './edit-msg'
 import {Modals} from './Modals'
@@ -13,8 +12,15 @@ import {
   initMeterialized,
   addPulseAnim,
   addDeleteAnim,
-  getDateTime
+  getDateTime,
+  getNameRoom
 } from './utils'
+import {
+  message,
+  template,
+  room404,
+  roomEnterPass
+} from '../template/template.chat'
 
 const socket = io(defineHostURI(), {})
 
@@ -22,15 +28,14 @@ class Chat {
   constructor() {
     this.userId = parseInt(String(new Date().getTime()))
     this.avatar = null
+    this.$app = document.querySelector('.app')
     this.$input = null
     this.$content = null
     this.statusBar = null
-
-    this.prepare()
   }
 
-  prepare() {
-    this.render()
+  render() {
+    this.toHTML()
     this.statusBar = new StatusBar()
     this.editMsg = new EditMsg(this.$input)
     this.emitNewUser()
@@ -39,24 +44,16 @@ class Chat {
     this.initEvent()
     initMeterialized()
     this.modals = new Modals()
-
-    // socket.emit('login', 'rooom2')
   }
 
-  render() {
-    document.querySelector('.app')
-      .innerHTML = template()
-
-    this.avatar = setAvatar()
+  toHTML() {
+    this.$app.innerHTML = template()
     this.$input = document.querySelector('#field')
     this.$content = document.querySelector('#chatContent')
+    this.avatar = setAvatar()
   }
 
   emitMsg() {
-    // socket.on('create_room', data => {
-    //   console.log(data)
-    // })
-
     // new message
     socket.on(EVENT.CHAT_MSG, data => {
       const text = replaceSymbol(data.message)
@@ -110,6 +107,19 @@ class Chat {
         })
       }
     })
+
+    const $submit = document.querySelector('#send')
+    const $avatar = document.querySelector('.footer_avatar')
+
+    // active form
+    $submit.addEventListener('click', () => this.sendMsg())
+
+    this.$input.addEventListener('keypress', e => {
+      if (e.key === 'Enter') this.sendMsg()
+    })
+
+    // change avatar
+    $avatar.addEventListener('click', () => this.avatar = setAvatar())
   }
 
   emitNewUser() {
@@ -146,21 +156,53 @@ class Chat {
     this.$input.value = ''
   }
 
-  initChat() {
-    const $submit = document.querySelector('#send')
-    const $avatar = document.querySelector('.footer_avatar')
+  validatePass(data) {
+    const {r, a} = JSON.parse(localStorage.getItem('auth')) || false
+    const {message, password, name} = data
 
-    // active form
-    $submit.addEventListener('click', () => this.sendMsg())
+    if (r === name && a) {
+      return this.render()
+    }
 
-    this.$input.addEventListener('keypress', e => {
-      if (e.key === 'Enter') this.sendMsg()
+    this.$app.innerHTML = roomEnterPass(message)
+    const $form = this.$app.querySelector('.form-password')
+
+    $form.onsubmit = e => {
+      e.preventDefault()
+
+      const enterPass = $form.elements.roomPass.value.trim()
+      if (enterPass === password.toString()) {
+        localStorage.setItem('auth', JSON.stringify({r: name, a: true}))
+        this.render()
+      } else {
+        $form.elements.roomPass.value = ''
+        M.toast({html: 'Invalid password', classes: 'rounded'})
+      }
+    }
+  }
+
+  socketLogin() {
+    socket.on(EVENT.SIGN_IN_ROOM, data => {
+      switch (data.code) {
+        case 1:
+          this.render()
+          break
+        case 2:
+          this.validatePass(data)
+          break
+        case 3:
+          this.$app.innerHTML = room404(data.message)
+          break
+      }
     })
+  }
 
-    // change avatar
-    $avatar.addEventListener('click', () => this.avatar = setAvatar())
+  initChat() {
+    this.socketLogin()
 
-    new CreateRoom()
+    socket.emit(EVENT.SIGN_IN_ROOM, {
+      room: getNameRoom()
+    })
   }
 }
 
