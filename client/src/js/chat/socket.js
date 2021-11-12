@@ -124,6 +124,9 @@ class Chat {
     // change avatar
     $avatar.addEventListener('click', () => this.avatar = setAvatar())
 
+    // create new room
+    new CreateRoom(socket)
+
     if (this.isDebug) this.debug()
   }
 
@@ -208,21 +211,12 @@ class Chat {
     $debug.style.display = 'block'
 
     $debug.addEventListener('click', e => {
-      if (e.target.dataset.debug === '11') {
-        console.log('11')
-      }
-      if (e.target.dataset.debug === '22') {
-        console.log('22')
-      }
+      if (e.target.dataset.debug === '11') socket.emit('11')
+      if (e.target.dataset.debug === '22') socket.emit('22')
     })
 
-    socket.on('11', data => {
-      console.log('11', data)
-    })
-
-    socket.on('22', data => {
-      console.log('22', data)
-    })
+    socket.on('11', data => console.log('11', data))
+    socket.on('22', data => console.log('22', data))
   }
 
   initChat() {

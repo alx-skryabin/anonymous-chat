@@ -16,6 +16,7 @@ const modalCreateRoom = () => {
             <input type="checkbox" name="isPrivate"/>
             <span>Private room</span>
           </label>
+          <div class="modal-tips"></div>
         </form>
       </div>
       <div class="modal-footer">

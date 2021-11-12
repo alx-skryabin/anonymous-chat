@@ -1,5 +1,5 @@
 const {addUser} = require('../models/users')
-const {getRoom} = require('../models/rooms')
+const {getRoom, addRoom} = require('../models/rooms')
 
 function signInRoom(socket) {
   socket.on('SIGN_IN_ROOM', ({room}) => {
@@ -35,6 +35,25 @@ function signInRoom(socket) {
         code: 1
       })
     }
+  })
+
+  socket.on('CREATE_ROOM', data => {
+    const {name, password} = data
+    const dataRoom = getRoom(name)
+
+    if (dataRoom) {
+      return socket.emit('CREATE_ROOM', {
+        message: `The name «${name}» already exists`,
+        code: 2
+      })
+    }
+
+    addRoom(name, password)
+    socket.emit('CREATE_ROOM', {
+      message: `Waiting... Going to the room «${name}»`,
+      name,
+      code: 1
+    })
   })
 }
 

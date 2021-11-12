@@ -1,3 +1,5 @@
+const {getAllUsers} = require('../models/users')
+const {getAllRooms} = require('../models/rooms')
 const {
   deleteUser,
   getUsers,
@@ -30,16 +32,9 @@ function messageService(io, socket) {
     })
   })
 
-  socket.on('11', () => {
-    io.emit('11', {
-      message: '11',
-    })
-  })
-  socket.on('22', () => {
-    io.emit('22', {
-      message: '22',
-    })
-  })
+  // for debug
+  socket.on('11', () => io.emit('11', getAllRooms()))
+  socket.on('22', () => io.emit('22', getAllUsers()))
 }
 
 module.exports = {messageService}
