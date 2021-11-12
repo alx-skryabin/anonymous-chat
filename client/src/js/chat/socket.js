@@ -28,6 +28,7 @@ class Chat {
   constructor() {
     this.userId = parseInt(String(new Date().getTime()))
     this.isDebug = false
+    this.isPrivate = false
     this.avatar = null
     this.$app = document.querySelector('.app')
     this.$input = null
@@ -37,13 +38,14 @@ class Chat {
 
   render() {
     this.toHTML()
-    this.statusBar = new StatusBar()
+    this.statusBar = new StatusBar(this)
     this.editMsg = new EditMsg(this.$input)
     this.emitNewUser()
     this.emitLeaveUser()
     this.emitMsg()
     this.initEvent()
     initMeterialized()
+    this.statusBar.setIsPrivate()
     this.modals = new Modals()
   }
 
@@ -162,6 +164,7 @@ class Chat {
   validatePass(data) {
     const {r, a} = JSON.parse(localStorage.getItem('auth')) || false
     const {message, password, name} = data
+    this.isPrivate = true
 
     if (r === name && a) {
       return this.render()
@@ -205,13 +208,13 @@ class Chat {
     $debug.style.display = 'block'
 
     $debug.addEventListener('click', e => {
-        if (e.target.dataset.debug === '11') {
-          console.log('11')
-        }
-        if (e.target.dataset.debug === '22') {
-          console.log('22')
-        }
-      })
+      if (e.target.dataset.debug === '11') {
+        console.log('11')
+      }
+      if (e.target.dataset.debug === '22') {
+        console.log('22')
+      }
+    })
 
     socket.on('11', data => {
       console.log('11', data)

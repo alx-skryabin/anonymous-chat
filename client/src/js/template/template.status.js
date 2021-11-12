@@ -4,11 +4,12 @@ const status = () => {
   return `
     <div class="status">
       <div class="status-count">
-        <i class="fas fa-users"></i> Online: <strong id="countUsers">0</strong>
+        <i class="fas fa-users"></i> <span>Online:</span> <strong id="countUsers">0</strong>
       </div>
       <div class="status-room">
-        <i class="fas fa-couch"></i> Room: <strong>${getNameRoom() || 'free'}</strong>
+        <i class="fas fa-couch"></i> <span>Room:</span> <strong>${getNameRoom() || 'free'}</strong>
       </div>
+      <div class="status-private"></div>
       ${debug()}
     </div>
   `
