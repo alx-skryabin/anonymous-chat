@@ -12,6 +12,7 @@
   margin-top: 10px;
 }
 
+/*list room*/
 .list-rooms-item {
   display: flex;
   align-items: center;
@@ -52,4 +53,26 @@
   .list-rooms-item span {
     display: none;
   }
+}
+
+/*list user*/
+.list-users {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.list-users img {
+  background: #eee;
+  width: 80px;
+  height: 80px;
+  padding: 10px;
+  margin: 5px;
+  border-radius: 5px;
+  cursor: crosshair;
+  transition: .2s;
+}
+
+.list-users img:hover {
+  background: tomato;
+  transition: .2s;
 }

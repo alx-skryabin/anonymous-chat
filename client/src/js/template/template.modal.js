@@ -43,8 +43,23 @@ const modalListRoom = () => {
   return `
     <div id="modalListRoom" class="modal bottom-sheet modal-list-room">
       <div class="modal-content">
-        <h5><i class="far fa-comments"></i></i> List rooms</h5>
+        <h5><i class="far fa-comments"></i> List rooms</h5>
         <div class="list-rooms"></div>
+      </div>
+      <div class="modal-footer">
+        <a href="#" class="modal-close waves-effect btn-flat">Close</a>
+      </div>
+    </div>
+  `
+}
+
+const modalUserKick = () => {
+  return `
+    <div id="modalUserKick" class="modal bottom-sheet modal-user-kick">
+      <div class="modal-content">
+        <h5><i class="fas fa-crosshairs"></i> Kick out user</h5>
+        <p>Select a user to start voting on his expulsion <i class="fas fa-bomb"></i></p>
+        <div class="list-users"></div>
       </div>
       <div class="modal-footer">
         <a href="#" class="modal-close waves-effect btn-flat">Close</a>
@@ -58,6 +73,7 @@ const modals = () => {
      ${modalCreateRoom()}
      ${modalRoot()}
      ${modalListRoom()}
+     ${modalUserKick()}
   `
 }
 

@@ -10,6 +10,7 @@ const EVENT = {
   CREATE_ROOM: 'CREATE_ROOM',
   SIGN_IN_ROOM: 'SIGN_IN_ROOM',
   GET_ROOMS: 'GET_ROOMS',
+  GET_USERS: 'GET_USERS',
 }
 
 export {URIlocal, URIprod, EVENT}

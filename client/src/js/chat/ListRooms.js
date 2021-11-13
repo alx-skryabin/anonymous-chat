@@ -5,7 +5,6 @@ export class ListRooms {
   constructor(socket, modals) {
     this.socket = socket
     this.modals = modals
-    this.root = this.modals.listRoom.el
     this.prepare()
   }
 
@@ -21,7 +20,7 @@ export class ListRooms {
   }
 
   setEventSocket() {
-    const $list = this.root.querySelector('.list-rooms')
+    const $list = this.modals.listRoom.el.querySelector('.list-rooms')
 
     this.socket.on(EVENT.GET_ROOMS, data => {
       $list.innerHTML = ''

@@ -55,6 +55,14 @@ function messageService(io, socket) {
     })
   })
 
+  socket.on('GET_USERS', () => {
+    const user = getUser(socket.id)
+
+    io.in(socket.id).emit('GET_USERS', {
+      users: getUsers(user.room)
+    })
+  })
+
   socket.on('CHANGE_AVATAR', avatar => {
     const data = getUser(socket.id)
     data.avatar = avatar

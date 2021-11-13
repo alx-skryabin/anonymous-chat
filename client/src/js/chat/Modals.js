@@ -3,6 +3,7 @@ export class Modals {
     this.createRoom = null
     this.rootAccess = null
     this.listRoom = null
+    this.userKick = null
 
     this.init()
   }
@@ -11,5 +12,6 @@ export class Modals {
     this.createRoom = M.Modal.getInstance(document.getElementById('modalCreateRoom'))
     this.rootAccess = M.Modal.getInstance(document.getElementById('modalRootAccess'))
     this.listRoom = M.Modal.getInstance(document.getElementById('modalListRoom'))
+    this.userKick = M.Modal.getInstance(document.getElementById('modalUserKick'))
   }
 }

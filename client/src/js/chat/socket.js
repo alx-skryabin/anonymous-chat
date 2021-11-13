@@ -4,6 +4,7 @@ import {EditMsg} from './edit-msg'
 import {Modals} from './Modals'
 import {CreateRoom} from './CreateRoom'
 import {ListRooms} from './ListRooms'
+import {KickUser} from './KickUser'
 import {EVENT} from './config'
 import {
   defineHostURI,
@@ -134,6 +135,9 @@ class Chat {
 
     // output list rooms
     new ListRooms(socket, this.modals)
+
+    // kick out user
+    new KickUser(socket, this.modals)
 
     if (this.isDebug) this.debug()
   }

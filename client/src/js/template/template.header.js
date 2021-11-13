@@ -24,8 +24,8 @@ const menuSidenav = () => {
         </div>
       </li>
       <li><a href="#modalCreateRoom" class="modal-trigger"><i class="fas fa-plus"></i> Create room</a></li>
-      <li><a href="#"><i class="fas fa-crosshairs"></i> Kick out user</a></li>
-      <li><a href="#modalListRoom"  class="modal-trigger"><i class="far fa-comments"></i> List rooms</a></li>
+      <li><a href="#modalUserKick" class="modal-trigger"><i class="fas fa-crosshairs"></i> Kick out user</a></li>
+      <li><a href="#modalListRoom" class="modal-trigger"><i class="far fa-comments"></i> List rooms</a></li>
       <li><div class="divider"></div></li>
       <li><a href="#modalRootAccess" class="modal-trigger"><i class="fas fa-fingerprint"></i> I am root</a></li>
     </ul>
