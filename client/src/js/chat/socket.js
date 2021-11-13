@@ -3,6 +3,7 @@ import {StatusBar} from './status-bar'
 import {EditMsg} from './edit-msg'
 import {Modals} from './Modals'
 import {CreateRoom} from './CreateRoom'
+import {ListRooms} from './ListRooms'
 import {EVENT} from './config'
 import {
   defineHostURI,
@@ -33,20 +34,19 @@ class Chat {
     this.$app = document.querySelector('.app')
     this.$input = null
     this.$content = null
-    this.statusBar = null
   }
 
   render() {
     this.toHTML()
+    initMeterialized()
     this.statusBar = new StatusBar(this)
     this.editMsg = new EditMsg(this.$input)
+    this.modals = new Modals()
     this.emitNewUser()
     this.emitLeaveUser()
     this.emitMsg()
     this.initEvent()
-    initMeterialized()
     this.statusBar.setIsPrivate()
-    this.modals = new Modals()
   }
 
   toHTML() {
@@ -126,6 +126,9 @@ class Chat {
 
     // create new room
     new CreateRoom(socket)
+
+    // output list rooms
+    new ListRooms(socket, this.modals)
 
     if (this.isDebug) this.debug()
   }

@@ -39,10 +39,25 @@ const modalRoot = () => {
   `
 }
 
+const modalListRoom = () => {
+  return `
+    <div id="modalListRoom" class="modal bottom-sheet modal-list-room">
+      <div class="modal-content">
+        <h5><i class="far fa-comments"></i></i> List rooms</h5>
+        <div class="list-rooms"></div>
+      </div>
+      <div class="modal-footer">
+        <a href="#" class="modal-close waves-effect btn-flat">Close</a>
+      </div>
+    </div>
+  `
+}
+
 const modals = () => {
   return `
      ${modalCreateRoom()}
      ${modalRoot()}
+     ${modalListRoom()}
   `
 }
 

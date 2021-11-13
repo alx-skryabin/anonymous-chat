@@ -48,6 +48,12 @@ function messageService(io, socket) {
     })
   })
 
+  socket.on('GET_ROOMS', () => {
+    io.in(socket.id).emit('GET_ROOMS', {
+      rooms: getAllRooms()
+    })
+  })
+
   // for debug
   socket.on('11', () => io.emit('11', getAllRooms()))
   socket.on('22', () => io.emit('22', getAllUsers()))

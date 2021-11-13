@@ -2,6 +2,7 @@ export class Modals {
   constructor() {
     this.createRoom = null
     this.rootAccess = null
+    this.listRoom = null
 
     this.init()
   }
@@ -9,9 +10,6 @@ export class Modals {
   init() {
     this.createRoom = M.Modal.getInstance(document.getElementById('modalCreateRoom'))
     this.rootAccess = M.Modal.getInstance(document.getElementById('modalRootAccess'))
-  }
-
-  getEl(name) {
-    return this[name].$el[0]
+    this.listRoom = M.Modal.getInstance(document.getElementById('modalListRoom'))
   }
 }
