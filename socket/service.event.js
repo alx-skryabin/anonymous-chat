@@ -6,7 +6,8 @@ const {
   deleteUser,
   getAllUsers,
   getUsers,
-  getUser
+  getUser,
+  addUser
 } = require('../models/users')
 const {v4} = require('uuid')
 
@@ -52,6 +53,13 @@ function messageService(io, socket) {
     io.in(socket.id).emit('GET_ROOMS', {
       rooms: getAllRooms()
     })
+  })
+
+  socket.on('CHANGE_AVATAR', avatar => {
+    const data = getUser(socket.id)
+    data.avatar = avatar
+    deleteUser(socket.id)
+    addUser(socket.id, data.room, avatar)
   })
 
   // for debug

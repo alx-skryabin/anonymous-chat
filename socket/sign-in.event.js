@@ -2,21 +2,20 @@ const {addUser} = require('../models/users')
 const {getRoom, addRoom} = require('../models/rooms')
 
 function signInRoom(socket) {
-  socket.on('SIGN_IN_ROOM', ({room}) => {
+  socket.on('SIGN_IN_ROOM', ({room, avatar}) => {
     room = room || 'free'
 
     const dataRoom = getRoom(room)
     if (!dataRoom) {
-      socket.emit('SIGN_IN_ROOM', {
+      return socket.emit('SIGN_IN_ROOM', {
         message: `Room «${room}» not found`,
         code: 3
       })
-      return
     }
 
     let {name, password} = dataRoom
     if (password) {
-      const user = addUser(socket.id, name)
+      const user = addUser(socket.id, name, avatar)
       socket.join(user.room)
 
       socket.emit('SIGN_IN_ROOM', {
@@ -26,7 +25,7 @@ function signInRoom(socket) {
         code: 2
       })
     } else {
-      const user = addUser(socket.id, name)
+      const user = addUser(socket.id, name, avatar)
       socket.join(user.room)
 
       socket.emit('SIGN_IN_ROOM', {

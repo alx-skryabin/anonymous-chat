@@ -11,13 +11,11 @@ function getAvatarURI() {
   return url.generateRandomAvatar()
 }
 
-function setAvatar() {
+function setAvatar(url) {
   const $img = document.querySelector('.footer_avatar img')
   const $imgMenu = document.querySelector('.user-view .circle')
-  const url = getAvatarURI()
   $img.setAttribute('src', url)
   $imgMenu.setAttribute('src', url)
-  return url
 }
 
 function scrollToMsg($el) {
@@ -90,5 +88,6 @@ export {
   addPulseAnim,
   addDeleteAnim,
   initMeterialized,
+  getAvatarURI,
   getNameRoom
 }

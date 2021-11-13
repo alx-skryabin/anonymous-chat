@@ -14,7 +14,8 @@ import {
   addPulseAnim,
   addDeleteAnim,
   getDateTime,
-  getNameRoom
+  getNameRoom,
+  getAvatarURI
 } from './utils'
 import {
   message,
@@ -30,7 +31,7 @@ class Chat {
     this.userId = parseInt(String(new Date().getTime()))
     this.isDebug = false
     this.isPrivate = false
-    this.avatar = null
+    this.avatar = getAvatarURI()
     this.$app = document.querySelector('.app')
     this.$input = null
     this.$content = null
@@ -53,7 +54,7 @@ class Chat {
     this.$app.innerHTML = template()
     this.$input = document.querySelector('#field')
     this.$content = document.querySelector('#chatContent')
-    this.avatar = setAvatar()
+    setAvatar(this.avatar)
   }
 
   emitMsg() {
@@ -122,7 +123,11 @@ class Chat {
     })
 
     // change avatar
-    $avatar.addEventListener('click', () => this.avatar = setAvatar())
+    $avatar.addEventListener('click', () => {
+      this.avatar = getAvatarURI()
+      setAvatar(this.avatar)
+      socket.emit(EVENT.CHANGE_AVATAR, this.avatar)
+    })
 
     // create new room
     new CreateRoom(socket)
@@ -226,7 +231,8 @@ class Chat {
     this.socketLogin()
 
     socket.emit(EVENT.SIGN_IN_ROOM, {
-      room: getNameRoom()
+      room: getNameRoom(),
+      avatar: this.avatar
     })
   }
 }
