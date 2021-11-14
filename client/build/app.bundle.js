@@ -1678,6 +1678,259 @@ module.exports = yeast;
 
 /***/ }),
 
+/***/ "./src/js/chat/Chat.js":
+/*!*****************************!*\
+  !*** ./src/js/chat/Chat.js ***!
+  \*****************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "Chat": () => (/* binding */ Chat)
+/* harmony export */ });
+/* harmony import */ var socket_io_client__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! socket.io-client */ "./node_modules/socket.io-client/build/esm/index.js");
+/* harmony import */ var _status_bar__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./status-bar */ "./src/js/chat/status-bar.js");
+/* harmony import */ var _edit_msg__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./edit-msg */ "./src/js/chat/edit-msg.js");
+/* harmony import */ var _Modals__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./Modals */ "./src/js/chat/Modals.js");
+/* harmony import */ var _CreateRoom__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./CreateRoom */ "./src/js/chat/CreateRoom.js");
+/* harmony import */ var _ListRooms__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./ListRooms */ "./src/js/chat/ListRooms.js");
+/* harmony import */ var _KickUser__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./KickUser */ "./src/js/chat/KickUser.js");
+/* harmony import */ var _config__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./config */ "./src/js/chat/config.js");
+/* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./utils */ "./src/js/chat/utils.js");
+/* harmony import */ var _template_template_chat__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ../template/template.chat */ "./src/js/template/template.chat.js");
+
+
+
+
+
+
+
+
+
+
+
+const socket = (0,socket_io_client__WEBPACK_IMPORTED_MODULE_0__.io)((0,_utils__WEBPACK_IMPORTED_MODULE_8__.defineHostURI)(), {})
+
+class Chat {
+  constructor() {
+    this.userId = parseInt(String(new Date().getTime()))
+    this.isDebug = false
+    this.isPrivate = false
+    this.avatar = (0,_utils__WEBPACK_IMPORTED_MODULE_8__.getAvatarURI)()
+    this.$app = document.querySelector('.app')
+    this.$input = null
+    this.$content = null
+  }
+
+  render() {
+    this.toHTML()
+    ;(0,_utils__WEBPACK_IMPORTED_MODULE_8__.initMeterialized)()
+    this.statusBar = new _status_bar__WEBPACK_IMPORTED_MODULE_1__.StatusBar(this)
+    this.editMsg = new _edit_msg__WEBPACK_IMPORTED_MODULE_2__.EditMsg(this.$input)
+    this.modals = new _Modals__WEBPACK_IMPORTED_MODULE_3__.Modals()
+    this.emitNewUser()
+    this.emitLeaveUser()
+    this.emitMsg()
+    this.initEvent()
+    this.statusBar.setIsPrivate()
+  }
+
+  toHTML() {
+    this.$app.innerHTML = (0,_template_template_chat__WEBPACK_IMPORTED_MODULE_9__.template)()
+    this.$input = document.querySelector('#field')
+    this.$content = document.querySelector('#chatContent')
+    ;(0,_utils__WEBPACK_IMPORTED_MODULE_8__.setAvatar)(this.avatar)
+  }
+
+  emitMsg() {
+    // new message
+    socket.on(_config__WEBPACK_IMPORTED_MODULE_7__.EVENT.CHAT_MSG, data => {
+      const text = (0,_utils__WEBPACK_IMPORTED_MODULE_8__.replaceSymbol)(data.message)
+
+      const $msg = (data.userId === this.userId)
+        ? (0,_template_template_chat__WEBPACK_IMPORTED_MODULE_9__.message)('owner', text, data.msgId, this.avatar)
+        : (0,_template_template_chat__WEBPACK_IMPORTED_MODULE_9__.message)('friend', text, data.msgId, data.avatar)
+
+      this.$content.appendChild($msg)
+      document.querySelector('head title').textContent = text.toString()
+      ;(0,_utils__WEBPACK_IMPORTED_MODULE_8__.scrollToMsg)($msg)
+
+      if (data.countUser) {
+        this.statusBar.updateCountUsers(data.countUser)
+      }
+    })
+
+    // edit message
+    socket.on(_config__WEBPACK_IMPORTED_MODULE_7__.EVENT.EDIT_MSG, data => {
+      const $editedMsg = document.getElementById(data.msgId)
+      if ($editedMsg) {
+        const $msg = $editedMsg.querySelector('.msg-chat-text')
+        $msg.classList.add('modified')
+        $msg.textContent = (0,_utils__WEBPACK_IMPORTED_MODULE_8__.replaceSymbol)(data.message).toString()
+        const $date = $editedMsg.querySelector('.msg-chat-date')
+        $date.textContent = 'edited ' + (0,_utils__WEBPACK_IMPORTED_MODULE_8__.getDateTime)()
+        ;(0,_utils__WEBPACK_IMPORTED_MODULE_8__.addPulseAnim)($msg, 6)
+        M.toast({html: 'The message was edited', classes: 'rounded'})
+      }
+    })
+
+    // delete message
+    socket.on(_config__WEBPACK_IMPORTED_MODULE_7__.EVENT.DELETE_MSG, data => {
+      const $editedMsg = document.getElementById(data.msgId)
+      if ($editedMsg) {
+        (0,_utils__WEBPACK_IMPORTED_MODULE_8__.addDeleteAnim)($editedMsg)
+        M.toast({html: 'The message was deleted', classes: 'rounded'})
+      }
+    })
+  }
+
+  initEvent() {
+    this.$content.addEventListener('click', e => {
+      if (e.target.dataset.action === 'edit-msg') {
+        this.editMsg.check(e.target)
+      }
+
+      if (e.target.dataset.action === 'delete-msg') {
+        socket.emit(_config__WEBPACK_IMPORTED_MODULE_7__.EVENT.DELETE_MSG, {
+          msgId: this.editMsg.delete(e.target)
+        })
+      }
+    })
+
+    const $submit = document.querySelector('#send')
+    const $avatar = document.querySelector('.footer_avatar')
+
+    // active form
+    $submit.addEventListener('click', () => this.sendMsg())
+
+    this.$input.addEventListener('keypress', e => {
+      if (e.key === 'Enter') this.sendMsg()
+    })
+
+    // change avatar
+    $avatar.addEventListener('click', () => {
+      this.avatar = (0,_utils__WEBPACK_IMPORTED_MODULE_8__.getAvatarURI)()
+      ;(0,_utils__WEBPACK_IMPORTED_MODULE_8__.setAvatar)(this.avatar)
+      socket.emit(_config__WEBPACK_IMPORTED_MODULE_7__.EVENT.CHANGE_AVATAR, this.avatar)
+    })
+
+    // create new room
+    new _CreateRoom__WEBPACK_IMPORTED_MODULE_4__.CreateRoom(socket)
+
+    // output list rooms
+    new _ListRooms__WEBPACK_IMPORTED_MODULE_5__.ListRooms(socket, this.modals)
+
+    // kick out user
+    new _KickUser__WEBPACK_IMPORTED_MODULE_6__.KickUser(socket, this.modals)
+
+    if (this.isDebug) this.debug()
+  }
+
+  emitNewUser() {
+    socket.emit(_config__WEBPACK_IMPORTED_MODULE_7__.EVENT.CHAT_NEW_USER, {
+      userId: this.userId,
+      avatar: this.avatar
+    })
+  }
+
+  emitLeaveUser() {
+    socket.on(_config__WEBPACK_IMPORTED_MODULE_7__.EVENT.CHAT_LEAVE_USER, data => {
+      this.statusBar.updateCountUsers(data.countUser)
+      M.toast({html: data.message, classes: 'rounded'})
+    })
+  }
+
+  sendMsg() {
+    if (!this.$input.value.trim()) return
+
+    if (!this.editMsg.isEdit) {
+      socket.emit(_config__WEBPACK_IMPORTED_MODULE_7__.EVENT.CHAT_MSG, {
+        message: this.$input.value,
+        userId: this.userId,
+        avatar: this.avatar
+      })
+    } else {
+      socket.emit(_config__WEBPACK_IMPORTED_MODULE_7__.EVENT.EDIT_MSG, {
+        message: this.$input.value,
+        msgId: this.editMsg.msgId
+      })
+      this.editMsg.reset()
+    }
+
+    this.$input.value = ''
+  }
+
+  validatePass(data) {
+    const {r, a} = JSON.parse(localStorage.getItem('auth')) || false
+    const {message, password, name} = data
+    this.isPrivate = true
+
+    if (r === name && a) {
+      return this.render()
+    }
+
+    this.$app.innerHTML = (0,_template_template_chat__WEBPACK_IMPORTED_MODULE_9__.roomEnterPass)(message)
+    const $form = this.$app.querySelector('.form-password')
+
+    $form.onsubmit = e => {
+      e.preventDefault()
+
+      const enterPass = $form.elements.roomPass.value.trim()
+      if (enterPass === password.toString()) {
+        localStorage.setItem('auth', JSON.stringify({r: name, a: true}))
+        this.render()
+      } else {
+        $form.elements.roomPass.value = ''
+        M.toast({html: 'Invalid password', classes: 'rounded'})
+      }
+    }
+  }
+
+  socketLogin() {
+    socket.on(_config__WEBPACK_IMPORTED_MODULE_7__.EVENT.SIGN_IN_ROOM, data => {
+      switch (data.code) {
+        case 1:
+          this.render()
+          break
+        case 2:
+          this.validatePass(data)
+          break
+        case 3:
+          this.$app.innerHTML = (0,_template_template_chat__WEBPACK_IMPORTED_MODULE_9__.room404)(data.message)
+          break
+      }
+    })
+  }
+
+  debug() {
+    const $debug = this.$app.querySelector('.debug')
+    $debug.style.display = 'block'
+
+    $debug.addEventListener('click', e => {
+      if (e.target.dataset.debug === '11') socket.emit('11')
+      if (e.target.dataset.debug === '22') socket.emit('22')
+    })
+
+    socket.on('11', data => console.log('room', data))
+    socket.on('22', data => console.log('user', data))
+  }
+
+  initChat() {
+    this.socketLogin()
+
+    socket.emit(_config__WEBPACK_IMPORTED_MODULE_7__.EVENT.SIGN_IN_ROOM, {
+      room: (0,_utils__WEBPACK_IMPORTED_MODULE_8__.getNameRoom)(),
+      avatar: this.avatar
+    })
+  }
+}
+
+
+
+
+/***/ }),
+
 /***/ "./src/js/chat/CreateRoom.js":
 /*!***********************************!*\
   !*** ./src/js/chat/CreateRoom.js ***!
@@ -1756,6 +2009,215 @@ class CreateRoom {
 
 /***/ }),
 
+/***/ "./src/js/chat/KickUser.js":
+/*!*********************************!*\
+  !*** ./src/js/chat/KickUser.js ***!
+  \*********************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "KickUser": () => (/* binding */ KickUser)
+/* harmony export */ });
+/* harmony import */ var _config__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./config */ "./src/js/chat/config.js");
+/* harmony import */ var _template_template_blocks__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../template/template.blocks */ "./src/js/template/template.blocks.js");
+
+
+
+class KickUser {
+  constructor(socket, modals) {
+    this.socket = socket
+    this.modals = modals
+    this.room = null
+    this.$list = this.modals.userKick.el.querySelector('.list-users')
+    this.$voting = this.modals.votingKick.el.querySelector('.voting-box')
+    this.$timer = this.modals.votingKick.el.querySelector('.determinate')
+    this.prepare()
+  }
+
+  prepare() {
+    this.setEventSocket()
+    this.setEventOpen()
+    this.setEventKick()
+  }
+
+  setEventOpen() {
+    this.modals.userKick.options.onOpenStart = () => {
+      this.socket.emit(_config__WEBPACK_IMPORTED_MODULE_0__.EVENT.GET_USERS)
+      this.$timer.style.width = '100%'
+    }
+  }
+
+  setEventKick() {
+    this.$list.addEventListener('click', e => {
+      if (e.target.dataset.action === 'kick') {
+        this.modals.userKick.close()
+        this.socket.emit(_config__WEBPACK_IMPORTED_MODULE_0__.EVENT.VOTING_INIT, {
+          id: e.target.dataset.id
+        })
+      }
+    })
+
+    this.$voting.addEventListener('click', e => {
+      const value = e.target.dataset.voting
+      if (value) {
+        this.modals.votingKick.close()
+
+        this.socket.emit(_config__WEBPACK_IMPORTED_MODULE_0__.EVENT.VOTING_POINT, {
+          room: this.room,
+          value
+        })
+      }
+    })
+  }
+
+  setEventSocket() {
+    this.socket.on(_config__WEBPACK_IMPORTED_MODULE_0__.EVENT.GET_USERS, data => {
+      this.$list.innerHTML = ''
+
+      data.users.map(user => {
+        const $item = this.createElItem(user)
+        this.$list.append($item)
+      })
+    })
+
+    this.socket.on(_config__WEBPACK_IMPORTED_MODULE_0__.EVENT.VOTING_INIT, data => {
+      const {avatar, room, allowVoting, time} = data
+
+      if (allowVoting) {
+        this.room = room
+        this.modals.votingKick.open()
+        this.timerStart(time)
+        this.modals.votingKick.options.dismissible = false
+        this.$voting.querySelector('img').setAttribute('src', avatar)
+      } else {
+        M.toast({html: 'Wait for the completion of the previous vote', classes: 'rounded'})
+      }
+    })
+
+    this.socket.on(_config__WEBPACK_IMPORTED_MODULE_0__.EVENT.VOTING_RESULT, data => {
+      this.modals.votingKick.close()
+      this.modals.votingResult.open()
+      this.declareVoting(data)
+    })
+
+    this.socket.on(_config__WEBPACK_IMPORTED_MODULE_0__.EVENT.VOTING_FINISH, ({d, l}) => {
+      if (d > l) {
+        this.socket.disconnect()
+        const $app = document.querySelector('.app')
+        $app.innerHTML = (0,_template_template_blocks__WEBPACK_IMPORTED_MODULE_1__.youKick)(d, l)
+      }
+    })
+  }
+
+  declareVoting(data) {
+    const $box = this.modals.votingResult.el.querySelector('.voting-box-result')
+    $box.innerHTML = (0,_template_template_blocks__WEBPACK_IMPORTED_MODULE_1__.resultVoting)(data)
+  }
+
+  timerStart(time) {
+    let progress = 100
+    const step = progress / time
+
+    let timeId = setInterval(() => {
+      time--
+      progress -= step
+      this.$timer.style.width = `${progress}%`
+      if (time === 0) clearInterval(timeId)
+    }, 1000)
+  }
+
+  createElItem(user) {
+    const $el = document.createElement('img')
+    $el.setAttribute('src', user.avatar)
+    $el.setAttribute('data-id', user.id)
+    $el.setAttribute('data-action', 'kick')
+    $el.setAttribute('alt', 'user')
+    return $el;
+  }
+}
+
+
+/***/ }),
+
+/***/ "./src/js/chat/ListRooms.js":
+/*!**********************************!*\
+  !*** ./src/js/chat/ListRooms.js ***!
+  \**********************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "ListRooms": () => (/* binding */ ListRooms)
+/* harmony export */ });
+/* harmony import */ var _config__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./config */ "./src/js/chat/config.js");
+/* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./utils */ "./src/js/chat/utils.js");
+
+
+
+class ListRooms {
+  constructor(socket, modals) {
+    this.socket = socket
+    this.modals = modals
+    this.prepare()
+  }
+
+  prepare() {
+    this.setEventSocket()
+    this.setEventOpen()
+  }
+
+  setEventOpen() {
+    this.modals.listRoom.options.onOpenStart = () => {
+      this.socket.emit(_config__WEBPACK_IMPORTED_MODULE_0__.EVENT.GET_ROOMS)
+    }
+  }
+
+  setEventSocket() {
+    const $list = this.modals.listRoom.el.querySelector('.list-rooms')
+
+    this.socket.on(_config__WEBPACK_IMPORTED_MODULE_0__.EVENT.GET_ROOMS, data => {
+      $list.innerHTML = ''
+      data.rooms.map(room => {
+        const $item = this.createElItem(room.name)
+        $item.innerHTML = this.toHTMLitem(room)
+        $list.append($item)
+      })
+    })
+  }
+
+  createElItem(room) {
+    const $item = document.createElement('div')
+    $item.classList.add('list-rooms-item')
+    const currentRoom = (0,_utils__WEBPACK_IMPORTED_MODULE_1__.getNameRoom)() || 'free'
+    if (currentRoom === room) $item.classList.add('active')
+    return $item
+  }
+
+  toHTMLitem(data) {
+    const {name, password} = data
+    const access = password ? 'Private' : 'Public'
+    const accessIcon = `<i class="fas ${password ? 'fa-lock' : 'fa-lock-open'}"></i>`
+    const uri = this.defineUriRoom(name)
+
+    return `
+      <div><i class="fas fa-couch"></i> <span>Room:</span> <strong>${name}</strong></div>
+      <div>${accessIcon} <span>Access:</span> <strong>${access}</strong></div>
+      <div><i class="fas fa-external-link-square-alt"></i> <span>Link:</span> <a href="${uri}">GO</a></div>
+    `
+  }
+
+  defineUriRoom(room) {
+    if (room === 'free') return window.location.origin
+    return `${window.location.origin}/?room=${room}`
+  }
+}
+
+
+/***/ }),
+
 /***/ "./src/js/chat/Modals.js":
 /*!*******************************!*\
   !*** ./src/js/chat/Modals.js ***!
@@ -1771,6 +2233,10 @@ class Modals {
   constructor() {
     this.createRoom = null
     this.rootAccess = null
+    this.listRoom = null
+    this.userKick = null
+    this.votingKick = null
+    this.votingResult = null
 
     this.init()
   }
@@ -1778,10 +2244,10 @@ class Modals {
   init() {
     this.createRoom = M.Modal.getInstance(document.getElementById('modalCreateRoom'))
     this.rootAccess = M.Modal.getInstance(document.getElementById('modalRootAccess'))
-  }
-
-  getEl(name) {
-    return this[name].$el[0]
+    this.listRoom = M.Modal.getInstance(document.getElementById('modalListRoom'))
+    this.userKick = M.Modal.getInstance(document.getElementById('modalUserKick'))
+    this.votingKick = M.Modal.getInstance(document.getElementById('modalVotingKick'))
+    this.votingResult = M.Modal.getInstance(document.getElementById('modalVotingResult'))
   }
 }
 
@@ -1809,8 +2275,15 @@ const EVENT = {
   DELETE_MSG: 'DELETE_MSG',
   CHAT_NEW_USER: 'CHAT_NEW_USER',
   CHAT_LEAVE_USER: 'CHAT_LEAVE_USER',
+  CHANGE_AVATAR: 'CHANGE_AVATAR',
   CREATE_ROOM: 'CREATE_ROOM',
-  SIGN_IN_ROOM: 'SIGN_IN_ROOM'
+  SIGN_IN_ROOM: 'SIGN_IN_ROOM',
+  GET_ROOMS: 'GET_ROOMS',
+  GET_USERS: 'GET_USERS',
+  VOTING_INIT: 'VOTING_INIT',
+  VOTING_POINT: 'VOTING_POINT',
+  VOTING_RESULT: 'VOTING_RESULT',
+  VOTING_FINISH: 'VOTING_FINISH',
 }
 
 
@@ -1885,245 +2358,6 @@ class EditMsg {
 
 /***/ }),
 
-/***/ "./src/js/chat/socket.js":
-/*!*******************************!*\
-  !*** ./src/js/chat/socket.js ***!
-  \*******************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "Chat": () => (/* binding */ Chat)
-/* harmony export */ });
-/* harmony import */ var socket_io_client__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! socket.io-client */ "./node_modules/socket.io-client/build/esm/index.js");
-/* harmony import */ var _status_bar__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./status-bar */ "./src/js/chat/status-bar.js");
-/* harmony import */ var _edit_msg__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./edit-msg */ "./src/js/chat/edit-msg.js");
-/* harmony import */ var _Modals__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./Modals */ "./src/js/chat/Modals.js");
-/* harmony import */ var _CreateRoom__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./CreateRoom */ "./src/js/chat/CreateRoom.js");
-/* harmony import */ var _config__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./config */ "./src/js/chat/config.js");
-/* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./utils */ "./src/js/chat/utils.js");
-/* harmony import */ var _template_template_chat__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../template/template.chat */ "./src/js/template/template.chat.js");
-
-
-
-
-
-
-
-
-
-const socket = (0,socket_io_client__WEBPACK_IMPORTED_MODULE_0__.io)((0,_utils__WEBPACK_IMPORTED_MODULE_6__.defineHostURI)(), {})
-
-class Chat {
-  constructor() {
-    this.userId = parseInt(String(new Date().getTime()))
-    this.isDebug = false
-    this.isPrivate = false
-    this.avatar = null
-    this.$app = document.querySelector('.app')
-    this.$input = null
-    this.$content = null
-    this.statusBar = null
-  }
-
-  render() {
-    this.toHTML()
-    this.statusBar = new _status_bar__WEBPACK_IMPORTED_MODULE_1__.StatusBar(this)
-    this.editMsg = new _edit_msg__WEBPACK_IMPORTED_MODULE_2__.EditMsg(this.$input)
-    this.emitNewUser()
-    this.emitLeaveUser()
-    this.emitMsg()
-    this.initEvent()
-    ;(0,_utils__WEBPACK_IMPORTED_MODULE_6__.initMeterialized)()
-    this.statusBar.setIsPrivate()
-    this.modals = new _Modals__WEBPACK_IMPORTED_MODULE_3__.Modals()
-  }
-
-  toHTML() {
-    this.$app.innerHTML = (0,_template_template_chat__WEBPACK_IMPORTED_MODULE_7__.template)()
-    this.$input = document.querySelector('#field')
-    this.$content = document.querySelector('#chatContent')
-    this.avatar = (0,_utils__WEBPACK_IMPORTED_MODULE_6__.setAvatar)()
-  }
-
-  emitMsg() {
-    // new message
-    socket.on(_config__WEBPACK_IMPORTED_MODULE_5__.EVENT.CHAT_MSG, data => {
-      const text = (0,_utils__WEBPACK_IMPORTED_MODULE_6__.replaceSymbol)(data.message)
-
-      const $msg = (data.userId === this.userId)
-        ? (0,_template_template_chat__WEBPACK_IMPORTED_MODULE_7__.message)('owner', text, data.msgId, this.avatar)
-        : (0,_template_template_chat__WEBPACK_IMPORTED_MODULE_7__.message)('friend', text, data.msgId, data.avatar)
-
-      this.$content.appendChild($msg)
-      document.querySelector('head title').textContent = text.toString()
-      ;(0,_utils__WEBPACK_IMPORTED_MODULE_6__.scrollToMsg)($msg)
-
-      if (data.countUser) {
-        this.statusBar.updateCountUsers(data.countUser)
-      }
-    })
-
-    // edit message
-    socket.on(_config__WEBPACK_IMPORTED_MODULE_5__.EVENT.EDIT_MSG, data => {
-      const $editedMsg = document.getElementById(data.msgId)
-      if ($editedMsg) {
-        const $msg = $editedMsg.querySelector('.msg-chat-text')
-        $msg.classList.add('modified')
-        $msg.textContent = (0,_utils__WEBPACK_IMPORTED_MODULE_6__.replaceSymbol)(data.message).toString()
-        const $date = $editedMsg.querySelector('.msg-chat-date')
-        $date.textContent = 'edited ' + (0,_utils__WEBPACK_IMPORTED_MODULE_6__.getDateTime)()
-        ;(0,_utils__WEBPACK_IMPORTED_MODULE_6__.addPulseAnim)($msg, 6)
-        M.toast({html: 'The message was edited', classes: 'rounded'})
-      }
-    })
-
-    // delete message
-    socket.on(_config__WEBPACK_IMPORTED_MODULE_5__.EVENT.DELETE_MSG, data => {
-      const $editedMsg = document.getElementById(data.msgId)
-      if ($editedMsg) {
-        (0,_utils__WEBPACK_IMPORTED_MODULE_6__.addDeleteAnim)($editedMsg)
-        M.toast({html: 'The message was deleted', classes: 'rounded'})
-      }
-    })
-  }
-
-  initEvent() {
-    this.$content.addEventListener('click', e => {
-      if (e.target.dataset.action === 'edit-msg') {
-        this.editMsg.check(e.target)
-      }
-
-      if (e.target.dataset.action === 'delete-msg') {
-        socket.emit(_config__WEBPACK_IMPORTED_MODULE_5__.EVENT.DELETE_MSG, {
-          msgId: this.editMsg.delete(e.target)
-        })
-      }
-    })
-
-    const $submit = document.querySelector('#send')
-    const $avatar = document.querySelector('.footer_avatar')
-
-    // active form
-    $submit.addEventListener('click', () => this.sendMsg())
-
-    this.$input.addEventListener('keypress', e => {
-      if (e.key === 'Enter') this.sendMsg()
-    })
-
-    // change avatar
-    $avatar.addEventListener('click', () => this.avatar = (0,_utils__WEBPACK_IMPORTED_MODULE_6__.setAvatar)())
-
-    // create new room
-    new _CreateRoom__WEBPACK_IMPORTED_MODULE_4__.CreateRoom(socket)
-
-    if (this.isDebug) this.debug()
-  }
-
-  emitNewUser() {
-    socket.emit(_config__WEBPACK_IMPORTED_MODULE_5__.EVENT.CHAT_NEW_USER, {
-      userId: this.userId,
-      avatar: this.avatar
-    })
-  }
-
-  emitLeaveUser() {
-    socket.on(_config__WEBPACK_IMPORTED_MODULE_5__.EVENT.CHAT_LEAVE_USER, data => {
-      this.statusBar.updateCountUsers(data.countUser)
-      M.toast({html: data.message, classes: 'rounded'})
-    })
-  }
-
-  sendMsg() {
-    if (!this.$input.value.trim()) return
-
-    if (!this.editMsg.isEdit) {
-      socket.emit(_config__WEBPACK_IMPORTED_MODULE_5__.EVENT.CHAT_MSG, {
-        message: this.$input.value,
-        userId: this.userId,
-        avatar: this.avatar
-      })
-    } else {
-      socket.emit(_config__WEBPACK_IMPORTED_MODULE_5__.EVENT.EDIT_MSG, {
-        message: this.$input.value,
-        msgId: this.editMsg.msgId
-      })
-      this.editMsg.reset()
-    }
-
-    this.$input.value = ''
-  }
-
-  validatePass(data) {
-    const {r, a} = JSON.parse(localStorage.getItem('auth')) || false
-    const {message, password, name} = data
-    this.isPrivate = true
-
-    if (r === name && a) {
-      return this.render()
-    }
-
-    this.$app.innerHTML = (0,_template_template_chat__WEBPACK_IMPORTED_MODULE_7__.roomEnterPass)(message)
-    const $form = this.$app.querySelector('.form-password')
-
-    $form.onsubmit = e => {
-      e.preventDefault()
-
-      const enterPass = $form.elements.roomPass.value.trim()
-      if (enterPass === password.toString()) {
-        localStorage.setItem('auth', JSON.stringify({r: name, a: true}))
-        this.render()
-      } else {
-        $form.elements.roomPass.value = ''
-        M.toast({html: 'Invalid password', classes: 'rounded'})
-      }
-    }
-  }
-
-  socketLogin() {
-    socket.on(_config__WEBPACK_IMPORTED_MODULE_5__.EVENT.SIGN_IN_ROOM, data => {
-      switch (data.code) {
-        case 1:
-          this.render()
-          break
-        case 2:
-          this.validatePass(data)
-          break
-        case 3:
-          this.$app.innerHTML = (0,_template_template_chat__WEBPACK_IMPORTED_MODULE_7__.room404)(data.message)
-          break
-      }
-    })
-  }
-
-  debug() {
-    const $debug = this.$app.querySelector('.debug')
-    $debug.style.display = 'block'
-
-    $debug.addEventListener('click', e => {
-      if (e.target.dataset.debug === '11') socket.emit('11')
-      if (e.target.dataset.debug === '22') socket.emit('22')
-    })
-
-    socket.on('11', data => console.log('11', data))
-    socket.on('22', data => console.log('22', data))
-  }
-
-  initChat() {
-    this.socketLogin()
-
-    socket.emit(_config__WEBPACK_IMPORTED_MODULE_5__.EVENT.SIGN_IN_ROOM, {
-      room: (0,_utils__WEBPACK_IMPORTED_MODULE_6__.getNameRoom)()
-    })
-  }
-}
-
-
-
-
-/***/ }),
-
 /***/ "./src/js/chat/status-bar.js":
 /*!***********************************!*\
   !*** ./src/js/chat/status-bar.js ***!
@@ -2183,6 +2417,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "addPulseAnim": () => (/* binding */ addPulseAnim),
 /* harmony export */   "addDeleteAnim": () => (/* binding */ addDeleteAnim),
 /* harmony export */   "initMeterialized": () => (/* binding */ initMeterialized),
+/* harmony export */   "getAvatarURI": () => (/* binding */ getAvatarURI),
 /* harmony export */   "getNameRoom": () => (/* binding */ getNameRoom)
 /* harmony export */ });
 /* harmony import */ var _config__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./config */ "./src/js/chat/config.js");
@@ -2201,13 +2436,11 @@ function getAvatarURI() {
   return url.generateRandomAvatar()
 }
 
-function setAvatar() {
+function setAvatar(url) {
   const $img = document.querySelector('.footer_avatar img')
   const $imgMenu = document.querySelector('.user-view .circle')
-  const url = getAvatarURI()
   $img.setAttribute('src', url)
   $imgMenu.setAttribute('src', url)
-  return url
 }
 
 function scrollToMsg($el) {
@@ -2269,6 +2502,51 @@ function initMeterialized() {
   initTooltip()
   initMenu()
   initModals()
+}
+
+
+
+
+/***/ }),
+
+/***/ "./src/js/template/template.blocks.js":
+/*!********************************************!*\
+  !*** ./src/js/template/template.blocks.js ***!
+  \********************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "youKick": () => (/* binding */ youKick),
+/* harmony export */   "resultVoting": () => (/* binding */ resultVoting)
+/* harmony export */ });
+const youKick = (d, l) => {
+  return `
+    <div class="you-kick">
+      <h3>You were kicked out by voting</h3>
+      <div class="you-kick-result">
+        <span><i class="fas fa-heart-broken"></i> ${d}</span>
+        <span><i class="fas fa-heart"></i> ${l}</span>
+      </div>
+    </div>
+  `
+}
+
+const resultVoting = data => {
+  const {avatar, result} = data
+  const {d, l} = result
+  return `
+    <div class="${d >= l ? 'dislike' : ''}">
+      <i class="fas fa-heart-broken"></i>
+      <span>${d}</span>
+    </div>
+    <img src="${avatar}" alt="user">
+    <div class="${l >= d ? 'like' : ''}">
+      <i class="fas fa-heart"></i>
+      <span>${l}</span>
+    </div>
+  `
 }
 
 
@@ -2469,8 +2747,8 @@ const menuSidenav = () => {
         </div>
       </li>
       <li><a href="#modalCreateRoom" class="modal-trigger"><i class="fas fa-plus"></i> Create room</a></li>
-      <li><a href="#"><i class="fas fa-crosshairs"></i> Kick out user</a></li>
-      <li><a href="#"><i class="far fa-comments"></i> Free rooms</a></li>
+      <li><a href="#modalUserKick" class="modal-trigger"><i class="fas fa-crosshairs"></i> Kick out user</a></li>
+      <li><a href="#modalListRoom" class="modal-trigger"><i class="far fa-comments"></i> List rooms</a></li>
       <li><div class="divider"></div></li>
       <li><a href="#modalRootAccess" class="modal-trigger"><i class="fas fa-fingerprint"></i> I am root</a></li>
     </ul>
@@ -2515,7 +2793,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 const modalCreateRoom = () => {
   return `
-    <div id="modalCreateRoom" class="modal modal-create-room">
+    <div id="modalCreateRoom" class="modal">
       <div class="modal-content">
         <h5><i class="fas fa-plus"></i> Create your own room</h5>
         <form>
@@ -2543,7 +2821,7 @@ const modalCreateRoom = () => {
 
 const modalRoot = () => {
   return `
-    <div id="modalRootAccess" class="modal modal-root">
+    <div id="modalRootAccess" class="modal">
       <div class="modal-content">
         <h5><i class="fas fa-fingerprint"></i> Root access</h5>
       </div>
@@ -2554,10 +2832,83 @@ const modalRoot = () => {
   `
 }
 
+const modalListRoom = () => {
+  return `
+    <div id="modalListRoom" class="modal bottom-sheet">
+      <div class="modal-content">
+        <h5><i class="far fa-comments"></i> List rooms</h5>
+        <div class="list-rooms"></div>
+      </div>
+      <div class="modal-footer">
+        <a href="#" class="modal-close waves-effect btn-flat">Close</a>
+      </div>
+    </div>
+  `
+}
+
+const modalUserKick = () => {
+  return `
+    <div id="modalUserKick" class="modal bottom-sheet">
+      <div class="modal-content">
+        <h5><i class="fas fa-crosshairs"></i> Kick out user</h5>
+        <p>Select a user to start voting on his expulsion <i class="fas fa-bomb"></i></p>
+        <div class="list-users"></div>
+      </div>
+      <div class="modal-footer">
+        <a href="#" class="modal-close waves-effect btn-flat">Close</a>
+      </div>
+    </div>
+  `
+}
+
+const modalVotingKick = () => {
+  return `
+    <div id="modalVotingKick" class="modal">
+      <div class="modal-content">
+        <h5><i class="fas fa-gavel"></i> Voting kick</h5>
+        <p class="center-align">Make your choice!</p>
+        <div class="voting-box">
+          <div class="dislike pulse" data-voting="dislike">
+            <i class="fas fa-heart-broken" data-voting="dislike"></i>
+          </div>
+          <img src="" alt="user">
+          <div class="like pulse" data-voting="like">
+            <i class="fas fa-heart" data-voting="like"></i>
+          </div>
+        </div>
+        <div class="progress">
+          <div class="determinate" style="width: 100%"></div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <a href="#" class="modal-close waves-effect btn-flat">Close</a>
+      </div>
+    </div>
+  `
+}
+
+const modalVotingResult = () => {
+  return `
+    <div id="modalVotingResult" class="modal">
+      <div class="modal-content">
+        <h5 class="center-align">Voting result</h5>
+        <div class="voting-box voting-box-result"></div>
+      </div>
+      <div class="modal-footer">
+        <a href="#" class="modal-close waves-effect btn-flat">Close</a>
+      </div>
+    </div>
+  `
+}
+
 const modals = () => {
   return `
      ${modalCreateRoom()}
      ${modalRoot()}
+     ${modalListRoom()}
+     ${modalUserKick()}
+     ${modalVotingKick()}
+     ${modalVotingResult()}
   `
 }
 
@@ -2598,8 +2949,8 @@ const status = () => {
 const debug = () => {
   return `
     <div class="debug">
-      <button data-debug="11">11</button>
-      <button data-debug="22">22</button>
+      <button data-debug="11">room</button>
+      <button data-debug="22">user</button>
     </div>
   `
 }
@@ -5955,14 +6306,13 @@ var __webpack_exports__ = {};
   !*** ./src/app.js ***!
   \********************/
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _js_chat_socket__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./js/chat/socket */ "./src/js/chat/socket.js");
+/* harmony import */ var _js_chat_Chat__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./js/chat/Chat */ "./src/js/chat/Chat.js");
 /* harmony import */ var _styles_index_css__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./styles/index.css */ "./src/styles/index.css");
 
 
 
-
 // init chat
-new _js_chat_socket__WEBPACK_IMPORTED_MODULE_0__.Chat().initChat()
+new _js_chat_Chat__WEBPACK_IMPORTED_MODULE_0__.Chat().initChat()
 
 })();
 
