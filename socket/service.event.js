@@ -11,6 +11,8 @@ const {
 } = require('../models/users')
 const {v4} = require('uuid')
 
+const TIME_DELETING_ROOM = 60
+
 function checkUserInRoom(room) {
   setTimeout(() => {
     const users = getUsers(room)
@@ -19,7 +21,7 @@ function checkUserInRoom(room) {
       // delete a room if it is empty for 60 seconds
       deleteRoom(room)
     }
-  }, 60000)
+  }, TIME_DELETING_ROOM * 1000)
 }
 
 function messageService(io, socket) {

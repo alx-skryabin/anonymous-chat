@@ -1,6 +1,6 @@
 const modalCreateRoom = () => {
   return `
-    <div id="modalCreateRoom" class="modal modal-create-room">
+    <div id="modalCreateRoom" class="modal">
       <div class="modal-content">
         <h5><i class="fas fa-plus"></i> Create your own room</h5>
         <form>
@@ -28,7 +28,7 @@ const modalCreateRoom = () => {
 
 const modalRoot = () => {
   return `
-    <div id="modalRootAccess" class="modal modal-root">
+    <div id="modalRootAccess" class="modal">
       <div class="modal-content">
         <h5><i class="fas fa-fingerprint"></i> Root access</h5>
       </div>
@@ -41,7 +41,7 @@ const modalRoot = () => {
 
 const modalListRoom = () => {
   return `
-    <div id="modalListRoom" class="modal bottom-sheet modal-list-room">
+    <div id="modalListRoom" class="modal bottom-sheet">
       <div class="modal-content">
         <h5><i class="far fa-comments"></i> List rooms</h5>
         <div class="list-rooms"></div>
@@ -55,11 +55,51 @@ const modalListRoom = () => {
 
 const modalUserKick = () => {
   return `
-    <div id="modalUserKick" class="modal bottom-sheet modal-user-kick">
+    <div id="modalUserKick" class="modal bottom-sheet">
       <div class="modal-content">
         <h5><i class="fas fa-crosshairs"></i> Kick out user</h5>
         <p>Select a user to start voting on his expulsion <i class="fas fa-bomb"></i></p>
         <div class="list-users"></div>
+      </div>
+      <div class="modal-footer">
+        <a href="#" class="modal-close waves-effect btn-flat">Close</a>
+      </div>
+    </div>
+  `
+}
+
+const modalVotingKick = () => {
+  return `
+    <div id="modalVotingKick" class="modal">
+      <div class="modal-content">
+        <h5><i class="fas fa-gavel"></i> Voting kick</h5>
+        <p class="center-align">Make your choice!</p>
+        <div class="voting-box">
+          <div class="dislike pulse" data-voting="dislike">
+            <i class="fas fa-heart-broken" data-voting="dislike"></i>
+          </div>
+          <img src="" alt="user">
+          <div class="like pulse" data-voting="like">
+            <i class="fas fa-heart" data-voting="like"></i>
+          </div>
+        </div>
+        <div class="progress">
+          <div class="determinate" style="width: 100%"></div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <a href="#" class="modal-close waves-effect btn-flat">Close</a>
+      </div>
+    </div>
+  `
+}
+
+const modalVotingResult = () => {
+  return `
+    <div id="modalVotingResult" class="modal">
+      <div class="modal-content">
+        <h5 class="center-align">Voting result</h5>
+        <div class="voting-box voting-box-result"></div>
       </div>
       <div class="modal-footer">
         <a href="#" class="modal-close waves-effect btn-flat">Close</a>
@@ -74,6 +114,8 @@ const modals = () => {
      ${modalRoot()}
      ${modalListRoom()}
      ${modalUserKick()}
+     ${modalVotingKick()}
+     ${modalVotingResult()}
   `
 }
 

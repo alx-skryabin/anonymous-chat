@@ -4,6 +4,8 @@ export class Modals {
     this.rootAccess = null
     this.listRoom = null
     this.userKick = null
+    this.votingKick = null
+    this.votingResult = null
 
     this.init()
   }
@@ -13,5 +15,7 @@ export class Modals {
     this.rootAccess = M.Modal.getInstance(document.getElementById('modalRootAccess'))
     this.listRoom = M.Modal.getInstance(document.getElementById('modalListRoom'))
     this.userKick = M.Modal.getInstance(document.getElementById('modalUserKick'))
+    this.votingKick = M.Modal.getInstance(document.getElementById('modalVotingKick'))
+    this.votingResult = M.Modal.getInstance(document.getElementById('modalVotingResult'))
   }
 }

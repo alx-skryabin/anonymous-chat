@@ -76,3 +76,84 @@
   background: tomato;
   transition: .2s;
 }
+
+/*voting*/
+.voting-box {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  margin-bottom: 50px;
+}
+
+.voting-box img {
+  width: 70px;
+  height: 70px;
+  margin: 20px;
+}
+
+.voting-box div {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 60px;
+  height: 60px;
+  background: #eee;
+  border-radius: 50%;
+  color: #333;
+  cursor: pointer;
+  transition: .2s;
+}
+
+.voting-box .dislike:hover {
+  color: #ee1d46;
+  transition: .2s;
+}
+
+.voting-box .like:hover {
+  color: #11db7a;
+  transition: .2s;
+}
+
+.voting-box i {
+  display: inline-block;
+  font-size: 2em;
+}
+
+/*voting box result*/
+.voting-box-result div {
+  position: relative;
+}
+
+.voting-box-result span {
+  position: absolute;
+  bottom: -25px;
+  font-weight: bold;
+  font-size: 1.2em;
+}
+
+.voting-box-result .dislike {
+  color: #ee1d46;
+}
+
+.voting-box-result .like {
+  color: #11db7a;
+}
+
+/*you kick*/
+.you-kick {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  height: 100vh;
+  color: #eee;
+}
+
+.you-kick h3 {
+  font-size: 1.6em;
+}
+
+.you-kick span {
+  font-size: 1.4em;
+  margin: 10px;
+}
