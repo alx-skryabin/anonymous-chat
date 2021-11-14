@@ -11,6 +11,7 @@ body {
 
 .debug {
   display: none;
+  margin-left: auto;
 }
 
 .debug button {

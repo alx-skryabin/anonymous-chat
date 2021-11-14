@@ -18,8 +18,8 @@ const status = () => {
 const debug = () => {
   return `
     <div class="debug">
-      <button data-debug="11">11</button>
-      <button data-debug="22">22</button>
+      <button data-debug="11">room</button>
+      <button data-debug="22">user</button>
     </div>
   `
 }

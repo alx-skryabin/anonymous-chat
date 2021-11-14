@@ -2,7 +2,7 @@ const staticRooms = ['free', 'sk']
 
 const rooms = [
   {name: 'free', password: false}, // default room
-  {name: 'sk', password: '20'} // test private room
+  {name: 'sk', password: '20'} // exp: private room
 ]
 
 const addRoom = (name, password) => {
