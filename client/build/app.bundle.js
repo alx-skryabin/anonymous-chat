@@ -6313,6 +6313,7 @@ __webpack_require__.r(__webpack_exports__);
 
 // init chat
 new _js_chat_Chat__WEBPACK_IMPORTED_MODULE_0__.Chat().initChat()
+console.info('Hello anon!')
 
 })();
 
