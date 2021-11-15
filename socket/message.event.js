@@ -7,6 +7,7 @@ function messageChat(io, socket) {
       message: data.message,
       userId: data.userId,
       avatar: data.avatar,
+      msgRoot: data.msgRoot,
       msgId: v4()
     })
   })

@@ -40,6 +40,10 @@
   background: #fefefe;
 }
 
+.msg-root .msg-chat-text {
+  background: gold;
+}
+
 .msg-chat-avatar img {
   width: 60px;
   height: 60px;

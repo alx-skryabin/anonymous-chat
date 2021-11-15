@@ -4,8 +4,16 @@ import {status} from './template.status'
 import {footer} from './template.footer'
 import {modals} from './template.modal'
 
-const message = (owner = 'owner', text = '', msgId, avatar) => {
-  const classMsg = owner === 'owner' ? 'msg-owner' : 'msg-friend'
+const message = (
+  owner = 'owner',
+  text = '',
+  msgId,
+  avatar,
+  msgRoot = false,
+  isRoot = false
+) => {
+  const classMsg = owner === 'owner'
+    ? 'msg-owner' : msgRoot ? 'msg-friend msg-root' : 'msg-friend'
   const $el = document.createElement('div')
   $el.className = `msg-chat ${classMsg}`
   $el.setAttribute('id', msgId)
@@ -30,8 +38,8 @@ const message = (owner = 'owner', text = '', msgId, avatar) => {
       <div class="msg-chat-date">
         ${getDateTime()}
       </div>
-      ${owner === 'owner' ? msgEdit : ''}
-      ${owner === 'owner' ? msgDelete : ''}
+      ${owner === 'owner' ? msgEdit : isRoot ? msgEdit : ''}
+      ${owner === 'owner' ? msgDelete : isRoot ? msgDelete : ''}
   `
   return $el
 }

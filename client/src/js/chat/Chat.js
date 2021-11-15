@@ -67,7 +67,7 @@ class Chat {
 
       const $msg = (data.userId === this.userId)
         ? message('owner', text, data.msgId, this.avatar)
-        : message('friend', text, data.msgId, data.avatar)
+        : message('friend', text, data.msgId, data.avatar, data.msgRoot, this.isRoot)
 
       this.$content.appendChild($msg)
       document.querySelector('head title').textContent = text.toString()
@@ -163,6 +163,7 @@ class Chat {
       socket.emit(EVENT.CHAT_MSG, {
         message: this.$input.value,
         userId: this.userId,
+        msgRoot: this.isRoot,
         avatar: this.avatar
       })
     } else {
