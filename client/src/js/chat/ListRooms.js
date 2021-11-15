@@ -2,9 +2,9 @@ import {EVENT} from './config'
 import {getNameRoom} from './utils'
 
 export class ListRooms {
-  constructor(socket, modals) {
+  constructor(chat, socket) {
     this.socket = socket
-    this.modals = modals
+    this.chat = chat
     this.prepare()
   }
 
@@ -14,13 +14,13 @@ export class ListRooms {
   }
 
   setEventOpen() {
-    this.modals.listRoom.options.onOpenStart = () => {
+    this.chat.modals.listRoom.options.onOpenStart = () => {
       this.socket.emit(EVENT.GET_ROOMS)
     }
   }
 
   setEventSocket() {
-    const $list = this.modals.listRoom.el.querySelector('.list-rooms')
+    const $list = this.chat.modals.listRoom.el.querySelector('.list-rooms')
 
     this.socket.on(EVENT.GET_ROOMS, data => {
       $list.innerHTML = ''
@@ -45,13 +45,15 @@ export class ListRooms {
     const access = password ? 'Private' : 'Public'
     const accessIcon = `<i class="fas ${password ? 'fa-lock' : 'fa-lock-open'}"></i>`
     const uri = this.defineUriRoom(name)
+    const passRoom = this.chat.isRoot
+      ? `<div><i class="fas fa-key"></i> <span>Pass:</span> <strong>${password || '—'}</strong></div>` : ''
 
     return `
       <div><i class="fas fa-couch"></i> <span>Room:</span> <strong>${name}</strong></div>
       <div>${accessIcon} <span>Access:</span> <strong>${access}</strong></div>
       <div><i class="fas fa-external-link-square-alt"></i> <span>Link:</span> <a href="${uri}">GO</a></div>
+      ${passRoom}
     `
-      // <div><i class="fas fa-key"></i> <span>Pass:</span> <strong>${password}</strong></div>
   }
 
   defineUriRoom(room) {

@@ -32,6 +32,7 @@ class Chat {
   constructor() {
     this.userId = parseInt(String(new Date().getTime()))
     this.isPrivate = false
+    this.isRoot = false
     this.avatar = getAvatarURI()
     this.$app = document.querySelector('.app')
     this.$input = null
@@ -44,7 +45,7 @@ class Chat {
     this.statusBar = new StatusBar(this)
     this.editMsg = new EditMsg(this.$input)
     this.modals = new Modals()
-    this.rootUser = new RootUser(this, socket, this.modals)
+    this.rootUser = new RootUser(this, socket)
     this.emitNewUser()
     this.emitLeaveUser()
     this.emitMsg()
@@ -135,10 +136,10 @@ class Chat {
     new CreateRoom(socket)
 
     // output list rooms
-    new ListRooms(socket, this.modals)
+    new ListRooms(this, socket)
 
     // kick out user
-    new KickUser(socket, this.modals)
+    new KickUser(this, socket)
   }
 
   emitNewUser() {

@@ -2,13 +2,13 @@ import {EVENT} from './config'
 import {resultVoting, youKick} from '../template/template.blocks'
 
 export class KickUser {
-  constructor(socket, modals) {
+  constructor(chat, socket) {
+    this.chat = chat
     this.socket = socket
-    this.modals = modals
     this.room = null
-    this.$list = this.modals.userKick.el.querySelector('.list-users')
-    this.$voting = this.modals.votingKick.el.querySelector('.voting-box')
-    this.$timer = this.modals.votingKick.el.querySelector('.determinate')
+    this.$list = this.chat.modals.userKick.el.querySelector('.list-users')
+    this.$voting = this.chat.modals.votingKick.el.querySelector('.voting-box')
+    this.$timer = this.chat.modals.votingKick.el.querySelector('.determinate')
     this.prepare()
   }
 
@@ -19,7 +19,7 @@ export class KickUser {
   }
 
   setEventOpen() {
-    this.modals.userKick.options.onOpenStart = () => {
+    this.chat.modals.userKick.options.onOpenStart = () => {
       this.socket.emit(EVENT.GET_USERS)
       this.$timer.style.width = '100%'
     }
@@ -28,7 +28,7 @@ export class KickUser {
   setEventKick() {
     this.$list.addEventListener('click', e => {
       if (e.target.dataset.action === 'kick') {
-        this.modals.userKick.close()
+        this.chat.modals.userKick.close()
         this.socket.emit(EVENT.VOTING_INIT, {
           id: e.target.dataset.id
         })
@@ -38,10 +38,11 @@ export class KickUser {
     this.$voting.addEventListener('click', e => {
       const value = e.target.dataset.voting
       if (value) {
-        this.modals.votingKick.close()
+        this.chat.modals.votingKick.close()
 
         this.socket.emit(EVENT.VOTING_POINT, {
           room: this.room,
+          isRoot: this.chat.isRoot,
           value
         })
       }
@@ -63,9 +64,9 @@ export class KickUser {
 
       if (allowVoting) {
         this.room = room
-        this.modals.votingKick.open()
+        this.chat.modals.votingKick.open()
         this.timerStart(time)
-        this.modals.votingKick.options.dismissible = false
+        this.chat.modals.votingKick.options.dismissible = false
         this.$voting.querySelector('img').setAttribute('src', avatar)
       } else {
         M.toast({html: 'Wait for the completion of the previous vote', classes: 'rounded'})
@@ -73,8 +74,8 @@ export class KickUser {
     })
 
     this.socket.on(EVENT.VOTING_RESULT, data => {
-      this.modals.votingKick.close()
-      this.modals.votingResult.open()
+      this.chat.modals.votingKick.close()
+      this.chat.modals.votingResult.open()
       this.declareVoting(data)
     })
 
@@ -88,8 +89,9 @@ export class KickUser {
   }
 
   declareVoting(data) {
-    const $box = this.modals.votingResult.el.querySelector('.voting-box-result')
-    $box.innerHTML = resultVoting(data)
+    this.chat.modals.votingResult.el
+      .querySelector('.voting-box-result')
+      .innerHTML = resultVoting(data)
   }
 
   timerStart(time) {

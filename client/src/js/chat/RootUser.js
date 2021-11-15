@@ -1,12 +1,10 @@
 import {EVENT} from "./config";
 
 export class RootUser {
-  constructor(chat, socket, modals) {
+  constructor(chat, socket) {
     this.chat = chat
-    this.modals = modals
     this.socket = socket
-    this.isRoot = false
-    this.isDebug = true
+    this.isDebug = false
     this.$debug = this.chat.$app.querySelector('.debug')
     this.prepare()
   }
@@ -16,13 +14,13 @@ export class RootUser {
     this.setEvent()
     this.setEventSocket()
 
-    this.modals.rootAccess.options.onOpenStart = () => {
+    this.chat.modals.rootAccess.options.onOpenStart = () => {
       this.chat.$app.querySelector('#formRoot').reset()
     }
   }
 
   setEvent() {
-    const $form = this.modals.rootAccess.el.querySelector('#formRoot')
+    const $form = this.chat.modals.rootAccess.el.querySelector('#formRoot')
     $form.onsubmit = e => {
       e.preventDefault()
 
@@ -35,9 +33,14 @@ export class RootUser {
 
   setEventSocket() {
     this.socket.on(EVENT.TURN_ROOT, identity => {
-      if (identity) this.modals.rootAccess.close()
       const tips = identity ? 'You are Root now' : 'Access denied'
       M.toast({html: tips, classes: 'rounded'})
+
+      if (identity) {
+        this.chat.modals.rootAccess.close()
+        this.chat.isRoot = true
+        this.debugSwitch(true)
+      }
     })
   }
 
@@ -55,5 +58,6 @@ export class RootUser {
 
   debugSwitch(status) {
     this.$debug.style.display = status ? 'block' : 'none'
+    if (status) M.toast({html: 'Debug is enabled', classes: 'rounded'})
   }
 }

@@ -54,12 +54,13 @@ function kick(io, socket) {
     })
   })
 
-  socket.on('VOTING_POINT', ({value, room}) => {
+  socket.on('VOTING_POINT', ({value, room, isRoot}) => {
     const res = voting.get(room)
     const {d, l} = res
+    const points = isRoot ? 10 : 1
 
-    if (value === 'dislike') res.d = d + 1
-    if (value === 'like') res.l = l + 1
+    if (value === 'dislike') res.d = d + points
+    if (value === 'like') res.l = l + points
 
     voting.set(room, res)
   })
