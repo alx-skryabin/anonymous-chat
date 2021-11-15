@@ -15,7 +15,7 @@ const deleteUser = id => {
   if (index !== -1) return users.splice(index, 1)[0]
 }
 
-const getUsers = room => users.filter(user => user.room === room)
+const getUsers = room => users.filter(user => user.room === room && !user.root)
 
 const getAllUsers = () => users
 

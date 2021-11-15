@@ -73,6 +73,11 @@ function messageService(io, socket) {
     if (identity) {
       deleteUser(socket.id)
       addUser(socket.id, user.room, user.avatar, identity)
+
+      io.in(user.room).emit('CHAT_LEAVE_USER', {
+        message: 'User left the chat',
+        countUser: getUsers(user.room).length
+      })
     }
 
     io.in(socket.id).emit('TURN_ROOT', identity)
