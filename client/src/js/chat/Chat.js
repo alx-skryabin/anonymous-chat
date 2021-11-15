@@ -5,6 +5,7 @@ import {Modals} from './Modals'
 import {CreateRoom} from './CreateRoom'
 import {ListRooms} from './ListRooms'
 import {KickUser} from './KickUser'
+import {RootUser} from './RootUser'
 import {EVENT} from './config'
 import {
   defineHostURI,
@@ -30,7 +31,6 @@ const socket = io(defineHostURI(), {})
 class Chat {
   constructor() {
     this.userId = parseInt(String(new Date().getTime()))
-    this.isDebug = false
     this.isPrivate = false
     this.avatar = getAvatarURI()
     this.$app = document.querySelector('.app')
@@ -44,6 +44,7 @@ class Chat {
     this.statusBar = new StatusBar(this)
     this.editMsg = new EditMsg(this.$input)
     this.modals = new Modals()
+    this.rootUser = new RootUser(this, socket, this.modals)
     this.emitNewUser()
     this.emitLeaveUser()
     this.emitMsg()
@@ -138,8 +139,6 @@ class Chat {
 
     // kick out user
     new KickUser(socket, this.modals)
-
-    if (this.isDebug) this.debug()
   }
 
   emitNewUser() {
@@ -191,12 +190,12 @@ class Chat {
     $form.onsubmit = e => {
       e.preventDefault()
 
-      const enterPass = $form.elements.roomPass.value.trim()
+      const enterPass = $form['roomPass'].value.trim()
       if (enterPass === password.toString()) {
         localStorage.setItem('auth', JSON.stringify({r: name, a: true}))
         this.render()
       } else {
-        $form.elements.roomPass.value = ''
+        $form.reset()
         M.toast({html: 'Invalid password', classes: 'rounded'})
       }
     }
@@ -216,19 +215,6 @@ class Chat {
           break
       }
     })
-  }
-
-  debug() {
-    const $debug = this.$app.querySelector('.debug')
-    $debug.style.display = 'block'
-
-    $debug.addEventListener('click', e => {
-      if (e.target.dataset.debug === '11') socket.emit('11')
-      if (e.target.dataset.debug === '22') socket.emit('22')
-    })
-
-    socket.on('11', data => console.log('room', data))
-    socket.on('22', data => console.log('user', data))
   }
 
   initChat() {

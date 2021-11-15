@@ -31,6 +31,12 @@ const modalRoot = () => {
     <div id="modalRootAccess" class="modal">
       <div class="modal-content">
         <h5><i class="fas fa-fingerprint"></i> Root access</h5>
+        <form id="formRoot" style="margin-top: 50px;">
+          <div class="input-field">
+          <input id="rootPass" type="password">
+          <label class="active" for="rootPass">Root password</label>
+        </div>
+        </form>
       </div>
       <div class="modal-footer">
         <a href="#" class="modal-close waves-effect btn-flat">Enter</a>

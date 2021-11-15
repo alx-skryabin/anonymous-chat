@@ -51,6 +51,7 @@ export class ListRooms {
       <div>${accessIcon} <span>Access:</span> <strong>${access}</strong></div>
       <div><i class="fas fa-external-link-square-alt"></i> <span>Link:</span> <a href="${uri}">GO</a></div>
     `
+      // <div><i class="fas fa-key"></i> <span>Pass:</span> <strong>${password}</strong></div>
   }
 
   defineUriRoom(room) {

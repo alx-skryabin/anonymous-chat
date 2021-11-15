@@ -12,6 +12,7 @@ const {
 const {v4} = require('uuid')
 
 const TIME_DELETING_ROOM = 60
+const ROOT_PASS = '6233'
 
 function checkUserInRoom(room) {
   setTimeout(() => {
@@ -65,11 +66,22 @@ function messageService(io, socket) {
     })
   })
 
+  socket.on('TURN_ROOT', data => {
+    const user = getUser(socket.id)
+    const identity = data.password.toString() === ROOT_PASS
+
+    if (identity) {
+      deleteUser(socket.id)
+      addUser(socket.id, user.room, user.avatar, identity)
+    }
+
+    io.in(socket.id).emit('TURN_ROOT', identity)
+  })
+
   socket.on('CHANGE_AVATAR', avatar => {
-    const data = getUser(socket.id)
-    data.avatar = avatar
+    const user = getUser(socket.id)
     deleteUser(socket.id)
-    addUser(socket.id, data.room, avatar)
+    addUser(socket.id, user.room, avatar)
   })
 
   // for debug

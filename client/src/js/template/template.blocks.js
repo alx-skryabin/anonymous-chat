@@ -1,7 +1,7 @@
 const youKick = (d, l) => {
   return `
     <div class="you-kick">
-      <h3>You were kicked out by voting</h3>
+      <h3>Sorry. You were kicked out by voting</h3>
       <div class="you-kick-result">
         <span><i class="fas fa-heart-broken"></i> ${d}</span>
         <span><i class="fas fa-heart"></i> ${l}</span>
