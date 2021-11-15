@@ -1,5 +1,5 @@
 const URIlocal = 'http://localhost:3000'
-const URIprod = 'https://node-socket-express.herokuapp.com'
+const URIprod = 'https://chat-noname.herokuapp.com'
 const EVENT = {
   CHAT_MSG: 'CHAT_MSG',
   EDIT_MSG: 'EDIT_MSG',
