@@ -2,15 +2,16 @@
   "name": "frontend",
   "version": "1.0.1",
   "author": "@alx.skryabin",
-  "description": "socket",
+  "description": "Anonymous Сhat - frontend",
   "main": "src/app.js",
   "scripts": {
     "dev": "webpack serve --open",
     "build": "webpack"
   },
   "keywords": [
+    "javaScript",
     "socket",
-    "front"
+    "webpack"
   ],
   "license": "ISC",
   "devDependencies": {
