@@ -1,3 +1,3 @@
-const server = require('./server-express')()
+const server = require('./server')()
 
 server.start()

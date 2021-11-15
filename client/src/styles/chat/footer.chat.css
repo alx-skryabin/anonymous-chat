@@ -1,0 +1,49 @@
+.footer {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  background: rgba(255, 255, 255, .05);
+  box-shadow: 0 .25rem .75rem rgba(0, 0, 0, .1);
+}
+
+.footer_avatar {
+  margin-right: 15px;
+  cursor: pointer;
+}
+
+.footer_avatar img {
+  width: 60px;
+  height: 60px;
+}
+
+.footer_form {
+  position: relative;
+  display: flex;
+  width: 100%;
+}
+
+.footer_form input {
+  width: 100%;
+  height: auto !important;
+  background: rgba(255, 255, 255, .05) !important;
+  border: none !important;
+  padding: 10px !important;
+  margin: 0 !important;
+  border-radius: 5px 0 0 5px !important;
+  outline: none;
+  color: #ccc;
+}
+
+.footer_form input:focus {
+  box-shadow: none !important;
+}
+
+.footer_form button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 0 5px 5px 0;
+  color: #eee;
+  outline: none;
+  font-size: 1.2em;
+  cursor: pointer;
+}

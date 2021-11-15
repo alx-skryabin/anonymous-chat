@@ -1,0 +1,23 @@
+.status {
+  display: flex;
+  align-items: center;
+  background: rgba(255, 255, 255, .2);
+  padding: 5px 10px;
+}
+
+.status strong {
+  color: #b8b8b8;
+}
+
+@media only screen and (max-width: 620px) {
+  .status span {
+    display: none;
+  }
+}
+
+.status-count,
+.status-room,
+.status-private {
+  margin-right: 15px;
+  color: #828282;
+}

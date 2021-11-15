@@ -1,14 +1,5 @@
-import {initEventQuery} from './js/query'
-import {initEventSocket} from './js/socket'
-import {template} from './js/base'
+import {Chat} from './js/chat/Chat'
 import './styles/index.css'
 
-document.querySelector('.app')
-  .innerHTML = template()
-
-
-// init socket
-initEventSocket()
-
-// init express query
-initEventQuery()
+// init chat
+new Chat().initChat()
