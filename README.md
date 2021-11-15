@@ -1,4 +1,4 @@
-***About***
+***About:***
 Anonymous Сhat on socket, nodeJS, express stack
 
 ***Deploy***
@@ -7,4 +7,3 @@ Anonymous Сhat on socket, nodeJS, express stack
 3) https://dashboard.heroku.com choose brunch for deploy
 
 Release 1.0:
-Finish socket and POST, GET query
