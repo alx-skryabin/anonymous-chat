@@ -9612,9 +9612,20 @@ body {
 
 .status-count,
 .status-room,
-.status-private {
+.status-private,
+.status-root {
   margin-right: 15px;
   color: #828282;
+}
+
+.status-root {
+  color: #11db7a;
+  display: none;
+}
+
+.debug button {
+  padding: 0 5px 3px;
+
 }
 
 /*!************************************************************************************!*\
@@ -9660,6 +9671,10 @@ body {
 .msg-friend .msg-chat-text {
   margin-left: 10px;
   background: #fefefe;
+}
+
+.msg-root .msg-chat-text {
+  background: gold;
 }
 
 .msg-chat-avatar img {
@@ -9955,6 +9970,30 @@ body {
 .you-kick span {
   font-size: 1.4em;
   margin: 10px;
+}
+
+/*create room*/
+.preload-go-room {
+  background: #eee;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  color: dodgerblue;
+  font-size: 1.4em;
+  padding: 10px;
+  text-align: center;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 10;
+}
+
+.preload-go-room i {
+  font-size: 2em;
+  margin-bottom: 20px;
 }
 
 /*!****************************************************************************!*\

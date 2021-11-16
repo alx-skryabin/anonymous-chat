@@ -1696,9 +1696,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _CreateRoom__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./CreateRoom */ "./src/js/chat/CreateRoom.js");
 /* harmony import */ var _ListRooms__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./ListRooms */ "./src/js/chat/ListRooms.js");
 /* harmony import */ var _KickUser__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./KickUser */ "./src/js/chat/KickUser.js");
-/* harmony import */ var _config__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./config */ "./src/js/chat/config.js");
-/* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./utils */ "./src/js/chat/utils.js");
-/* harmony import */ var _template_template_chat__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ../template/template.chat */ "./src/js/template/template.chat.js");
+/* harmony import */ var _RootUser__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./RootUser */ "./src/js/chat/RootUser.js");
+/* harmony import */ var _config__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./config */ "./src/js/chat/config.js");
+/* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./utils */ "./src/js/chat/utils.js");
+/* harmony import */ var _template_template_chat__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ../template/template.chat */ "./src/js/template/template.chat.js");
 
 
 
@@ -1710,14 +1711,15 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-const socket = (0,socket_io_client__WEBPACK_IMPORTED_MODULE_0__.io)((0,_utils__WEBPACK_IMPORTED_MODULE_8__.defineHostURI)(), {})
+
+const socket = (0,socket_io_client__WEBPACK_IMPORTED_MODULE_0__.io)((0,_utils__WEBPACK_IMPORTED_MODULE_9__.defineHostURI)(), {})
 
 class Chat {
   constructor() {
     this.userId = parseInt(String(new Date().getTime()))
-    this.isDebug = false
     this.isPrivate = false
-    this.avatar = (0,_utils__WEBPACK_IMPORTED_MODULE_8__.getAvatarURI)()
+    this.isRoot = false
+    this.avatar = (0,_utils__WEBPACK_IMPORTED_MODULE_9__.getAvatarURI)()
     this.$app = document.querySelector('.app')
     this.$input = null
     this.$content = null
@@ -1725,10 +1727,11 @@ class Chat {
 
   render() {
     this.toHTML()
-    ;(0,_utils__WEBPACK_IMPORTED_MODULE_8__.initMeterialized)()
+    ;(0,_utils__WEBPACK_IMPORTED_MODULE_9__.initMeterialized)()
     this.statusBar = new _status_bar__WEBPACK_IMPORTED_MODULE_1__.StatusBar(this)
     this.editMsg = new _edit_msg__WEBPACK_IMPORTED_MODULE_2__.EditMsg(this.$input)
     this.modals = new _Modals__WEBPACK_IMPORTED_MODULE_3__.Modals()
+    new _RootUser__WEBPACK_IMPORTED_MODULE_7__.RootUser(this, socket)
     this.emitNewUser()
     this.emitLeaveUser()
     this.emitMsg()
@@ -1737,24 +1740,24 @@ class Chat {
   }
 
   toHTML() {
-    this.$app.innerHTML = (0,_template_template_chat__WEBPACK_IMPORTED_MODULE_9__.template)()
+    this.$app.innerHTML = (0,_template_template_chat__WEBPACK_IMPORTED_MODULE_10__.template)()
     this.$input = document.querySelector('#field')
     this.$content = document.querySelector('#chatContent')
-    ;(0,_utils__WEBPACK_IMPORTED_MODULE_8__.setAvatar)(this.avatar)
+    ;(0,_utils__WEBPACK_IMPORTED_MODULE_9__.setAvatar)(this.avatar)
   }
 
   emitMsg() {
     // new message
-    socket.on(_config__WEBPACK_IMPORTED_MODULE_7__.EVENT.CHAT_MSG, data => {
-      const text = (0,_utils__WEBPACK_IMPORTED_MODULE_8__.replaceSymbol)(data.message)
+    socket.on(_config__WEBPACK_IMPORTED_MODULE_8__.EVENT.CHAT_MSG, data => {
+      const text = (0,_utils__WEBPACK_IMPORTED_MODULE_9__.replaceSymbol)(data.message)
 
       const $msg = (data.userId === this.userId)
-        ? (0,_template_template_chat__WEBPACK_IMPORTED_MODULE_9__.message)('owner', text, data.msgId, this.avatar)
-        : (0,_template_template_chat__WEBPACK_IMPORTED_MODULE_9__.message)('friend', text, data.msgId, data.avatar)
+        ? (0,_template_template_chat__WEBPACK_IMPORTED_MODULE_10__.message)('owner', text, data.msgId, this.avatar)
+        : (0,_template_template_chat__WEBPACK_IMPORTED_MODULE_10__.message)('friend', text, data.msgId, data.avatar, data.msgRoot, this.isRoot)
 
       this.$content.appendChild($msg)
       document.querySelector('head title').textContent = text.toString()
-      ;(0,_utils__WEBPACK_IMPORTED_MODULE_8__.scrollToMsg)($msg)
+      ;(0,_utils__WEBPACK_IMPORTED_MODULE_9__.scrollToMsg)($msg)
 
       if (data.countUser) {
         this.statusBar.updateCountUsers(data.countUser)
@@ -1762,24 +1765,24 @@ class Chat {
     })
 
     // edit message
-    socket.on(_config__WEBPACK_IMPORTED_MODULE_7__.EVENT.EDIT_MSG, data => {
+    socket.on(_config__WEBPACK_IMPORTED_MODULE_8__.EVENT.EDIT_MSG, data => {
       const $editedMsg = document.getElementById(data.msgId)
       if ($editedMsg) {
         const $msg = $editedMsg.querySelector('.msg-chat-text')
         $msg.classList.add('modified')
-        $msg.textContent = (0,_utils__WEBPACK_IMPORTED_MODULE_8__.replaceSymbol)(data.message).toString()
+        $msg.textContent = (0,_utils__WEBPACK_IMPORTED_MODULE_9__.replaceSymbol)(data.message).toString()
         const $date = $editedMsg.querySelector('.msg-chat-date')
-        $date.textContent = 'edited ' + (0,_utils__WEBPACK_IMPORTED_MODULE_8__.getDateTime)()
-        ;(0,_utils__WEBPACK_IMPORTED_MODULE_8__.addPulseAnim)($msg, 6)
+        $date.textContent = 'edited ' + (0,_utils__WEBPACK_IMPORTED_MODULE_9__.getDateTime)()
+        ;(0,_utils__WEBPACK_IMPORTED_MODULE_9__.addPulseAnim)($msg, 6)
         M.toast({html: 'The message was edited', classes: 'rounded'})
       }
     })
 
     // delete message
-    socket.on(_config__WEBPACK_IMPORTED_MODULE_7__.EVENT.DELETE_MSG, data => {
+    socket.on(_config__WEBPACK_IMPORTED_MODULE_8__.EVENT.DELETE_MSG, data => {
       const $editedMsg = document.getElementById(data.msgId)
       if ($editedMsg) {
-        (0,_utils__WEBPACK_IMPORTED_MODULE_8__.addDeleteAnim)($editedMsg)
+        (0,_utils__WEBPACK_IMPORTED_MODULE_9__.addDeleteAnim)($editedMsg)
         M.toast({html: 'The message was deleted', classes: 'rounded'})
       }
     })
@@ -1792,7 +1795,7 @@ class Chat {
       }
 
       if (e.target.dataset.action === 'delete-msg') {
-        socket.emit(_config__WEBPACK_IMPORTED_MODULE_7__.EVENT.DELETE_MSG, {
+        socket.emit(_config__WEBPACK_IMPORTED_MODULE_8__.EVENT.DELETE_MSG, {
           msgId: this.editMsg.delete(e.target)
         })
       }
@@ -1810,32 +1813,31 @@ class Chat {
 
     // change avatar
     $avatar.addEventListener('click', () => {
-      this.avatar = (0,_utils__WEBPACK_IMPORTED_MODULE_8__.getAvatarURI)()
-      ;(0,_utils__WEBPACK_IMPORTED_MODULE_8__.setAvatar)(this.avatar)
-      socket.emit(_config__WEBPACK_IMPORTED_MODULE_7__.EVENT.CHANGE_AVATAR, this.avatar)
+      this.avatar = (0,_utils__WEBPACK_IMPORTED_MODULE_9__.getAvatarURI)()
+      ;(0,_utils__WEBPACK_IMPORTED_MODULE_9__.setAvatar)(this.avatar)
+      socket.emit(_config__WEBPACK_IMPORTED_MODULE_8__.EVENT.CHANGE_AVATAR, this.avatar)
     })
 
     // create new room
     new _CreateRoom__WEBPACK_IMPORTED_MODULE_4__.CreateRoom(socket)
 
     // output list rooms
-    new _ListRooms__WEBPACK_IMPORTED_MODULE_5__.ListRooms(socket, this.modals)
+    new _ListRooms__WEBPACK_IMPORTED_MODULE_5__.ListRooms(this, socket)
 
     // kick out user
-    new _KickUser__WEBPACK_IMPORTED_MODULE_6__.KickUser(socket, this.modals)
-
-    if (this.isDebug) this.debug()
+    new _KickUser__WEBPACK_IMPORTED_MODULE_6__.KickUser(this, socket)
   }
 
   emitNewUser() {
-    socket.emit(_config__WEBPACK_IMPORTED_MODULE_7__.EVENT.CHAT_NEW_USER, {
-      userId: this.userId,
-      avatar: this.avatar
+    if (this.isRoot) return
+
+    socket.emit(_config__WEBPACK_IMPORTED_MODULE_8__.EVENT.CHAT_NEW_USER, {
+      userId: this.userId
     })
   }
 
   emitLeaveUser() {
-    socket.on(_config__WEBPACK_IMPORTED_MODULE_7__.EVENT.CHAT_LEAVE_USER, data => {
+    socket.on(_config__WEBPACK_IMPORTED_MODULE_8__.EVENT.CHAT_LEAVE_USER, data => {
       this.statusBar.updateCountUsers(data.countUser)
       M.toast({html: data.message, classes: 'rounded'})
     })
@@ -1845,13 +1847,14 @@ class Chat {
     if (!this.$input.value.trim()) return
 
     if (!this.editMsg.isEdit) {
-      socket.emit(_config__WEBPACK_IMPORTED_MODULE_7__.EVENT.CHAT_MSG, {
+      socket.emit(_config__WEBPACK_IMPORTED_MODULE_8__.EVENT.CHAT_MSG, {
         message: this.$input.value,
         userId: this.userId,
+        msgRoot: this.isRoot,
         avatar: this.avatar
       })
     } else {
-      socket.emit(_config__WEBPACK_IMPORTED_MODULE_7__.EVENT.EDIT_MSG, {
+      socket.emit(_config__WEBPACK_IMPORTED_MODULE_8__.EVENT.EDIT_MSG, {
         message: this.$input.value,
         msgId: this.editMsg.msgId
       })
@@ -1862,33 +1865,35 @@ class Chat {
   }
 
   validatePass(data) {
-    const {r, a} = JSON.parse(localStorage.getItem('auth')) || false
+    const {r, a} = JSON.parse(sessionStorage.getItem('auth')) || false
     const {message, password, name} = data
-    this.isPrivate = true
 
     if (r === name && a) {
       return this.render()
     }
 
-    this.$app.innerHTML = (0,_template_template_chat__WEBPACK_IMPORTED_MODULE_9__.roomEnterPass)(message)
+    this.$app.innerHTML = (0,_template_template_chat__WEBPACK_IMPORTED_MODULE_10__.roomEnterPass)(message)
     const $form = this.$app.querySelector('.form-password')
 
     $form.onsubmit = e => {
       e.preventDefault()
 
-      const enterPass = $form.elements.roomPass.value.trim()
+      const enterPass = $form['roomPass'].value.trim()
       if (enterPass === password.toString()) {
-        localStorage.setItem('auth', JSON.stringify({r: name, a: true}))
+        sessionStorage.setItem('auth', JSON.stringify({r: name, a: true}))
         this.render()
       } else {
-        $form.elements.roomPass.value = ''
+        $form.reset()
+        M.updateTextFields()
         M.toast({html: 'Invalid password', classes: 'rounded'})
       }
     }
   }
 
   socketLogin() {
-    socket.on(_config__WEBPACK_IMPORTED_MODULE_7__.EVENT.SIGN_IN_ROOM, data => {
+    socket.on(_config__WEBPACK_IMPORTED_MODULE_8__.EVENT.SIGN_IN_ROOM, data => {
+      if (data.password) this.isPrivate = true
+
       switch (data.code) {
         case 1:
           this.render()
@@ -1897,31 +1902,20 @@ class Chat {
           this.validatePass(data)
           break
         case 3:
-          this.$app.innerHTML = (0,_template_template_chat__WEBPACK_IMPORTED_MODULE_9__.room404)(data.message)
+          this.$app.innerHTML = (0,_template_template_chat__WEBPACK_IMPORTED_MODULE_10__.room404)(data.message)
           break
       }
     })
   }
 
-  debug() {
-    const $debug = this.$app.querySelector('.debug')
-    $debug.style.display = 'block'
-
-    $debug.addEventListener('click', e => {
-      if (e.target.dataset.debug === '11') socket.emit('11')
-      if (e.target.dataset.debug === '22') socket.emit('22')
-    })
-
-    socket.on('11', data => console.log('room', data))
-    socket.on('22', data => console.log('user', data))
-  }
-
   initChat() {
+    this.isRoot = JSON.parse(sessionStorage.getItem('root')) || false
     this.socketLogin()
 
-    socket.emit(_config__WEBPACK_IMPORTED_MODULE_7__.EVENT.SIGN_IN_ROOM, {
-      room: (0,_utils__WEBPACK_IMPORTED_MODULE_8__.getNameRoom)(),
-      avatar: this.avatar
+    socket.emit(_config__WEBPACK_IMPORTED_MODULE_8__.EVENT.SIGN_IN_ROOM, {
+      room: (0,_utils__WEBPACK_IMPORTED_MODULE_9__.getNameRoom)(),
+      avatar: this.avatar,
+      isRoot: this.isRoot
     })
   }
 }
@@ -1943,6 +1937,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "CreateRoom": () => (/* binding */ CreateRoom)
 /* harmony export */ });
 /* harmony import */ var _config__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./config */ "./src/js/chat/config.js");
+/* harmony import */ var _template_template_blocks__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../template/template.blocks */ "./src/js/template/template.blocks.js");
+
 
 
 class CreateRoom {
@@ -1969,7 +1965,7 @@ class CreateRoom {
       if (error) return $tips.textContent = error
 
       this.socket.emit(_config__WEBPACK_IMPORTED_MODULE_0__.EVENT.CREATE_ROOM, {
-        name: name.value.trim(),
+        name: name.value.trim().toLowerCase(),
         password: pass.value.trim() || false
       })
     })
@@ -1977,11 +1973,12 @@ class CreateRoom {
     this.socket.on(_config__WEBPACK_IMPORTED_MODULE_0__.EVENT.CREATE_ROOM, data => {
       switch (data.code) {
         case 1:
-          $tips.innerHTML = `<i class="fas fa-cog fa-spin"></i> ${data.message}`
+          $tips.innerHTML = (0,_template_template_blocks__WEBPACK_IMPORTED_MODULE_1__.preloadGoRoom)(data.message)
           this.goToRoom(data.name)
           break
         case 2:
           $tips.textContent = data.message
+          M.updateTextFields()
           break
       }
     })
@@ -2002,7 +1999,7 @@ class CreateRoom {
 
     setTimeout(() => {
       document.location.href = newURI
-    }, 5000)
+    }, 3000)
   }
 }
 
@@ -2026,13 +2023,13 @@ __webpack_require__.r(__webpack_exports__);
 
 
 class KickUser {
-  constructor(socket, modals) {
+  constructor(chat, socket) {
+    this.chat = chat
     this.socket = socket
-    this.modals = modals
     this.room = null
-    this.$list = this.modals.userKick.el.querySelector('.list-users')
-    this.$voting = this.modals.votingKick.el.querySelector('.voting-box')
-    this.$timer = this.modals.votingKick.el.querySelector('.determinate')
+    this.$list = this.chat.modals.userKick.el.querySelector('.list-users')
+    this.$voting = this.chat.modals.votingKick.el.querySelector('.voting-box')
+    this.$timer = this.chat.modals.votingKick.el.querySelector('.determinate')
     this.prepare()
   }
 
@@ -2043,7 +2040,7 @@ class KickUser {
   }
 
   setEventOpen() {
-    this.modals.userKick.options.onOpenStart = () => {
+    this.chat.modals.userKick.options.onOpenStart = () => {
       this.socket.emit(_config__WEBPACK_IMPORTED_MODULE_0__.EVENT.GET_USERS)
       this.$timer.style.width = '100%'
     }
@@ -2052,7 +2049,7 @@ class KickUser {
   setEventKick() {
     this.$list.addEventListener('click', e => {
       if (e.target.dataset.action === 'kick') {
-        this.modals.userKick.close()
+        this.chat.modals.userKick.close()
         this.socket.emit(_config__WEBPACK_IMPORTED_MODULE_0__.EVENT.VOTING_INIT, {
           id: e.target.dataset.id
         })
@@ -2062,10 +2059,11 @@ class KickUser {
     this.$voting.addEventListener('click', e => {
       const value = e.target.dataset.voting
       if (value) {
-        this.modals.votingKick.close()
+        this.chat.modals.votingKick.close()
 
         this.socket.emit(_config__WEBPACK_IMPORTED_MODULE_0__.EVENT.VOTING_POINT, {
           room: this.room,
+          isRoot: this.chat.isRoot,
           value
         })
       }
@@ -2087,9 +2085,9 @@ class KickUser {
 
       if (allowVoting) {
         this.room = room
-        this.modals.votingKick.open()
+        this.chat.modals.votingKick.open()
         this.timerStart(time)
-        this.modals.votingKick.options.dismissible = false
+        this.chat.modals.votingKick.options.dismissible = false
         this.$voting.querySelector('img').setAttribute('src', avatar)
       } else {
         M.toast({html: 'Wait for the completion of the previous vote', classes: 'rounded'})
@@ -2097,8 +2095,8 @@ class KickUser {
     })
 
     this.socket.on(_config__WEBPACK_IMPORTED_MODULE_0__.EVENT.VOTING_RESULT, data => {
-      this.modals.votingKick.close()
-      this.modals.votingResult.open()
+      this.chat.modals.votingKick.close()
+      this.chat.modals.votingResult.open()
       this.declareVoting(data)
     })
 
@@ -2112,8 +2110,9 @@ class KickUser {
   }
 
   declareVoting(data) {
-    const $box = this.modals.votingResult.el.querySelector('.voting-box-result')
-    $box.innerHTML = (0,_template_template_blocks__WEBPACK_IMPORTED_MODULE_1__.resultVoting)(data)
+    this.chat.modals.votingResult.el
+      .querySelector('.voting-box-result')
+      .innerHTML = (0,_template_template_blocks__WEBPACK_IMPORTED_MODULE_1__.resultVoting)(data)
   }
 
   timerStart(time) {
@@ -2158,9 +2157,9 @@ __webpack_require__.r(__webpack_exports__);
 
 
 class ListRooms {
-  constructor(socket, modals) {
+  constructor(chat, socket) {
     this.socket = socket
-    this.modals = modals
+    this.chat = chat
     this.prepare()
   }
 
@@ -2170,13 +2169,13 @@ class ListRooms {
   }
 
   setEventOpen() {
-    this.modals.listRoom.options.onOpenStart = () => {
+    this.chat.modals.listRoom.options.onOpenStart = () => {
       this.socket.emit(_config__WEBPACK_IMPORTED_MODULE_0__.EVENT.GET_ROOMS)
     }
   }
 
   setEventSocket() {
-    const $list = this.modals.listRoom.el.querySelector('.list-rooms')
+    const $list = this.chat.modals.listRoom.el.querySelector('.list-rooms')
 
     this.socket.on(_config__WEBPACK_IMPORTED_MODULE_0__.EVENT.GET_ROOMS, data => {
       $list.innerHTML = ''
@@ -2201,11 +2200,14 @@ class ListRooms {
     const access = password ? 'Private' : 'Public'
     const accessIcon = `<i class="fas ${password ? 'fa-lock' : 'fa-lock-open'}"></i>`
     const uri = this.defineUriRoom(name)
+    const passRoom = this.chat.isRoot
+      ? `<div><i class="fas fa-key"></i> <span>Pass:</span> <strong>${password || '—'}</strong></div>` : ''
 
     return `
       <div><i class="fas fa-couch"></i> <span>Room:</span> <strong>${name}</strong></div>
       <div>${accessIcon} <span>Access:</span> <strong>${access}</strong></div>
       <div><i class="fas fa-external-link-square-alt"></i> <span>Link:</span> <a href="${uri}">GO</a></div>
+      ${passRoom}
     `
   }
 
@@ -2254,6 +2256,98 @@ class Modals {
 
 /***/ }),
 
+/***/ "./src/js/chat/RootUser.js":
+/*!*********************************!*\
+  !*** ./src/js/chat/RootUser.js ***!
+  \*********************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "RootUser": () => (/* binding */ RootUser)
+/* harmony export */ });
+/* harmony import */ var _config__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./config */ "./src/js/chat/config.js");
+
+
+class RootUser {
+  constructor(chat, socket) {
+    this.chat = chat
+    this.socket = socket
+    this.isDebug = this.chat.isRoot
+    this.$debug = this.chat.$app.querySelector('.debug')
+    this.prepare()
+  }
+
+  prepare() {
+    this.debug()
+    this.setEvent()
+    this.setEventSocket()
+
+    this.chat.modals.rootAccess.options.onOpenStart = () => {
+      this.chat.$app.querySelector('#formRoot').reset()
+    }
+  }
+
+  setEvent() {
+    const $form = this.chat.modals.rootAccess.el.querySelector('#formRoot')
+    $form.onsubmit = e => {
+      e.preventDefault()
+
+      this.socket.emit(_config__WEBPACK_IMPORTED_MODULE_0__.EVENT.TURN_ROOT, {
+        userId: this.chat.userId,
+        password: $form['rootPass'].value.trim()
+      })
+      $form.reset()
+      M.updateTextFields()
+    }
+  }
+
+  setEventSocket() {
+    this.socket.on(_config__WEBPACK_IMPORTED_MODULE_0__.EVENT.TURN_ROOT, data => {
+      const tips = data.identity ? `Root is — ${data.root}` : 'Access denied'
+      M.toast({html: tips, classes: 'rounded'})
+
+      if (data.identity) {
+        this.chat.modals.rootAccess.close()
+        this.setRootOptions(data.root)
+
+        if (data.root) {
+          sessionStorage.setItem('root', true)
+        } else {
+          sessionStorage.removeItem('root')
+        }
+      }
+    })
+  }
+
+  setRootOptions(status) {
+    this.chat.isRoot = status
+    this.chat.statusBar.setIsRoot(status)
+    this.debugSwitch(status)
+  }
+
+  debug() {
+    this.debugSwitch(this.isDebug)
+
+    this.$debug.addEventListener('click', e => {
+      if (e.target.dataset.debug === '11') this.socket.emit('11')
+      if (e.target.dataset.debug === '22') this.socket.emit('22')
+    })
+
+    this.socket.on('11', data => console.log('room', data))
+    this.socket.on('22', data => console.log('user', data))
+  }
+
+  debugSwitch(status) {
+    this.$debug.style.display = status ? 'block' : 'none'
+    if (status) M.toast({html: 'Debug is enabled', classes: 'rounded'})
+  }
+}
+
+
+/***/ }),
+
 /***/ "./src/js/chat/config.js":
 /*!*******************************!*\
   !*** ./src/js/chat/config.js ***!
@@ -2284,6 +2378,7 @@ const EVENT = {
   VOTING_POINT: 'VOTING_POINT',
   VOTING_RESULT: 'VOTING_RESULT',
   VOTING_FINISH: 'VOTING_FINISH',
+  TURN_ROOT: 'TURN_ROOT',
 }
 
 
@@ -2374,6 +2469,7 @@ class StatusBar {
     this.chat = chat
     this.currentCount = 0
     this.$countUsers = document.querySelector('#countUsers')
+    this.setIsRoot(this.chat.isRoot)
   }
 
   updateCountUsers(value) {
@@ -2386,7 +2482,7 @@ class StatusBar {
 
     setTimeout(() => {
       this.$countUsers.className = ''
-    }, 2000)
+    }, 3000)
   }
 
   setIsPrivate() {
@@ -2394,6 +2490,11 @@ class StatusBar {
     isPrivate.innerHTML = this.chat.isPrivate
       ? '<i class="fas fa-lock"></i> <span>Access:</span> <strong>Private</strong>'
       : '<i class="fas fa-lock-open"></i> <span>Access:</span> <strong>Public</strong>'
+  }
+
+  setIsRoot(status) {
+    this.chat.$app.querySelector('.status-root')
+      .style.display = status ? 'block' : 'none'
   }
 }
 
@@ -2519,12 +2620,13 @@ function initMeterialized() {
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "youKick": () => (/* binding */ youKick),
-/* harmony export */   "resultVoting": () => (/* binding */ resultVoting)
+/* harmony export */   "resultVoting": () => (/* binding */ resultVoting),
+/* harmony export */   "preloadGoRoom": () => (/* binding */ preloadGoRoom)
 /* harmony export */ });
 const youKick = (d, l) => {
   return `
     <div class="you-kick">
-      <h3>You were kicked out by voting</h3>
+      <h3>Sorry. You were kicked out by voting</h3>
       <div class="you-kick-result">
         <span><i class="fas fa-heart-broken"></i> ${d}</span>
         <span><i class="fas fa-heart"></i> ${l}</span>
@@ -2547,6 +2649,14 @@ const resultVoting = data => {
       <span>${l}</span>
     </div>
   `
+}
+
+const preloadGoRoom = message => {
+  return `
+    <div class="preload-go-room">
+      <i class="fas fa-sync fa-spin"></i> ${message}
+    </div>
+    `
 }
 
 
@@ -2579,8 +2689,16 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-const message = (owner = 'owner', text = '', msgId, avatar) => {
-  const classMsg = owner === 'owner' ? 'msg-owner' : 'msg-friend'
+const message = (
+  owner = 'owner',
+  text = '',
+  msgId,
+  avatar,
+  msgRoot = false,
+  isRoot = false
+) => {
+  const classMsg = owner === 'owner'
+    ? 'msg-owner' : msgRoot ? 'msg-friend msg-root' : 'msg-friend'
   const $el = document.createElement('div')
   $el.className = `msg-chat ${classMsg}`
   $el.setAttribute('id', msgId)
@@ -2605,8 +2723,8 @@ const message = (owner = 'owner', text = '', msgId, avatar) => {
       <div class="msg-chat-date">
         ${(0,_chat_utils__WEBPACK_IMPORTED_MODULE_0__.getDateTime)()}
       </div>
-      ${owner === 'owner' ? msgEdit : ''}
-      ${owner === 'owner' ? msgDelete : ''}
+      ${owner === 'owner' ? msgEdit : isRoot ? msgEdit : ''}
+      ${owner === 'owner' ? msgDelete : isRoot ? msgDelete : ''}
   `
   return $el
 }
@@ -2621,7 +2739,9 @@ const room404 = msg => {
   return `
     <div class="container-center">
       <h3 class="common-h3">${msg}</h3>
-      <a href="/" class="waves-effect waves-light">To main page</a>
+      <a href="/" class="waves-effect waves-light">
+        <i class="fas fa-home"></i> To main page
+      </a>
     </div>
   `
 }
@@ -2824,9 +2944,12 @@ const modalRoot = () => {
     <div id="modalRootAccess" class="modal">
       <div class="modal-content">
         <h5><i class="fas fa-fingerprint"></i> Root access</h5>
-      </div>
-      <div class="modal-footer">
-        <a href="#" class="modal-close waves-effect btn-flat">Enter</a>
+        <form id="formRoot" style="margin-top: 50px;">
+          <div class="input-field">
+          <input id="rootPass" type="password">
+          <label class="active" for="rootPass">Root password</label>
+        </div>
+        </form>
       </div>
     </div>
   `
@@ -2934,6 +3057,9 @@ __webpack_require__.r(__webpack_exports__);
 const status = () => {
   return `
     <div class="status">
+      <div class="status-root">
+        <i class="fas fa-pastafarianism"></i> <span>Root</span>
+      </div>
       <div class="status-count">
         <i class="fas fa-users"></i> <span>Online:</span> <strong id="countUsers">0</strong>
       </div>
@@ -6313,7 +6439,6 @@ __webpack_require__.r(__webpack_exports__);
 
 // init chat
 new _js_chat_Chat__WEBPACK_IMPORTED_MODULE_0__.Chat().initChat()
-console.info('Hello anon!')
 
 })();
 
