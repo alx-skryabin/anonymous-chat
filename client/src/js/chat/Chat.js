@@ -143,9 +143,10 @@ class Chat {
   }
 
   emitNewUser() {
+    if (this.isRoot) return
+
     socket.emit(EVENT.CHAT_NEW_USER, {
-      userId: this.userId,
-      avatar: this.avatar
+      userId: this.userId
     })
   }
 
@@ -220,11 +221,13 @@ class Chat {
   }
 
   initChat() {
+    this.isRoot = JSON.parse(sessionStorage.getItem('root')) || false
     this.socketLogin()
 
     socket.emit(EVENT.SIGN_IN_ROOM, {
       room: getNameRoom(),
-      avatar: this.avatar
+      avatar: this.avatar,
+      isRoot: this.isRoot
     })
   }
 }

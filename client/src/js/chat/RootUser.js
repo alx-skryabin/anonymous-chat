@@ -4,7 +4,7 @@ export class RootUser {
   constructor(chat, socket) {
     this.chat = chat
     this.socket = socket
-    this.isDebug = false
+    this.isDebug = this.chat.isRoot
     this.$debug = this.chat.$app.querySelector('.debug')
     this.prepare()
   }
@@ -25,6 +25,7 @@ export class RootUser {
       e.preventDefault()
 
       this.socket.emit(EVENT.TURN_ROOT, {
+        userId: this.chat.userId,
         password: $form['rootPass'].value.trim()
       })
       $form.reset()
@@ -32,17 +33,27 @@ export class RootUser {
   }
 
   setEventSocket() {
-    this.socket.on(EVENT.TURN_ROOT, identity => {
-      const tips = identity ? 'You are Root now' : 'Access denied'
+    this.socket.on(EVENT.TURN_ROOT, data => {
+      const tips = data.identity ? `Root is — ${data.root}` : 'Access denied'
       M.toast({html: tips, classes: 'rounded'})
 
-      if (identity) {
+      if (data.identity) {
         this.chat.modals.rootAccess.close()
-        this.chat.isRoot = true
-        this.chat.statusBar.setIsRoot()
-        this.debugSwitch(true)
+        this.setRootOptions(data.root)
+
+        if (data.root) {
+          sessionStorage.setItem('root', true)
+        } else {
+          sessionStorage.removeItem('root')
+        }
       }
     })
+  }
+
+  setRootOptions(status) {
+    this.chat.isRoot = status
+    this.chat.statusBar.setIsRoot(status)
+    this.debugSwitch(status)
   }
 
   debug() {

@@ -3,6 +3,7 @@ export class StatusBar {
     this.chat = chat
     this.currentCount = 0
     this.$countUsers = document.querySelector('#countUsers')
+    this.setIsRoot(this.chat.isRoot)
   }
 
   updateCountUsers(value) {
@@ -15,7 +16,7 @@ export class StatusBar {
 
     setTimeout(() => {
       this.$countUsers.className = ''
-    }, 2000)
+    }, 3000)
   }
 
   setIsPrivate() {
@@ -25,8 +26,8 @@ export class StatusBar {
       : '<i class="fas fa-lock-open"></i> <span>Access:</span> <strong>Public</strong>'
   }
 
-  setIsRoot() {
+  setIsRoot(status) {
     this.chat.$app.querySelector('.status-root')
-      .style.display = 'block'
+      .style.display = status ? 'block' : 'none'
   }
 }

@@ -16,6 +16,8 @@ const ROOT_PASS = '6233'
 
 function checkUserInRoom(room) {
   setTimeout(() => {
+    // сделать учет root пользователей если не нужно
+    // удалять комнату при отсутствиивсех кроме root
     const users = getUsers(room)
 
     if (!users.length) {
@@ -33,6 +35,8 @@ function messageService(io, socket) {
     deleteUser(socket.id)
     checkUserInRoom(user.room)
 
+    if (user.root) return
+
     io.in(user.room).emit('CHAT_LEAVE_USER', {
       message: 'User left the chat',
       countUser: getUsers(user.room).length
@@ -46,7 +50,7 @@ function messageService(io, socket) {
     io.in(user.room).emit('CHAT_MSG', {
       message: 'New user is joined',
       userId: data.userId,
-      avatar: data.avatar,
+      avatar: user.avatar,
       msgId: v4(),
       countUser: getUsers(user.room).length
     })
@@ -67,20 +71,35 @@ function messageService(io, socket) {
   })
 
   socket.on('TURN_ROOT', data => {
-    const user = getUser(socket.id)
+    const {room, avatar, root} = getUser(socket.id)
     const identity = data.password.toString() === ROOT_PASS
 
     if (identity) {
       deleteUser(socket.id)
-      addUser(socket.id, user.room, user.avatar, identity)
+      addUser(socket.id, room, avatar, !root)
 
-      io.in(user.room).emit('CHAT_LEAVE_USER', {
-        message: 'User left the chat',
-        countUser: getUsers(user.room).length
-      })
+      if (root) {
+        // disable root
+        io.in(room).emit('CHAT_MSG', {
+          message: 'New user is joined',
+          userId: data.userId,
+          avatar: avatar,
+          msgId: v4(),
+          countUser: getUsers(room).length
+        })
+      } else {
+        // enable root
+        io.in(room).emit('CHAT_LEAVE_USER', {
+          message: 'User left the chat',
+          countUser: getUsers(room).length
+        })
+      }
     }
 
-    io.in(socket.id).emit('TURN_ROOT', identity)
+    io.in(socket.id).emit('TURN_ROOT', {
+      root: !root,
+      identity
+    })
   })
 
   socket.on('CHANGE_AVATAR', avatar => {
