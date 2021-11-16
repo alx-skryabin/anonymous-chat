@@ -39,6 +39,7 @@ export class RootUser {
       if (identity) {
         this.chat.modals.rootAccess.close()
         this.chat.isRoot = true
+        this.chat.statusBar.setIsRoot()
         this.debugSwitch(true)
       }
     })

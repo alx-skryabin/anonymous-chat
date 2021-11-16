@@ -24,4 +24,9 @@ export class StatusBar {
       ? '<i class="fas fa-lock"></i> <span>Access:</span> <strong>Private</strong>'
       : '<i class="fas fa-lock-open"></i> <span>Access:</span> <strong>Public</strong>'
   }
+
+  setIsRoot() {
+    this.chat.$app.querySelector('.status-root')
+      .style.display = 'block'
+  }
 }

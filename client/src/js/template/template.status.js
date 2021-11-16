@@ -3,6 +3,9 @@ import {getNameRoom} from '../chat/utils'
 const status = () => {
   return `
     <div class="status">
+      <div class="status-root">
+        <i class="fas fa-pastafarianism"></i> <span>Root</span>
+      </div>
       <div class="status-count">
         <i class="fas fa-users"></i> <span>Online:</span> <strong id="countUsers">0</strong>
       </div>

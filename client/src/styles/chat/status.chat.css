@@ -17,7 +17,18 @@
 
 .status-count,
 .status-room,
-.status-private {
+.status-private,
+.status-root {
   margin-right: 15px;
   color: #828282;
+}
+
+.status-root {
+  color: #11db7a;
+  display: none;
+}
+
+.debug button {
+  padding: 0 5px 3px;
+
 }
