@@ -38,9 +38,6 @@ const modalRoot = () => {
         </div>
         </form>
       </div>
-      <div class="modal-footer">
-        <a href="#" class="modal-close waves-effect btn-flat">Enter</a>
-      </div>
     </div>
   `
 }

@@ -54,7 +54,9 @@ const room404 = msg => {
   return `
     <div class="container-center">
       <h3 class="common-h3">${msg}</h3>
-      <a href="/" class="waves-effect waves-light">To main page</a>
+      <a href="/" class="waves-effect waves-light">
+        <i class="fas fa-home"></i> To main page
+      </a>
     </div>
   `
 }

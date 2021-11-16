@@ -17,7 +17,7 @@ const ROOT_PASS = '6233'
 function checkUserInRoom(room) {
   setTimeout(() => {
     // сделать учет root пользователей если не нужно
-    // удалять комнату при отсутствиивсех кроме root
+    // удалять комнату при отсутствии всех кроме root
     const users = getUsers(room)
 
     if (!users.length) {
