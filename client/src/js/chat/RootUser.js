@@ -29,6 +29,7 @@ export class RootUser {
         password: $form['rootPass'].value.trim()
       })
       $form.reset()
+      M.updateTextFields()
     }
   }
 

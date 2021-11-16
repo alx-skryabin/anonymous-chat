@@ -198,6 +198,7 @@ class Chat {
         this.render()
       } else {
         $form.reset()
+        M.updateTextFields()
         M.toast({html: 'Invalid password', classes: 'rounded'})
       }
     }

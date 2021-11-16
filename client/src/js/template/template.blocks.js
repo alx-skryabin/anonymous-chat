@@ -26,4 +26,12 @@ const resultVoting = data => {
   `
 }
 
-export {youKick, resultVoting}
+const preloadGoRoom = message => {
+  return `
+    <div class="preload-go-room">
+      <i class="fas fa-sync fa-spin"></i> ${message}
+    </div>
+    `
+}
+
+export {youKick, resultVoting, preloadGoRoom}

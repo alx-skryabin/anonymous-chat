@@ -1,4 +1,5 @@
 import {EVENT} from './config'
+import {preloadGoRoom} from '../template/template.blocks'
 
 export class CreateRoom {
   constructor(socket) {
@@ -24,7 +25,7 @@ export class CreateRoom {
       if (error) return $tips.textContent = error
 
       this.socket.emit(EVENT.CREATE_ROOM, {
-        name: name.value.trim(),
+        name: name.value.trim().toLowerCase(),
         password: pass.value.trim() || false
       })
     })
@@ -32,11 +33,12 @@ export class CreateRoom {
     this.socket.on(EVENT.CREATE_ROOM, data => {
       switch (data.code) {
         case 1:
-          $tips.innerHTML = `<i class="fas fa-cog fa-spin"></i> ${data.message}`
+          $tips.innerHTML = preloadGoRoom(data.message)
           this.goToRoom(data.name)
           break
         case 2:
           $tips.textContent = data.message
+          M.updateTextFields()
           break
       }
     })
@@ -57,6 +59,6 @@ export class CreateRoom {
 
     setTimeout(() => {
       document.location.href = newURI
-    }, 5000)
+    }, 3000)
   }
 }
