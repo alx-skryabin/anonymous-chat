@@ -45,7 +45,7 @@ class Chat {
     this.statusBar = new StatusBar(this)
     this.editMsg = new EditMsg(this.$input)
     this.modals = new Modals()
-    this.rootUser = new RootUser(this, socket)
+    new RootUser(this, socket)
     this.emitNewUser()
     this.emitLeaveUser()
     this.emitMsg()
@@ -179,9 +179,8 @@ class Chat {
   }
 
   validatePass(data) {
-    const {r, a} = JSON.parse(localStorage.getItem('auth')) || false
+    const {r, a} = JSON.parse(sessionStorage.getItem('auth')) || false
     const {message, password, name} = data
-    this.isPrivate = true
 
     if (r === name && a) {
       return this.render()
@@ -195,7 +194,7 @@ class Chat {
 
       const enterPass = $form['roomPass'].value.trim()
       if (enterPass === password.toString()) {
-        localStorage.setItem('auth', JSON.stringify({r: name, a: true}))
+        sessionStorage.setItem('auth', JSON.stringify({r: name, a: true}))
         this.render()
       } else {
         $form.reset()
@@ -206,6 +205,8 @@ class Chat {
 
   socketLogin() {
     socket.on(EVENT.SIGN_IN_ROOM, data => {
+      if (data.password) this.isPrivate = true
+
       switch (data.code) {
         case 1:
           this.render()

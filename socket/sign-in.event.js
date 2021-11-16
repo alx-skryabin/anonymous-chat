@@ -31,6 +31,7 @@ function signInRoom(socket) {
       socket.emit('SIGN_IN_ROOM', {
         room: user.room,
         message: 'Sign in room success',
+        password,
         code: 1
       })
     }
