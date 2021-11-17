@@ -36,7 +36,7 @@ const feedback = () => {
   return `
     <div class="feedback">
       <span><i class="fas fa-code-branch"></i> Improvements? — </span>
-      <a href="https://github.com/alx-skryabin/node-socket" target="_blank">github</a>
+      <a href="https://github.com/alx-skryabin/anonymous-chat" target="_blank">github</a>
     </div>
   `
 }
