@@ -1,7 +1,7 @@
 ### ***About:***
 Anonymous Сhat on Socket, NodeJS, Express stack.
 
-###Functionality:
+### Functionality:
 1) Support `rooms` (Also private by pass)
 2) The ability to `exclude` a user by `voting`
 3) Ability to `edit` and `delete` messages
@@ -11,7 +11,7 @@ Anonymous Сhat on Socket, NodeJS, Express stack.
 7) Changing the `avatar`
 
 ### ***Demo:***
-####[chat-noname.herokuapp.com](https://chat-noname.herokuapp.com)
+#### [chat-noname.herokuapp.com](https://chat-noname.herokuapp.com)
 
 ### ***Deploy***
 1) npm run client:build
