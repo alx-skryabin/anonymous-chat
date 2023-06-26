@@ -1,4 +1,10 @@
+/*!************************************************************************!*\
+  !*** css ./node_modules/css-loader/dist/cjs.js!./src/styles/index.css ***!
+  \************************************************************************/
 @import url(https://fonts.googleapis.com/css2?family=Roboto&display=swap);
+/*!********************************************************************************************!*\
+  !*** css ./node_modules/css-loader/dist/cjs.js!./node_modules/normalize.css/normalize.css ***!
+  \********************************************************************************************/
 /*! normalize.css v8.0.1 | MIT License | github.com/necolas/normalize.css */
 
 /* Document
@@ -349,6 +355,9 @@ template {
   display: none;
 }
 
+/*!*********************************************************************************************************!*\
+  !*** css ./node_modules/css-loader/dist/cjs.js!./node_modules/materialize-css/dist/css/materialize.css ***!
+  \*********************************************************************************************************/
 /*!
  * Materialize v1.0.0 (http://materializecss.com)
  * Copyright 2014-2017 Materialize
@@ -9417,6 +9426,9 @@ input[type=range]::-ms-thumb {
   }
 }
 
+/*!****************************************************************************!*\
+  !*** css ./node_modules/css-loader/dist/cjs.js!./src/styles/main/main.css ***!
+  \****************************************************************************/
 * {
   scrollbar-color: #ccc #223;
   scrollbar-width: thin;
@@ -9501,6 +9513,9 @@ body {
 }
 
 
+/*!***********************************************************************************!*\
+  !*** css ./node_modules/css-loader/dist/cjs.js!./src/styles/chat/header.chat.css ***!
+  \***********************************************************************************/
 .header {
   position: relative;
   display: flex;
@@ -9546,6 +9561,9 @@ body {
   transition: .2s;
 }
 
+/*!*********************************************************************************!*\
+  !*** css ./node_modules/css-loader/dist/cjs.js!./src/styles/chat/menu.chat.css ***!
+  \*********************************************************************************/
 .header .user-view {
   padding: 15px;
 }
@@ -9572,6 +9590,9 @@ body {
   margin: 0;
 }
 
+/*!***********************************************************************************!*\
+  !*** css ./node_modules/css-loader/dist/cjs.js!./src/styles/chat/status.chat.css ***!
+  \***********************************************************************************/
 .status {
   display: flex;
   align-items: center;
@@ -9607,6 +9628,9 @@ body {
 
 }
 
+/*!************************************************************************************!*\
+  !*** css ./node_modules/css-loader/dist/cjs.js!./src/styles/chat/content.chat.css ***!
+  \************************************************************************************/
 .content {
   height: 100%;
   padding: 10px;
@@ -9732,6 +9756,9 @@ body {
   transition: 1s;
 }
 
+/*!***********************************************************************************!*\
+  !*** css ./node_modules/css-loader/dist/cjs.js!./src/styles/chat/footer.chat.css ***!
+  \***********************************************************************************/
 .footer {
   display: flex;
   align-items: center;
@@ -9782,6 +9809,9 @@ body {
   cursor: pointer;
 }
 
+/*!**********************************************************************************!*\
+  !*** css ./node_modules/css-loader/dist/cjs.js!./src/styles/chat/modal.chat.css ***!
+  \**********************************************************************************/
 .modal h5 {
   margin-bottom: 25px;
 }
@@ -9966,6 +9996,9 @@ body {
   margin-bottom: 20px;
 }
 
+/*!****************************************************************************!*\
+  !*** css ./node_modules/css-loader/dist/cjs.js!./src/styles/chat/chat.css ***!
+  \****************************************************************************/
 .chat {
   height: 100vh;
   position: relative;
@@ -9973,6 +10006,9 @@ body {
   flex-direction: column;
 }
 
+/*!****************************************************************************!*\
+  !*** css ./node_modules/css-loader/dist/cjs.js!./src/styles/index.css (1) ***!
+  \****************************************************************************/
 
 
 
