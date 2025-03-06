@@ -22,7 +22,7 @@ export class CreateRoom {
       if (name.value.trim().length < 3) error = 'Minimum length of the room name is 3 characters.'
       if (isPrivate.checked && !pass.value.trim()) error = `${error} Enter password.`
 
-      if (error) return $tips.textContent = error
+      if (error) return ($tips.textContent = error)
 
       this.socket.emit(EVENT.CREATE_ROOM, {
         name: name.value.trim().toLowerCase(),

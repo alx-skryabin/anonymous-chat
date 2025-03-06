@@ -1,14 +1,5 @@
-const {
-  getAllRooms,
-  deleteRoom
-} = require('../models/rooms')
-const {
-  deleteUser,
-  getAllUsers,
-  getUsers,
-  getUser,
-  addUser
-} = require('../models/users')
+const {getAllRooms, deleteRoom} = require('../models/rooms')
+const {deleteUser, getAllUsers, getUsers, getUser, addUser} = require('../models/users')
 const {v4} = require('uuid')
 
 const TIME_DELETING_ROOM = 60
@@ -28,7 +19,7 @@ function checkUserInRoom(room) {
 }
 
 function messageService(io, socket) {
-  socket.on("disconnect", () => {
+  socket.on('disconnect', () => {
     const user = getUser(socket.id)
     if (!user) return
 
@@ -42,7 +33,6 @@ function messageService(io, socket) {
       countUser: getUsers(user.room).length
     })
   })
-
 
   socket.on('CHAT_NEW_USER', data => {
     const user = getUser(socket.id)

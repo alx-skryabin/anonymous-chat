@@ -4,16 +4,8 @@ import {status} from './template.status'
 import {footer} from './template.footer'
 import {modals} from './template.modal'
 
-const message = (
-  owner = 'owner',
-  text = '',
-  msgId,
-  avatar,
-  msgRoot = false,
-  isRoot = false
-) => {
-  const classMsg = owner === 'owner'
-    ? 'msg-owner' : msgRoot ? 'msg-friend msg-root' : 'msg-friend'
+const message = (owner = 'owner', text = '', msgId, avatar, msgRoot = false, isRoot = false) => {
+  const classMsg = owner === 'owner' ? 'msg-owner' : msgRoot ? 'msg-friend msg-root' : 'msg-friend'
   const $el = document.createElement('div')
   $el.className = `msg-chat ${classMsg}`
   $el.setAttribute('id', msgId)

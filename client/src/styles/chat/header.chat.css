@@ -4,7 +4,7 @@
   min-height: 44px;
   justify-content: space-around;
   align-items: center;
-  background: rgba(255, 255, 255, .1);
+  background: rgba(255, 255, 255, 0.1);
 }
 
 .header h1 {
@@ -27,18 +27,18 @@
 }
 
 .feedback {
-  color: rgba(255, 255, 255, .2);
-  font-size: .9em;
+  color: rgba(255, 255, 255, 0.2);
+  font-size: 0.9em;
   padding-right: 10px;
 }
 
 .feedback a {
   text-decoration: none;
-  color: rgba(255, 255, 255, .5);
-  transition: .2s;
+  color: rgba(255, 255, 255, 0.5);
+  transition: 0.2s;
 }
 
 .feedback a:hover {
   color: #6185e8;
-  transition: .2s;
+  transition: 0.2s;
 }

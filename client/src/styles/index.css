@@ -1,5 +1,5 @@
-@import "~normalize.css";
-@import "~materialize-css";
+@import '~normalize.css';
+@import '~materialize-css';
 @import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');
-@import "./main/main.css";
-@import "./chat/chat.css";
+@import './main/main.css';
+@import './chat/chat.css';

@@ -9,7 +9,7 @@
   display: flex;
   align-items: center;
   margin-bottom: 30px;
-  transition: .2s;
+  transition: 0.2s;
 }
 
 .msg-owner {
@@ -17,7 +17,6 @@
 }
 
 .msg-friend {
-
 }
 
 .msg-chat-text {
@@ -53,7 +52,7 @@
   position: absolute;
   bottom: -15px;
   color: #828282;
-  font-size: .7em;
+  font-size: 0.7em;
   letter-spacing: 1px;
 }
 
@@ -68,35 +67,35 @@
 .msg-chat-edit,
 .msg-chat-delete {
   color: #fff;
-  opacity: .1;
-  font-size: .9em;
+  opacity: 0.1;
+  font-size: 0.9em;
   margin: 0 10px;
   cursor: pointer;
-  transition: .3s;
+  transition: 0.3s;
 }
 
 .msg-chat-edit:hover,
 .msg-chat-delete:hover {
-  opacity: .5;
-  transition: .3s;
+  opacity: 0.5;
+  transition: 0.3s;
 }
 
 .msg-chat-delete:hover {
-  opacity: .7;
+  opacity: 0.7;
   color: tomato;
 }
 
 .msg-edited {
-  background: rgba(255, 255, 255, .1);
+  background: rgba(255, 255, 255, 0.1);
   padding-right: 10px;
   border-radius: 10px;
-  transition: .2s;
+  transition: 0.2s;
 }
 
 .msg-edited .msg-chat-edit {
-  opacity: .7;
+  opacity: 0.7;
   color: tomato;
-  transition: .2s;
+  transition: 0.2s;
 }
 
 .modified:after {

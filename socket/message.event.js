@@ -15,7 +15,7 @@ function messageChat(io, socket) {
   socket.on('EDIT_MSG', data => {
     io.emit('EDIT_MSG', {
       message: data.message,
-      msgId: data.msgId,
+      msgId: data.msgId
     })
   })
 

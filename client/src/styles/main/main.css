@@ -41,13 +41,13 @@ body {
   color: lightskyblue;
   padding: 10px 15px;
   border-radius: 5px;
-  background: rgba(255, 255, 255, .1);
-  transition: .2s;
+  background: rgba(255, 255, 255, 0.1);
+  transition: 0.2s;
 }
 
 .container-center a:hover {
-  background: rgba(255, 255, 255, .2);
-  transition: .2s;
+  background: rgba(255, 255, 255, 0.2);
+  transition: 0.2s;
 }
 
 .form-password {
@@ -72,12 +72,11 @@ body {
   margin-left: 20px;
   border-radius: 3px;
   border: 0;
-  background: rgba(255, 255, 255, .1);
-  transition: .2s;
+  background: rgba(255, 255, 255, 0.1);
+  transition: 0.2s;
 }
 
 .form-password button:hover {
-  background: rgba(255, 255, 255, .2);
-  transition: .2s;
+  background: rgba(255, 255, 255, 0.2);
+  transition: 0.2s;
 }
-

@@ -19,12 +19,7 @@ import {
   getNameRoom,
   getAvatarURI
 } from './utils'
-import {
-  message,
-  template,
-  room404,
-  roomEnterPass
-} from '../template/template.chat'
+import {message, template, room404, roomEnterPass} from '../template/template.chat'
 
 const socket = io(defineHostURI(), {})
 
@@ -65,9 +60,10 @@ class Chat {
     socket.on(EVENT.CHAT_MSG, data => {
       const text = replaceSymbol(data.message)
 
-      const $msg = (data.userId === this.userId)
-        ? message('owner', text, data.msgId, this.avatar)
-        : message('friend', text, data.msgId, data.avatar, data.msgRoot, this.isRoot)
+      const $msg =
+        data.userId === this.userId
+          ? message('owner', text, data.msgId, this.avatar)
+          : message('friend', text, data.msgId, data.avatar, data.msgRoot, this.isRoot)
 
       this.$content.appendChild($msg)
       document.querySelector('head title').textContent = text.toString()

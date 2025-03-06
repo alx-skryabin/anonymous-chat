@@ -89,9 +89,8 @@ export class KickUser {
   }
 
   declareVoting(data) {
-    this.chat.modals.votingResult.el
-      .querySelector('.voting-box-result')
-      .innerHTML = resultVoting(data)
+    this.chat.modals.votingResult.el.querySelector('.voting-box-result').innerHTML =
+      resultVoting(data)
   }
 
   timerStart(time) {
@@ -112,6 +111,6 @@ export class KickUser {
     $el.setAttribute('data-id', user.id)
     $el.setAttribute('data-action', 'kick')
     $el.setAttribute('alt', 'user')
-    return $el;
+    return $el
   }
 }

@@ -33,7 +33,6 @@ class KickVoting {
   }
 }
 
-
 function kick(io, socket) {
   socket.on('VOTING_INIT', ({id}) => {
     const user = getUser(id)

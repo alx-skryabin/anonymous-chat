@@ -5,11 +5,12 @@ const createSocket = app => {
   const httpServer = createServer(app)
   const io = new Server(httpServer, {
     cors: {
-      origin: '*', // allow domain ex: http://localhost:8080
+      origin: '*' // allow domain ex: http://localhost:8080
     }
   })
   return {
-    httpServer, io
+    httpServer,
+    io
   }
 }
 

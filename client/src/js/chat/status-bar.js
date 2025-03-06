@@ -7,8 +7,8 @@ export class StatusBar {
   }
 
   updateCountUsers(value) {
-    const classStatus = value > this.currentCount
-      ? 'green-text text-accent-2' : 'red-text text-lighten-1'
+    const classStatus =
+      value > this.currentCount ? 'green-text text-accent-2' : 'red-text text-lighten-1'
 
     this.currentCount = value
     this.$countUsers.className = classStatus
@@ -27,7 +27,6 @@ export class StatusBar {
   }
 
   setIsRoot(status) {
-    this.chat.$app.querySelector('.status-root')
-      .style.display = status ? 'block' : 'none'
+    this.chat.$app.querySelector('.status-root').style.display = status ? 'block' : 'none'
   }
 }

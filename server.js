@@ -14,13 +14,11 @@ if (process.env.NODE_ENV === 'production') {
   })
 }
 
-
 /***For Express API***/
 // Support JSON format on server
 app.use(express.json({extended: true}))
 // Support CORS
 app.use(cors())
-
 
 /***For Socket***/
 const {httpServer, io} = require('./socket/create-socket')(app)
@@ -28,7 +26,6 @@ const {httpServer, io} = require('./socket/create-socket')(app)
 io.on('connection', socket => {
   socketEvent(io, socket)
 })
-
 
 const server = () => {
   return {

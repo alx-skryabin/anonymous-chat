@@ -46,7 +46,8 @@ export class ListRooms {
     const accessIcon = `<i class="fas ${password ? 'fa-lock' : 'fa-lock-open'}"></i>`
     const uri = this.defineUriRoom(name)
     const passRoom = this.chat.isRoot
-      ? `<div><i class="fas fa-key"></i> <span>Pass:</span> <strong>${password || '—'}</strong></div>` : ''
+      ? `<div><i class="fas fa-key"></i> <span>Pass:</span> <strong>${password || '—'}</strong></div>`
+      : ''
 
     return `
       <div><i class="fas fa-couch"></i> <span>Room:</span> <strong>${name}</strong></div>

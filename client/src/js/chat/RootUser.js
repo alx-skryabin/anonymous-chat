@@ -1,4 +1,4 @@
-import {EVENT} from "./config";
+import {EVENT} from './config'
 
 export class RootUser {
   constructor(chat, socket) {

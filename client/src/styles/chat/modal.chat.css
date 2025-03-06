@@ -4,7 +4,7 @@
 
 .modal h5 i {
   margin-right: 15px;
-  font-size: .8em;
+  font-size: 0.8em;
 }
 
 .modal-tips {
@@ -18,10 +18,10 @@
   align-items: center;
   padding: 10px;
   color: #777;
-  background: rgba(0, 0, 0, .05);
+  background: rgba(0, 0, 0, 0.05);
   border-radius: 3px;
   margin-bottom: 10px;
-  transition: .2s;
+  transition: 0.2s;
 }
 
 .list-rooms-item.active {
@@ -29,8 +29,8 @@
 }
 
 .list-rooms-item:hover {
-  background: rgba(0, 0, 0, .1);
-  transition: .2s;
+  background: rgba(0, 0, 0, 0.1);
+  transition: 0.2s;
 }
 
 .list-rooms-item div {
@@ -69,12 +69,12 @@
   margin: 5px;
   border-radius: 5px;
   cursor: crosshair;
-  transition: .2s;
+  transition: 0.2s;
 }
 
 .list-users img:hover {
   background: tomato;
-  transition: .2s;
+  transition: 0.2s;
 }
 
 /*voting*/
@@ -101,17 +101,17 @@
   border-radius: 50%;
   color: #333;
   cursor: pointer;
-  transition: .2s;
+  transition: 0.2s;
 }
 
 .voting-box .dislike:hover {
   color: #ee1d46;
-  transition: .2s;
+  transition: 0.2s;
 }
 
 .voting-box .like:hover {
   color: #11db7a;
-  transition: .2s;
+  transition: 0.2s;
 }
 
 .voting-box i {

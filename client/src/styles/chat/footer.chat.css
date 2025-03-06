@@ -2,8 +2,8 @@
   display: flex;
   align-items: center;
   padding: 10px;
-  background: rgba(255, 255, 255, .05);
-  box-shadow: 0 .25rem .75rem rgba(0, 0, 0, .1);
+  background: rgba(255, 255, 255, 0.05);
+  box-shadow: 0 0.25rem 0.75rem rgba(0, 0, 0, 0.1);
 }
 
 .footer_avatar {
@@ -25,7 +25,7 @@
 .footer_form input {
   width: 100%;
   height: auto !important;
-  background: rgba(255, 255, 255, .05) !important;
+  background: rgba(255, 255, 255, 0.05) !important;
   border: none !important;
   padding: 10px !important;
   margin: 0 !important;
