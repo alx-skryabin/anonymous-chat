@@ -8,11 +8,6 @@
     "dev": "webpack serve --open",
     "build": "webpack"
   },
-  "keywords": [
-    "javaScript",
-    "socket",
-    "webpack"
-  ],
   "license": "ISC",
   "devDependencies": {
     "copy-webpack-plugin": "^9.0.1",
