@@ -2,10 +2,7 @@ import {Server, Socket} from 'socket.io'
 import {v4 as uuidv4} from 'uuid'
 import {getAllRooms, deleteRoom} from '../models/rooms'
 import {deleteUser, getAllUsers, getUsers, getUser, addUser} from '../models/users'
-
-// Константы
-const TIME_DELETING_ROOM: number = 60
-const ROOT_PASS: string = '6233'
+import {CHAT} from '../configs/chat'
 
 function checkUserInRoom(room: string): void {
   setTimeout(() => {
@@ -15,7 +12,7 @@ function checkUserInRoom(room: string): void {
       // Удаляем комнату, если она пуста в течение 60 секунд
       deleteRoom(room)
     }
-  }, TIME_DELETING_ROOM * 1000)
+  }, CHAT.TIME_DELETING_ROOM * 1000)
 }
 
 export function messageService(io: Server, socket: Socket): void {
@@ -67,11 +64,16 @@ export function messageService(io: Server, socket: Socket): void {
     if (!currentUser) return
 
     const {room, avatar, root} = currentUser
-    const identity = data.password.toString() === ROOT_PASS
+    const identity = data.password.toString() === CHAT.PASS_ROOT_USER
 
     if (identity) {
       deleteUser(socket.id)
-      addUser(socket.id, room, avatar, !root)
+      addUser({
+        id: socket.id,
+        room,
+        avatar,
+        root: !root
+      })
 
       if (root) {
         // Отключение root
@@ -102,7 +104,12 @@ export function messageService(io: Server, socket: Socket): void {
     if (!user) return
 
     deleteUser(socket.id)
-    addUser(socket.id, user.room, avatar, user.root)
+    addUser({
+      id: socket.id,
+      room: user.room,
+      avatar,
+      root: user.root
+    })
   })
 
   // Для отладки

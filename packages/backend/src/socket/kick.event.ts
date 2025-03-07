@@ -1,8 +1,6 @@
 import {Server, Socket} from 'socket.io'
 import {getUser, User} from '../models/users'
-
-// Константа времени голосования
-const TIME_VOTING: number = 20
+import {CHAT} from '../configs/chat'
 
 // Хранилище голосований (Map с типами)
 const voting: Map<string, {d: number; l: number}> = new Map()
@@ -27,7 +25,7 @@ class KickVoting {
       console.log('end voting: ' + this.user.room)
       this.sendResult()
       voting.delete(this.user.room)
-    }, TIME_VOTING * 1000)
+    }, CHAT.TIME_VOTING * 1000)
   }
 
   private sendResult(): void {
@@ -50,7 +48,7 @@ export function kick(io: Server, socket: Socket): void {
         room: null,
         avatar: null,
         allowVoting: false,
-        time: TIME_VOTING,
+        time: CHAT.TIME_VOTING,
         error: 'User not found'
       })
       return
@@ -69,7 +67,7 @@ export function kick(io: Server, socket: Socket): void {
       room: user.room,
       avatar: user.avatar,
       allowVoting,
-      time: TIME_VOTING
+      time: CHAT.TIME_VOTING
     })
   })
 

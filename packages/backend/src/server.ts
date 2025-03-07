@@ -1,8 +1,7 @@
 import express, {Express} from 'express'
 import path from 'path'
 import dotenv from 'dotenv'
-import {createSocket} from './socket/create-socket'
-import {socketEvent} from './socket/socket.event'
+import {createSocket, initSocketEvent} from './socket/socket'
 
 // Загружаем переменные окружения в зависимости от NODE_ENV
 const envFile = process.env.NODE_ENV === 'production' ? '.env.production' : '.env.development'
@@ -29,7 +28,7 @@ export const createServer = (): {start: () => void} => {
 
   io.on('connection', socket => {
     console.log('Client connected', socket.id)
-    socketEvent(io, socket)
+    initSocketEvent(io, socket)
   })
 
   return {

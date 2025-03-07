@@ -1,6 +1,6 @@
 import {Socket} from 'socket.io'
 import {addUser, User} from '../models/users'
-import {getRoom, addRoom} from '../models/rooms'
+import {getRoom, addRoom, Room} from '../models/rooms'
 
 export function signInRoom(socket: Socket): void {
   socket.on(
@@ -18,7 +18,12 @@ export function signInRoom(socket: Socket): void {
 
       const {name, password} = dataRoom
       if (password && !isRoot) {
-        const user: User = addUser(socket.id, name, avatar)
+        const user: User = addUser({
+          id: socket.id,
+          room: name,
+          avatar,
+          root: false
+        })
         socket.join(user.room)
 
         socket.emit('SIGN_IN_ROOM', {
@@ -28,7 +33,12 @@ export function signInRoom(socket: Socket): void {
           code: 2
         })
       } else {
-        const user: User = addUser(socket.id, name, avatar, isRoot)
+        const user: User = addUser({
+          id: socket.id,
+          room: name,
+          avatar,
+          root: isRoot
+        })
         socket.join(user.room)
 
         socket.emit('SIGN_IN_ROOM', {
@@ -41,21 +51,20 @@ export function signInRoom(socket: Socket): void {
     }
   )
 
-  socket.on('CREATE_ROOM', (data: {name: string; password: string | false}) => {
-    const {name, password} = data
-    const dataRoom = getRoom(name)
+  socket.on('CREATE_ROOM', (data: Room) => {
+    const dataRoom = getRoom(data.name)
 
     if (dataRoom) {
       return socket.emit('CREATE_ROOM', {
-        message: `The name «${name}» already exists`,
+        message: `The name «${data.name}» already exists`,
         code: 2
       })
     }
 
-    addRoom(name, password)
+    addRoom(data)
     socket.emit('CREATE_ROOM', {
-      message: `Waiting... Going to the room «${name}»`,
-      name,
+      message: `Waiting... Going to the room «${data.name}»`,
+      name: data.name,
       code: 1
     })
   })
