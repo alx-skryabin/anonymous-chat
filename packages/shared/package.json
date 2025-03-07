@@ -1,0 +1,14 @@
+{
+  "name": "@anonymous-chat/shared",
+  "version": "1.0.0",
+  "description": "Shared utilities and types for anonymous-chat",
+  "author": "@alx-skryabin",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc"
+  },
+  "devDependencies": {
+    "typescript": "^5.8.2"
+  }
+}
