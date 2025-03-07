@@ -1,7 +1,12 @@
 import express, {Express} from 'express'
 import path from 'path'
+import dotenv from 'dotenv'
 import {createSocket} from './socket/create-socket'
 // import {socketEvent} from './socket/socket.event'
+
+// Загружаем переменные окружения в зависимости от NODE_ENV
+const envFile = process.env.NODE_ENV === 'production' ? '.env.production' : '.env.development'
+dotenv.config({path: path.resolve(__dirname, '..', envFile)})
 
 export const createServer = (): {start: () => void} => {
   const app: Express = express()
@@ -30,7 +35,7 @@ export const createServer = (): {start: () => void} => {
   return {
     start: () => {
       httpServer.listen(PORT, () => {
-        console.log(`Server has been started on port... ${PORT}`)
+        console.log(`Started on port... ${PORT}:${process.env.NODE_ENV}`)
       })
     }
   }

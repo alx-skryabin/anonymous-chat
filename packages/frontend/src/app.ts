@@ -20,7 +20,7 @@ console.log(greet(user))
 // Обработка сообщений
 socket.on('connect', () => {
   console.log('Connected to backend')
-  chat.innerHTML += '<p>Connected to chat!</p>'
+  chat.innerHTML += `<p>Connected to chat! ${socket.id}</p>`
 })
 
 socket.on('message', (msg: string) => {
