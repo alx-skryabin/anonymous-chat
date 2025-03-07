@@ -18,6 +18,7 @@
     "socket.io-client": "^4.8.1"
   },
   "devDependencies": {
+    "@types/materialize-css": "^1.0.14",
     "@types/node": "^22.13.9",
     "copy-webpack-plugin": "^13.0.0",
     "css-loader": "^7.1.2",

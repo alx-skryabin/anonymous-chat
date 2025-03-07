@@ -1,5 +1,4 @@
-const URIlocal = 'http://localhost:3000'
-// const URIprod = 'https://chat-noname.herokuapp.com'
+const URIlocal = 'http://localhost:5000'
 const URIprod = 'https://anonymous-chat-weld.vercel.app'
 
 const EVENT = {

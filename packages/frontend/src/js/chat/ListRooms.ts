@@ -1,30 +1,41 @@
+import {Socket} from 'socket.io-client'
 import {EVENT} from './config'
 import {getNameRoom} from './utils'
+import {Chat} from './Chat' // Импортируем Chat для типизации
+
+// Интерфейс для данных комнаты
+interface Room {
+  name: string
+  password?: string
+}
 
 export class ListRooms {
-  constructor(chat, socket) {
+  private socket: Socket
+  private chat: Chat
+
+  constructor(chat: Chat, socket: Socket) {
     this.socket = socket
     this.chat = chat
     this.prepare()
   }
 
-  prepare() {
+  private prepare(): void {
     this.setEventSocket()
     this.setEventOpen()
   }
 
-  setEventOpen() {
+  private setEventOpen(): void {
     this.chat.modals.listRoom.options.onOpenStart = () => {
       this.socket.emit(EVENT.GET_ROOMS)
     }
   }
 
-  setEventSocket() {
-    const $list = this.chat.modals.listRoom.el.querySelector('.list-rooms')
+  private setEventSocket(): void {
+    const $list = this.chat.modals.listRoom.el.querySelector('.list-rooms') as HTMLElement
 
-    this.socket.on(EVENT.GET_ROOMS, data => {
+    this.socket.on(EVENT.GET_ROOMS, (data: {rooms: Room[]}) => {
       $list.innerHTML = ''
-      data.rooms.map(room => {
+      data.rooms.forEach(room => {
         const $item = this.createElItem(room.name)
         $item.innerHTML = this.toHTMLitem(room)
         $list.append($item)
@@ -32,7 +43,7 @@ export class ListRooms {
     })
   }
 
-  createElItem(room) {
+  private createElItem(room: string): HTMLElement {
     const $item = document.createElement('div')
     $item.classList.add('list-rooms-item')
     const currentRoom = getNameRoom() || 'free'
@@ -40,7 +51,7 @@ export class ListRooms {
     return $item
   }
 
-  toHTMLitem(data) {
+  private toHTMLitem(data: Room): string {
     const {name, password} = data
     const access = password ? 'Private' : 'Public'
     const accessIcon = `<i class="fas ${password ? 'fa-lock' : 'fa-lock-open'}"></i>`
@@ -57,7 +68,7 @@ export class ListRooms {
     `
   }
 
-  defineUriRoom(room) {
+  private defineUriRoom(room: string): string {
     if (room === 'free') return window.location.origin
     return `${window.location.origin}/?room=${room}`
   }

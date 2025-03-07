@@ -1,4 +1,6 @@
-const youKick = (d, l) => {
+import {VotingResultData} from '../../types/types'
+
+const youKick = (d: number, l: number) => {
   return `
     <div class="you-kick">
       <h3>Sorry. You were kicked out by voting</h3>
@@ -10,7 +12,7 @@ const youKick = (d, l) => {
   `
 }
 
-const resultVoting = data => {
+const resultVoting = (data: VotingResultData) => {
   const {avatar, result} = data
   const {d, l} = result
   return `
@@ -26,7 +28,7 @@ const resultVoting = data => {
   `
 }
 
-const preloadGoRoom = message => {
+const preloadGoRoom = (message: string) => {
   return `
     <div class="preload-go-room">
       <i class="fas fa-sync fa-spin"></i> ${message}

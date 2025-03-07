@@ -4,7 +4,14 @@ import {status} from './template.status'
 import {footer} from './template.footer'
 import {modals} from './template.modal'
 
-const message = (owner = 'owner', text = '', msgId, avatar, msgRoot = false, isRoot = false) => {
+const message = (
+  owner = 'owner',
+  text = '',
+  msgId = '',
+  avatar = '',
+  msgRoot = false,
+  isRoot = false
+) => {
   const classMsg = owner === 'owner' ? 'msg-owner' : msgRoot ? 'msg-friend msg-root' : 'msg-friend'
   const $el = document.createElement('div')
   $el.className = `msg-chat ${classMsg}`
@@ -42,7 +49,7 @@ const content = () => {
   `
 }
 
-const room404 = msg => {
+const room404 = (msg: string) => {
   return `
     <div class="container-center">
       <h3 class="common-h3">${msg}</h3>
@@ -53,7 +60,7 @@ const room404 = msg => {
   `
 }
 
-const roomEnterPass = message => {
+const roomEnterPass = (message: string) => {
   return `
     <div class="container-center">
       <h3 class="common-h3">${message}</h3>
