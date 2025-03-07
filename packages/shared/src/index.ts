@@ -1,6 +1,8 @@
+import {EVENTS_SOCKET} from './configs/events'
+
 export interface User {
   id: number
   name: string
 }
 
-export const greet = (user: User): string => `Hello, ${user.name}!`
+export const EVENTS = EVENTS_SOCKET

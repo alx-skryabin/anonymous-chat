@@ -1,7 +1,7 @@
 import {Socket} from 'socket.io'
 import {addUser, User} from '../models/users'
 import {getRoom, addRoom, Room} from '../models/rooms'
-import {EVENTS} from '../configs/events'
+import {EVENTS} from '@anonymous-chat/shared'
 
 export function signInRoom(socket: Socket): void {
   socket.on(

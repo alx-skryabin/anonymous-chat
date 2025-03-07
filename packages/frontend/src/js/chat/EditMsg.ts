@@ -1,8 +1,8 @@
 export class EditMsg {
   private $input: HTMLInputElement
   private $msg: HTMLElement | null
-  public isEdit: boolean // Оставляем public, так как используется в Chat.ts
-  public msgId: string | null // Оставляем public, так как используется в Chat.ts
+  public isEdit: boolean
+  public msgId: string | null
 
   constructor($input: HTMLInputElement) {
     this.$input = $input

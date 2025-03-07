@@ -6,7 +6,7 @@ import {CreateRoom} from './CreateRoom'
 import {ListRooms} from './ListRooms'
 import {KickUser} from './KickUser'
 import {RootUser} from './RootUser'
-import {EVENT} from './config'
+import {EVENTS} from '@anonymous-chat/shared'
 import M from 'materialize-css'
 import {message, template, room404, roomEnterPass} from '../template/template.chat'
 import {
@@ -91,7 +91,7 @@ export class Chat {
 
   emitMsg(): void {
     // Новое сообщение
-    socket.on(EVENT.CHAT_MSG, (data: MessageData) => {
+    socket.on(EVENTS.CHAT_MSG, (data: MessageData) => {
       const text = replaceSymbol(data.message)
       const $msg =
         data.userId === this.userId
@@ -110,7 +110,7 @@ export class Chat {
     })
 
     // Редактирование сообщения
-    socket.on(EVENT.EDIT_MSG, (data: {msgId: string; message: string}) => {
+    socket.on(EVENTS.EDIT_MSG, (data: {msgId: string; message: string}) => {
       const $editedMsg = document.getElementById(data.msgId)
       if ($editedMsg) {
         const $msg = $editedMsg.querySelector('.msg-chat-text') as HTMLElement
@@ -124,7 +124,7 @@ export class Chat {
     })
 
     // Удаление сообщения
-    socket.on(EVENT.DELETE_MSG, (data: {msgId: string}) => {
+    socket.on(EVENTS.DELETE_MSG, (data: {msgId: string}) => {
       const $editedMsg = document.getElementById(data.msgId)
       if ($editedMsg) {
         addDeleteAnim($editedMsg)
@@ -141,7 +141,7 @@ export class Chat {
           this.editMsg.check(target)
         }
         if (target.dataset.action === 'delete-msg') {
-          socket.emit(EVENT.DELETE_MSG, {
+          socket.emit(EVENTS.DELETE_MSG, {
             msgId: this.editMsg.delete(target)
           })
         }
@@ -161,7 +161,7 @@ export class Chat {
     $avatar.addEventListener('click', () => {
       this.avatar = getAvatarURI()
       setAvatar(this.avatar)
-      socket.emit(EVENT.CHANGE_AVATAR, this.avatar)
+      socket.emit(EVENTS.CHANGE_AVATAR, this.avatar)
     })
 
     new CreateRoom(socket)
@@ -171,11 +171,11 @@ export class Chat {
 
   emitNewUser(): void {
     if (this.isRoot) return
-    socket.emit(EVENT.CHAT_NEW_USER, {userId: this.userId})
+    socket.emit(EVENTS.CHAT_NEW_USER, {userId: this.userId})
   }
 
   emitLeaveUser(): void {
-    socket.on(EVENT.CHAT_LEAVE_USER, (data: {countUser: number; message: string}) => {
+    socket.on(EVENTS.CHAT_LEAVE_USER, (data: {countUser: number; message: string}) => {
       this.statusBar.updateCountUsers(data.countUser)
       M.toast({html: data.message, classes: 'rounded'})
     })
@@ -185,14 +185,14 @@ export class Chat {
     if (!this.$input || !this.$input.value.trim()) return
 
     if (!this.editMsg.isEdit) {
-      socket.emit(EVENT.CHAT_MSG, {
+      socket.emit(EVENTS.CHAT_MSG, {
         message: this.$input.value,
         userId: this.userId,
         msgRoot: this.isRoot,
         avatar: this.avatar
       })
     } else {
-      socket.emit(EVENT.EDIT_MSG, {
+      socket.emit(EVENTS.EDIT_MSG, {
         message: this.$input.value,
         msgId: this.editMsg.msgId
       })
@@ -233,7 +233,7 @@ export class Chat {
   }
 
   socketLogin(): void {
-    socket.on(EVENT.SIGN_IN_ROOM, (data: RoomData) => {
+    socket.on(EVENTS.SIGN_IN_ROOM, (data: RoomData) => {
       if (data.password) this.isPrivate = true
 
       switch (data.code) {
@@ -253,7 +253,7 @@ export class Chat {
   initChat(): void {
     this.isRoot = JSON.parse(sessionStorage.getItem('root') || 'false') as boolean
     this.socketLogin()
-    socket.emit(EVENT.SIGN_IN_ROOM, {
+    socket.emit(EVENTS.SIGN_IN_ROOM, {
       room: getNameRoom(),
       avatar: this.avatar,
       isRoot: this.isRoot

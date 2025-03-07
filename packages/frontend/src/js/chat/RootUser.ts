@@ -1,5 +1,5 @@
 import {Socket} from 'socket.io-client'
-import {EVENT} from './config'
+import {EVENTS} from '@anonymous-chat/shared'
 import {Chat} from './Chat'
 import M from 'materialize-css'
 
@@ -43,7 +43,7 @@ export class RootUser {
       e.preventDefault()
 
       const rootPass = ($form['rootPass'] as HTMLInputElement).value.trim()
-      this.socket.emit(EVENT.TURN_ROOT, {
+      this.socket.emit(EVENTS.TURN_ROOT, {
         userId: this.chat.userId,
         password: rootPass
       })
@@ -53,7 +53,7 @@ export class RootUser {
   }
 
   private setEventSocket(): void {
-    this.socket.on(EVENT.TURN_ROOT, (data: TurnRootData) => {
+    this.socket.on(EVENTS.TURN_ROOT, (data: TurnRootData) => {
       const tips = data.identity ? `Root is — ${data.root}` : 'Access denied'
       M.toast({html: tips, classes: 'rounded'})
 

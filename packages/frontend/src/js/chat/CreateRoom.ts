@@ -1,5 +1,5 @@
 import {Socket} from 'socket.io-client'
-import {EVENT} from './config'
+import {EVENTS} from '@anonymous-chat/shared'
 import {preloadGoRoom} from '../template/template.blocks'
 
 // Интерфейс для данных, получаемых от сервера
@@ -57,13 +57,13 @@ export class CreateRoom {
         return
       }
 
-      this.socket.emit(EVENT.CREATE_ROOM, {
+      this.socket.emit(EVENTS.CREATE_ROOM, {
         name: name.value.trim().toLowerCase(),
         password: pass.value.trim() || false
       })
     })
 
-    this.socket.on(EVENT.CREATE_ROOM, (data: CreateRoomResponse) => {
+    this.socket.on(EVENTS.CREATE_ROOM, (data: CreateRoomResponse) => {
       switch (data.code) {
         case 1:
           $tips.innerHTML = preloadGoRoom(data.message)

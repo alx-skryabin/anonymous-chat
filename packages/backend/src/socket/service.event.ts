@@ -3,7 +3,7 @@ import {v4 as uuidv4} from 'uuid'
 import {getAllRooms, deleteRoom} from '../models/rooms'
 import {deleteUser, getAllUsers, getUsers, getUser, addUser} from '../models/users'
 import {CHAT} from '../configs/chat'
-import {EVENTS} from '../configs/events'
+import {EVENTS} from '@anonymous-chat/shared'
 
 function checkUserInRoom(room: string): void {
   setTimeout(() => {

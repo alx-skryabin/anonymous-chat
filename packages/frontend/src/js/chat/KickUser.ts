@@ -1,5 +1,5 @@
 import {Socket} from 'socket.io-client'
-import {EVENT} from './config'
+import {EVENTS} from '@anonymous-chat/shared'
 import {resultVoting, youKick} from '../template/template.blocks'
 import {Chat} from './Chat'
 import {VotingResultData} from '../../types/types'
@@ -49,7 +49,7 @@ export class KickUser {
 
   private setEventOpen(): void {
     this.chat.modals.userKick.options.onOpenStart = () => {
-      this.socket.emit(EVENT.GET_USERS)
+      this.socket.emit(EVENTS.GET_USERS)
       this.$timer.style.width = '100%'
     }
   }
@@ -59,7 +59,7 @@ export class KickUser {
       const target = e.target as HTMLElement
       if (target.dataset.action === 'kick') {
         this.chat.modals.userKick.close()
-        this.socket.emit(EVENT.VOTING_INIT, {
+        this.socket.emit(EVENTS.VOTING_INIT, {
           id: target.dataset.id
         })
       }
@@ -70,7 +70,7 @@ export class KickUser {
       const value = target.dataset.voting
       if (value) {
         this.chat.modals.votingKick.close()
-        this.socket.emit(EVENT.VOTING_POINT, {
+        this.socket.emit(EVENTS.VOTING_POINT, {
           room: this.room,
           isRoot: this.chat.isRoot,
           value
@@ -80,7 +80,7 @@ export class KickUser {
   }
 
   private setEventSocket(): void {
-    this.socket.on(EVENT.GET_USERS, (data: {users: User[]}) => {
+    this.socket.on(EVENTS.GET_USERS, (data: {users: User[]}) => {
       this.$list.innerHTML = ''
       data.users.forEach(user => {
         const $item = this.createElItem(user)
@@ -88,7 +88,7 @@ export class KickUser {
       })
     })
 
-    this.socket.on(EVENT.VOTING_INIT, (data: VotingInitData) => {
+    this.socket.on(EVENTS.VOTING_INIT, (data: VotingInitData) => {
       const {avatar, room, allowVoting, time} = data
 
       if (allowVoting) {
@@ -103,13 +103,13 @@ export class KickUser {
       }
     })
 
-    this.socket.on(EVENT.VOTING_RESULT, (data: VotingResultData) => {
+    this.socket.on(EVENTS.VOTING_RESULT, (data: VotingResultData) => {
       this.chat.modals.votingKick.close()
       this.chat.modals.votingResult.open()
       this.declareVoting(data)
     })
 
-    this.socket.on(EVENT.VOTING_FINISH, ({d, l}: VotingFinishData) => {
+    this.socket.on(EVENTS.VOTING_FINISH, ({d, l}: VotingFinishData) => {
       if (d > l) {
         this.socket.disconnect()
         const $app = document.querySelector('.app') as HTMLElement

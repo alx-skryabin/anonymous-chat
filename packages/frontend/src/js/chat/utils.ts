@@ -1,9 +1,8 @@
-import {URIlocal} from './config'
 import {AvatarGenerator} from 'random-avatar-generator'
 import M from 'materialize-css'
 
 function defineHostURI(): string {
-  return process.env.BACKEND_URL || URIlocal
+  return process.env.BACKEND_URL || 'http://localhost:5000'
 }
 
 function getAvatarURI(): string {

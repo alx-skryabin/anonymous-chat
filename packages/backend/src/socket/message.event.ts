@@ -1,7 +1,7 @@
 import {Server, Socket} from 'socket.io'
 import {v4 as uuidv4} from 'uuid'
 import {getUser} from '../models/users'
-import {EVENTS} from '../configs/events'
+import {EVENTS} from '@anonymous-chat/shared'
 
 export function messageChat(io: Server, socket: Socket): void {
   socket.on(

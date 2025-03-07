@@ -1,5 +1,5 @@
 import {Socket} from 'socket.io-client'
-import {EVENT} from './config'
+import {EVENTS} from '@anonymous-chat/shared'
 import {getNameRoom} from './utils'
 import {Chat} from './Chat' // Импортируем Chat для типизации
 
@@ -26,14 +26,14 @@ export class ListRooms {
 
   private setEventOpen(): void {
     this.chat.modals.listRoom.options.onOpenStart = () => {
-      this.socket.emit(EVENT.GET_ROOMS)
+      this.socket.emit(EVENTS.GET_ROOMS)
     }
   }
 
   private setEventSocket(): void {
     const $list = this.chat.modals.listRoom.el.querySelector('.list-rooms') as HTMLElement
 
-    this.socket.on(EVENT.GET_ROOMS, (data: {rooms: Room[]}) => {
+    this.socket.on(EVENTS.GET_ROOMS, (data: {rooms: Room[]}) => {
       $list.innerHTML = ''
       data.rooms.forEach(room => {
         const $item = this.createElItem(room.name)
