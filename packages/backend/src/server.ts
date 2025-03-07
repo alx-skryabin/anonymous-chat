@@ -1,12 +1,37 @@
-import express from 'express'
+import express, {Express} from 'express'
+import path from 'path'
+import {createSocket} from './socket/create-socket'
+// import {socketEvent} from './socket/socket.event'
 
-const app = express()
+export const createServer = (): {start: () => void} => {
+  const app: Express = express()
+  const PORT: number = parseInt(process.env.PORT || '5000', 10)
 
-app.get('/', (req, res) => {
-  res.send('Hello from TypeScript Backend')
-})
+  // Путь к статическому HTML-файлу
+  const staticPath = path.join(__dirname, '..', 'public')
+  const htmlFile = path.join(staticPath, 'index.html')
 
-const PORT = process.env.PORT || 5000
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`)
-})
+  // Обслуживание папки public как статической (если есть другие файлы)
+  app.use(express.static(staticPath))
+
+  // Возвращаем server.html по любому маршруту
+  app.get('*', (req, res) => {
+    res.sendFile(htmlFile)
+  })
+
+  // Настройка Socket.IO
+  const {httpServer, io} = createSocket(app)
+
+  io.on('connection', socket => {
+    console.log('Client connected', socket.id)
+    // socketEvent(io, socket)
+  })
+
+  return {
+    start: () => {
+      httpServer.listen(PORT, () => {
+        console.log(`Server has been started on port... ${PORT}`)
+      })
+    }
+  }
+}

@@ -2,7 +2,7 @@ import {io} from 'socket.io-client'
 import {greet, User} from '@anonymous-chat/shared'
 import './styles/main.scss'
 
-const BACKEND_URL = process.env.BACKEND_URL || 'http://localhost:3000'
+const BACKEND_URL = process.env.BACKEND_URL || 'http://localhost:5000'
 const socket = io(BACKEND_URL, {
   transports: ['websocket'],
   reconnection: false
