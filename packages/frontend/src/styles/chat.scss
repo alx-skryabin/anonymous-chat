@@ -1,0 +1,13 @@
+@use 'chat/header.chat';
+@use 'chat/menu.chat';
+@use 'chat/status.chat';
+@use 'chat/content.chat';
+@use 'chat/footer.chat';
+@use 'chat/modal.chat';
+
+.chat {
+  height: 100vh;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}

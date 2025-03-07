@@ -1,21 +1,82 @@
+* {
+  scrollbar-color: #ccc #223;
+  scrollbar-width: thin;
+}
+
 body {
-  font-family: Arial, sans-serif;
-  margin: 0;
-  padding: 20px;
+  font-family: 'Roboto', sans-serif;
+  background: #223;
+  line-height: 1.15;
 }
 
-#chat {
-  border: 1px solid #ccc;
+.debug {
+  display: none;
+  margin-left: auto;
+}
+
+.debug button {
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+  margin-left: 5px;
+}
+
+.container-center {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding-bottom: 100px;
+}
+
+.common-h3 {
+  color: #eee;
+  font-size: 2em;
+  text-align: center;
   padding: 10px;
-  max-height: 300px;
-  overflow-y: auto;
 }
 
-#message {
-  margin-top: 10px;
-  padding: 5px;
+.container-center a {
+  color: lightskyblue;
+  padding: 10px 15px;
+  border-radius: 5px;
+  background: rgba(255, 255, 255, 0.1);
+  transition: 0.2s;
 }
 
-#send {
-  padding: 5px 10px;
+.container-center a:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transition: 0.2s;
+}
+
+.form-password {
+  display: flex;
+  margin-top: 20px;
+}
+
+.form-password input {
+  margin: 0 !important;
+  color: #eee;
+}
+
+.form-password .input-field {
+  margin: 0;
+}
+
+.form-password button {
+  color: #eee;
+  font-size: 1.1em;
+  height: 100%;
+  padding: 0 15px;
+  margin-left: 20px;
+  border-radius: 3px;
+  border: 0;
+  background: rgba(255, 255, 255, 0.1);
+  transition: 0.2s;
+}
+
+.form-password button:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transition: 0.2s;
 }

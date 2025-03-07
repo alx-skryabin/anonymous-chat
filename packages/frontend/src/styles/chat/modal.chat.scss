@@ -1,0 +1,183 @@
+.modal h5 {
+  margin-bottom: 25px;
+}
+
+.modal h5 i {
+  margin-right: 15px;
+  font-size: 0.8em;
+}
+
+.modal-tips {
+  color: tomato;
+  margin-top: 10px;
+}
+
+/*list room*/
+.list-rooms-item {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  color: #777;
+  background: rgba(0, 0, 0, 0.05);
+  border-radius: 3px;
+  margin-bottom: 10px;
+  transition: 0.2s;
+}
+
+.list-rooms-item.active {
+  border: 1px solid deepskyblue;
+}
+
+.list-rooms-item:hover {
+  background: rgba(0, 0, 0, 0.1);
+  transition: 0.2s;
+}
+
+.list-rooms-item div {
+  margin-right: 15px;
+}
+
+.list-rooms-item div:first-child {
+  min-width: 100px;
+}
+
+.list-rooms-item div:nth-child(2) {
+  min-width: 70px;
+}
+
+.list-rooms-item strong {
+  color: #333;
+}
+
+@media only screen and (max-width: 620px) {
+  .list-rooms-item span {
+    display: none;
+  }
+}
+
+/*list user*/
+.list-users {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.list-users img {
+  background: #eee;
+  width: 80px;
+  height: 80px;
+  padding: 10px;
+  margin: 5px;
+  border-radius: 5px;
+  cursor: crosshair;
+  transition: 0.2s;
+}
+
+.list-users img:hover {
+  background: tomato;
+  transition: 0.2s;
+}
+
+/*voting*/
+.voting-box {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  margin-bottom: 50px;
+}
+
+.voting-box img {
+  width: 70px;
+  height: 70px;
+  margin: 20px;
+}
+
+.voting-box div {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 60px;
+  height: 60px;
+  background: #eee;
+  border-radius: 50%;
+  color: #333;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.voting-box .dislike:hover {
+  color: #ee1d46;
+  transition: 0.2s;
+}
+
+.voting-box .like:hover {
+  color: #11db7a;
+  transition: 0.2s;
+}
+
+.voting-box i {
+  display: inline-block;
+  font-size: 2em;
+}
+
+/*voting box result*/
+.voting-box-result div {
+  position: relative;
+}
+
+.voting-box-result span {
+  position: absolute;
+  bottom: -25px;
+  font-weight: bold;
+  font-size: 1.2em;
+}
+
+.voting-box-result .dislike {
+  color: #ee1d46;
+}
+
+.voting-box-result .like {
+  color: #11db7a;
+}
+
+/*you kick*/
+.you-kick {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  height: 100vh;
+  color: #eee;
+}
+
+.you-kick h3 {
+  font-size: 1.6em;
+}
+
+.you-kick span {
+  font-size: 1.4em;
+  margin: 10px;
+}
+
+/*create room*/
+.preload-go-room {
+  background: #eee;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  color: dodgerblue;
+  font-size: 1.4em;
+  padding: 10px;
+  text-align: center;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 10;
+}
+
+.preload-go-room i {
+  font-size: 2em;
+  margin-bottom: 20px;
+}
