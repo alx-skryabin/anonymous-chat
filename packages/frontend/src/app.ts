@@ -3,7 +3,10 @@ import {greet, User} from '@anonymous-chat/shared'
 import './styles/main.scss'
 
 const BACKEND_URL = process.env.BACKEND_URL || 'http://localhost:3000'
-const socket = io(BACKEND_URL)
+const socket = io(BACKEND_URL, {
+  transports: ['websocket'],
+  reconnection: false
+})
 
 // Элементы DOM
 const chat = document.getElementById('chat') as HTMLDivElement
