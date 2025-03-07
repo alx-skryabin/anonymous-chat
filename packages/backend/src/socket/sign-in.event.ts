@@ -1,16 +1,17 @@
 import {Socket} from 'socket.io'
 import {addUser, User} from '../models/users'
 import {getRoom, addRoom, Room} from '../models/rooms'
+import {EVENTS} from '../configs/events'
 
 export function signInRoom(socket: Socket): void {
   socket.on(
-    'SIGN_IN_ROOM',
+    EVENTS.SIGN_IN_ROOM,
     ({room, avatar, isRoot}: {room?: string; avatar: string; isRoot: boolean}) => {
       const roomName = room || 'free'
 
       const dataRoom = getRoom(roomName)
       if (!dataRoom) {
-        return socket.emit('SIGN_IN_ROOM', {
+        return socket.emit(EVENTS.SIGN_IN_ROOM, {
           message: `Room «${roomName}» not found`,
           code: 3
         })
@@ -26,7 +27,7 @@ export function signInRoom(socket: Socket): void {
         })
         socket.join(user.room)
 
-        socket.emit('SIGN_IN_ROOM', {
+        socket.emit(EVENTS.SIGN_IN_ROOM, {
           message: `Room «${name}» required password`,
           name,
           password,
@@ -41,7 +42,7 @@ export function signInRoom(socket: Socket): void {
         })
         socket.join(user.room)
 
-        socket.emit('SIGN_IN_ROOM', {
+        socket.emit(EVENTS.SIGN_IN_ROOM, {
           room: user.room,
           message: 'Sign in room success',
           password,
@@ -51,18 +52,18 @@ export function signInRoom(socket: Socket): void {
     }
   )
 
-  socket.on('CREATE_ROOM', (data: Room) => {
+  socket.on(EVENTS.CREATE_ROOM, (data: Room) => {
     const dataRoom = getRoom(data.name)
 
     if (dataRoom) {
-      return socket.emit('CREATE_ROOM', {
+      return socket.emit(EVENTS.CREATE_ROOM, {
         message: `The name «${data.name}» already exists`,
         code: 2
       })
     }
 
     addRoom(data)
-    socket.emit('CREATE_ROOM', {
+    socket.emit(EVENTS.CREATE_ROOM, {
       message: `Waiting... Going to the room «${data.name}»`,
       name: data.name,
       code: 1

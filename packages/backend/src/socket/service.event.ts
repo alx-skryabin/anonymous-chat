@@ -3,6 +3,7 @@ import {v4 as uuidv4} from 'uuid'
 import {getAllRooms, deleteRoom} from '../models/rooms'
 import {deleteUser, getAllUsers, getUsers, getUser, addUser} from '../models/users'
 import {CHAT} from '../configs/chat'
+import {EVENTS} from '../configs/events'
 
 function checkUserInRoom(room: string): void {
   setTimeout(() => {
@@ -25,17 +26,17 @@ export function messageService(io: Server, socket: Socket): void {
 
     if (user.root) return
 
-    io.in(user.room).emit('CHAT_LEAVE_USER', {
+    io.in(user.room).emit(EVENTS.CHAT_LEAVE_USER, {
       message: 'User left the chat',
       countUser: getUsers(user.room).length
     })
   })
 
-  socket.on('CHAT_NEW_USER', (data: {userId: number}) => {
+  socket.on(EVENTS.CHAT_NEW_USER, (data: {userId: number}) => {
     const user = getUser(socket.id)
     if (!user) return
 
-    io.in(user.room).emit('CHAT_MSG', {
+    io.in(user.room).emit(EVENTS.CHAT_MSG, {
       message: 'New user is joined',
       userId: data.userId,
       avatar: user.avatar,
@@ -44,22 +45,22 @@ export function messageService(io: Server, socket: Socket): void {
     })
   })
 
-  socket.on('GET_ROOMS', () => {
-    io.in(socket.id).emit('GET_ROOMS', {
+  socket.on(EVENTS.GET_ROOMS, () => {
+    io.in(socket.id).emit(EVENTS.GET_ROOMS, {
       rooms: getAllRooms()
     })
   })
 
-  socket.on('GET_USERS', () => {
+  socket.on(EVENTS.GET_USERS, () => {
     const user = getUser(socket.id)
     if (!user) return
 
-    io.in(socket.id).emit('GET_USERS', {
+    io.in(socket.id).emit(EVENTS.GET_USERS, {
       users: getUsers(user.room)
     })
   })
 
-  socket.on('TURN_ROOT', (data: {userId: number; password: string}) => {
+  socket.on(EVENTS.TURN_ROOT, (data: {userId: number; password: string}) => {
     const currentUser = getUser(socket.id)
     if (!currentUser) return
 
@@ -77,7 +78,7 @@ export function messageService(io: Server, socket: Socket): void {
 
       if (root) {
         // Отключение root
-        io.in(room).emit('CHAT_MSG', {
+        io.in(room).emit(EVENTS.CHAT_MSG, {
           message: 'New user is joined',
           userId: data.userId,
           avatar: avatar,
@@ -86,20 +87,20 @@ export function messageService(io: Server, socket: Socket): void {
         })
       } else {
         // Включение root
-        io.in(room).emit('CHAT_LEAVE_USER', {
+        io.in(room).emit(EVENTS.CHAT_LEAVE_USER, {
           message: 'User left the chat',
           countUser: getUsers(room).length
         })
       }
     }
 
-    io.in(socket.id).emit('TURN_ROOT', {
+    io.in(socket.id).emit(EVENTS.TURN_ROOT, {
       root: !root,
       identity
     })
   })
 
-  socket.on('CHANGE_AVATAR', (avatar: string) => {
+  socket.on(EVENTS.CHANGE_AVATAR, (avatar: string) => {
     const user = getUser(socket.id)
     if (!user) return
 

@@ -27,7 +27,6 @@ export const createServer = (): {start: () => void} => {
   const {httpServer, io} = createSocket(app)
 
   io.on('connection', socket => {
-    console.log('Client connected', socket.id)
     initSocketEvent(io, socket)
   })
 

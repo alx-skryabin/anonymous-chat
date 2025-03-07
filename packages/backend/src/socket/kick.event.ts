@@ -1,6 +1,7 @@
 import {Server, Socket} from 'socket.io'
 import {getUser, User} from '../models/users'
 import {CHAT} from '../configs/chat'
+import {EVENTS} from '../configs/events'
 
 // Хранилище голосований (Map с типами)
 const voting: Map<string, {d: number; l: number}> = new Map()
@@ -31,8 +32,8 @@ class KickVoting {
   private sendResult(): void {
     const result = voting.get(this.user.room)
     if (result) {
-      this.io.in(this.user.id).emit('VOTING_FINISH', result)
-      this.io.in(this.user.room).emit('VOTING_RESULT', {
+      this.io.in(this.user.id).emit(EVENTS.VOTING_FINISH, result)
+      this.io.in(this.user.room).emit(EVENTS.VOTING_RESULT, {
         result,
         avatar: this.user.avatar
       })
@@ -41,10 +42,10 @@ class KickVoting {
 }
 
 export function kick(io: Server, socket: Socket): void {
-  socket.on('VOTING_INIT', ({id}: {id: string}) => {
+  socket.on(EVENTS.VOTING_INIT, ({id}: {id: string}) => {
     const user = getUser(id)
     if (!user) {
-      socket.emit('VOTING_INIT', {
+      socket.emit(EVENTS.VOTING_INIT, {
         room: null,
         avatar: null,
         allowVoting: false,
@@ -63,7 +64,7 @@ export function kick(io: Server, socket: Socket): void {
 
     const recipient = allowVoting ? user.room : socket.id
 
-    io.in(recipient).emit('VOTING_INIT', {
+    io.in(recipient).emit(EVENTS.VOTING_INIT, {
       room: user.room,
       avatar: user.avatar,
       allowVoting,
@@ -72,7 +73,7 @@ export function kick(io: Server, socket: Socket): void {
   })
 
   socket.on(
-    'VOTING_POINT',
+    EVENTS.VOTING_POINT,
     ({value, room, isRoot}: {value: string; room: string; isRoot: boolean}) => {
       const res = voting.get(room)
       if (!res) return // Защита от undefined
