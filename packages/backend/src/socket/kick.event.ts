@@ -1,7 +1,7 @@
 import {Server, Socket} from 'socket.io'
-import {getUser, User} from '../models/users'
+import {getUser} from '../models/users'
 import {CHAT} from '../configs/chat'
-import {EVENTS} from '@anonymous-chat/shared'
+import {EVENTS, User} from '@anonymous-chat/shared'
 
 // Хранилище голосований (Map с типами)
 const voting: Map<string, {d: number; l: number}> = new Map()

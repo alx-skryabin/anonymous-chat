@@ -1,13 +1,7 @@
 import {Socket} from 'socket.io-client'
-import {EVENTS} from '@anonymous-chat/shared'
+import {EVENTS, Room} from '@anonymous-chat/shared'
 import {tools} from '../utils/utils'
 import {Chat} from './Chat' // Импортируем Chat для типизации
-
-// Интерфейс для данных комнаты
-interface Room {
-  name: string
-  password?: string
-}
 
 export class ListRooms {
   private socket: Socket

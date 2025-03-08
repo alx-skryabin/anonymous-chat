@@ -1,4 +1,4 @@
-export const EVENTS_SOCKET = {
+export const EVENTS = {
   SIGN_IN_ROOM: 'SIGN_IN_ROOM',
   CREATE_ROOM: 'CREATE_ROOM',
   GET_ROOMS: 'GET_ROOMS',
