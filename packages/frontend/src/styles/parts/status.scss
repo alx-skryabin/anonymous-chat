@@ -3,31 +3,33 @@
   align-items: center;
   background: rgba(255, 255, 255, 0.2);
   padding: 5px 10px;
-}
 
-.status strong {
-  color: #b8b8b8;
-}
+  strong {
+    color: #b8b8b8;
+  }
 
-@media only screen and (max-width: 620px) {
-  .status span {
+  @media only screen and (max-width: 620px) {
+    span {
+      display: none;
+    }
+  }
+
+  &-count,
+  &-room,
+  &-private,
+  &-root {
+    margin-right: 15px;
+    color: #828282;
+  }
+
+  &-root {
+    color: #11db7a;
     display: none;
   }
 }
 
-.status-count,
-.status-room,
-.status-private,
-.status-root {
-  margin-right: 15px;
-  color: #828282;
-}
-
-.status-root {
-  color: #11db7a;
-  display: none;
-}
-
-.debug button {
-  padding: 0 5px 3px;
+.debug {
+  button {
+    padding: 0 5px 3px;
+  }
 }
