@@ -2,7 +2,7 @@ import {Socket} from 'socket.io-client'
 import {tools} from '../utils/utils'
 import {Chat} from './Chat'
 import {EVENTS} from '../configs/events'
-import {Room} from '../types/common'
+import {Room} from '../types/types'
 
 export class ListRooms {
   private socket: Socket

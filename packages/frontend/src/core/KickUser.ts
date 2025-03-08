@@ -2,24 +2,13 @@ import {Socket} from 'socket.io-client'
 import {EVENTS} from '../configs/events'
 import {resultVoting, youKick} from '../templates/blocks'
 import {Chat} from './Chat'
-import {VotingResultData} from '../types/types'
-
-// Интерфейсы для данных от сокетов
-interface User {
-  id: string
-  avatar: string
-}
+import {User, VotingResultData} from '../types/types'
 
 interface VotingInitData {
   avatar: string
   room: string
   allowVoting: boolean
   time: number
-}
-
-interface VotingFinishData {
-  d: number // "dislike" (против)
-  l: number // "like" (за)
 }
 
 export class KickUser {
@@ -109,7 +98,7 @@ export class KickUser {
       this.declareVoting(data)
     })
 
-    this.socket.on(EVENTS.VOTING_FINISH, ({d, l}: VotingFinishData) => {
+    this.socket.on(EVENTS.VOTING_FINISH, ({d, l}: VotingResultData['result']) => {
       if (d > l) {
         this.socket.disconnect()
         const $app = document.querySelector('.app') as HTMLElement

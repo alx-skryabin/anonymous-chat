@@ -64,6 +64,7 @@ export class CreateRoom {
     })
 
     this.socket.on(EVENTS.CREATE_ROOM, (data: CreateRoomResponse) => {
+      console.log(88, data)
       switch (data.code) {
         case 1:
           $tips.innerHTML = preloadGoRoom(data.message)
