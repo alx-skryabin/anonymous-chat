@@ -8,19 +8,8 @@ import {KickUser} from './KickUser'
 import {RootUser} from './RootUser'
 import {EVENTS} from '@anonymous-chat/shared'
 import M from 'materialize-css'
-import {message, template, room404, roomEnterPass} from '../template/template.chat'
-import {
-  defineHostURI,
-  setAvatar,
-  scrollToMsg,
-  replaceSymbol,
-  initMeterialized,
-  addPulseAnim,
-  addDeleteAnim,
-  getDateTime,
-  getNameRoom,
-  getAvatarURI
-} from './utils'
+import {message, template, room404, roomEnterPass} from '../templates/chat'
+import {avatar, anim, tools} from '../utils/utils'
 
 // Интерфейс для данных сообщений
 interface MessageData {
@@ -40,7 +29,7 @@ interface RoomData {
 }
 
 // Инициализация сокета
-const socket: Socket = io(defineHostURI(), {
+const socket: Socket = io(process.env.BACKEND_URL, {
   transports: ['websocket']
 })
 
@@ -60,7 +49,7 @@ export class Chat {
     this.userId = parseInt(String(new Date().getTime()))
     this.isPrivate = false
     this.isRoot = false
-    this.avatar = getAvatarURI()
+    this.avatar = avatar.getURI()
     this.$app = document.querySelector('.app')
     this.$input = null
     this.$content = null
@@ -68,7 +57,7 @@ export class Chat {
 
   render(): void {
     this.toHTML()
-    initMeterialized()
+    tools.initMeterialized()
     this.statusBar = new StatusBar(this)
     this.editMsg = new EditMsg(this.$input!) // Утверждаем, что $input не null после toHTML
     this.modals = new Modals()
@@ -85,14 +74,14 @@ export class Chat {
       this.$app.innerHTML = template()
       this.$input = document.querySelector('#field') as HTMLInputElement
       this.$content = document.querySelector('#chatContent') as HTMLElement
-      setAvatar(this.avatar)
+      avatar.setAvatar(this.avatar)
     }
   }
 
   emitMsg(): void {
     // Новое сообщение
     socket.on(EVENTS.CHAT_MSG, (data: MessageData) => {
-      const text = replaceSymbol(data.message)
+      const text = tools.replaceSymbol(data.message)
       const $msg =
         data.userId === this.userId
           ? message('owner', text, data.msgId, this.avatar)
@@ -101,7 +90,7 @@ export class Chat {
       if (this.$content) {
         this.$content.appendChild($msg)
         document.querySelector('head title')!.textContent = text
-        scrollToMsg($msg)
+        tools.scrollToMsg($msg)
       }
 
       if (data.countUser) {
@@ -115,10 +104,10 @@ export class Chat {
       if ($editedMsg) {
         const $msg = $editedMsg.querySelector('.msg-chat-text') as HTMLElement
         $msg.classList.add('modified')
-        $msg.textContent = replaceSymbol(data.message)
+        $msg.textContent = tools.replaceSymbol(data.message)
         const $date = $editedMsg.querySelector('.msg-chat-date') as HTMLElement
-        $date.textContent = 'edited ' + getDateTime()
-        addPulseAnim($msg, 6)
+        $date.textContent = 'edited ' + tools.getDateTime()
+        anim.addPulseAnim($msg, 6)
         M.toast({html: 'The message was edited', classes: 'rounded'})
       }
     })
@@ -127,7 +116,7 @@ export class Chat {
     socket.on(EVENTS.DELETE_MSG, (data: {msgId: string}) => {
       const $editedMsg = document.getElementById(data.msgId)
       if ($editedMsg) {
-        addDeleteAnim($editedMsg)
+        anim.addDeleteAnim($editedMsg)
         M.toast({html: 'The message was deleted', classes: 'rounded'})
       }
     })
@@ -159,8 +148,8 @@ export class Chat {
     }
 
     $avatar.addEventListener('click', () => {
-      this.avatar = getAvatarURI()
-      setAvatar(this.avatar)
+      this.avatar = avatar.getURI()
+      avatar.setAvatar(this.avatar)
       socket.emit(EVENTS.CHANGE_AVATAR, this.avatar)
     })
 
@@ -254,7 +243,7 @@ export class Chat {
     this.isRoot = JSON.parse(sessionStorage.getItem('root') || 'false') as boolean
     this.socketLogin()
     socket.emit(EVENTS.SIGN_IN_ROOM, {
-      room: getNameRoom(),
+      room: tools.getNameRoom(),
       avatar: this.avatar,
       isRoot: this.isRoot
     })

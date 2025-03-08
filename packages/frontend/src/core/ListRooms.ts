@@ -1,6 +1,6 @@
 import {Socket} from 'socket.io-client'
 import {EVENTS} from '@anonymous-chat/shared'
-import {getNameRoom} from './utils'
+import {tools} from '../utils/utils'
 import {Chat} from './Chat' // Импортируем Chat для типизации
 
 // Интерфейс для данных комнаты
@@ -46,7 +46,7 @@ export class ListRooms {
   private createElItem(room: string): HTMLElement {
     const $item = document.createElement('div')
     $item.classList.add('list-rooms-item')
-    const currentRoom = getNameRoom() || 'free'
+    const currentRoom = tools.getNameRoom() || 'free'
     if (currentRoom === room) $item.classList.add('active')
     return $item
   }

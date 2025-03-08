@@ -1,8 +1,8 @@
-import {getDateTime} from '../chat/utils'
-import {header} from './template.header'
-import {status} from './template.status'
-import {footer} from './template.footer'
-import {modals} from './template.modal'
+import {tools} from '../utils/utils'
+import {header} from './header'
+import {status} from './status'
+import {footer} from './footer'
+import {modals} from './modal'
 
 const message = (
   owner = 'owner',
@@ -35,7 +35,7 @@ const message = (
           ${text}
       </div>
       <div class="msg-chat-date">
-        ${getDateTime()}
+        ${tools.getDateTime()}
       </div>
       ${owner === 'owner' ? msgEdit : isRoot ? msgEdit : ''}
       ${owner === 'owner' ? msgDelete : isRoot ? msgDelete : ''}

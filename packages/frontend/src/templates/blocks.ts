@@ -1,4 +1,4 @@
-import {VotingResultData} from '../../types/types'
+import {VotingResultData} from '../types/types'
 
 const youKick = (d: number, l: number) => {
   return `

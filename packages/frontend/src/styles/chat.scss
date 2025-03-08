@@ -1,9 +1,9 @@
-@use 'chat/header.chat';
-@use 'chat/menu.chat';
-@use 'chat/status.chat';
-@use 'chat/content.chat';
-@use 'chat/footer.chat';
-@use 'chat/modal.chat';
+@use 'parts/header';
+@use 'parts/menu';
+@use 'parts/status';
+@use 'parts/content';
+@use 'parts/footer';
+@use 'parts/modal';
 
 .chat {
   height: 100vh;

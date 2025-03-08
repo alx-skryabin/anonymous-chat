@@ -1,4 +1,4 @@
-import {getNameRoom} from '../chat/utils'
+import {tools} from '../utils/utils'
 
 const status = () => {
   return `
@@ -10,7 +10,7 @@ const status = () => {
         <i class="fas fa-users"></i> <span>Online:</span> <strong id="countUsers">0</strong>
       </div>
       <div class="status-room">
-        <i class="fas fa-couch"></i> <span>Room:</span> <strong>${getNameRoom() || 'free'}</strong>
+        <i class="fas fa-couch"></i> <span>Room:</span> <strong>${tools.getNameRoom() || 'free'}</strong>
       </div>
       <div class="status-private"></div>
       ${debug()}

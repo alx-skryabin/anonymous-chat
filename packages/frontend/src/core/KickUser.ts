@@ -1,8 +1,8 @@
 import {Socket} from 'socket.io-client'
 import {EVENTS} from '@anonymous-chat/shared'
-import {resultVoting, youKick} from '../template/template.blocks'
+import {resultVoting, youKick} from '../templates/blocks'
 import {Chat} from './Chat'
-import {VotingResultData} from '../../types/types'
+import {VotingResultData} from '../types/types'
 
 // Интерфейсы для данных от сокетов
 interface User {

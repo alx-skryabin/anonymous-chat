@@ -1,6 +1,6 @@
 import {Socket} from 'socket.io-client'
 import {EVENTS} from '@anonymous-chat/shared'
-import {preloadGoRoom} from '../template/template.blocks'
+import {preloadGoRoom} from '../templates/blocks'
 
 // Интерфейс для данных, получаемых от сервера
 interface CreateRoomResponse {
