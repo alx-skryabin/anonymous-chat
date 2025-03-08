@@ -12,7 +12,7 @@
   },
   "type": "commonjs",
   "dependencies": {
-    "@anonymous-chat/shared": "^1.0.0",
+    "@anonymous-chat/shared": "file:../shared",
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
     "socket.io": "^4.8.1",
