@@ -1,7 +1,8 @@
 import {Socket} from 'socket.io-client'
-import {EVENTS, Room} from '@anonymous-chat/shared'
 import {tools} from '../utils/utils'
-import {Chat} from './Chat' // Импортируем Chat для типизации
+import {Chat} from './Chat'
+import {EVENTS} from '../configs/events'
+import {Room} from '../types/common'
 
 export class ListRooms {
   private socket: Socket

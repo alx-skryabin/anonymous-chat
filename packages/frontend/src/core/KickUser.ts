@@ -1,5 +1,5 @@
 import {Socket} from 'socket.io-client'
-import {EVENTS} from '@anonymous-chat/shared'
+import {EVENTS} from '../configs/events'
 import {resultVoting, youKick} from '../templates/blocks'
 import {Chat} from './Chat'
 import {VotingResultData} from '../types/types'

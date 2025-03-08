@@ -1,5 +1,5 @@
 import {Socket} from 'socket.io-client'
-import {EVENTS} from '@anonymous-chat/shared'
+import {EVENTS} from '../configs/events'
 import {Chat} from './Chat'
 import M from 'materialize-css'
 
