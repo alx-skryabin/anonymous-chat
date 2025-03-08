@@ -1,4 +1,10 @@
-import {User} from '@anonymous-chat/shared'
+// Интерфейс для объекта пользователя
+export interface User {
+  id: string
+  room: string
+  avatar: string
+  root: boolean
+}
 
 // Хранилище пользователей
 const users: User[] = []

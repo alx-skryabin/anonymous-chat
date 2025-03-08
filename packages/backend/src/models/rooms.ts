@@ -1,5 +1,10 @@
 import {CHAT} from '../configs/chat'
-import {Room} from '@anonymous-chat/shared'
+
+// Интерфейс для объекта комнаты
+export interface Room {
+  name: string
+  password: string | false // Пароль может быть строкой или false
+}
 
 // Статические комнаты (не подлежат удалению)
 const staticRooms: string[] = ['free', 'sk']
